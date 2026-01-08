@@ -3,15 +3,15 @@ import {
 	computed,
 	type ReadonlySignal,
 	type Signal,
-} from '@effuse/core';
-import { Link, useRoute } from '@effuse/router';
-import { HamburgerButton } from '../HamburgerButton';
-import { LanguageSelector } from '../docs/LanguageSelector';
-import { SearchTrigger } from '../SearchTrigger';
-import { SearchModal } from '../SearchModal';
-import { useToggle } from '../../hooks/index.js';
-import type { i18nStore as I18nStoreType } from '../../store/appI18n';
-import './styles.css';
+} from "@effuse/core";
+import { Link, useRoute } from "@effuse/router";
+import { HamburgerButton } from "../HamburgerButton";
+import { LanguageSelector } from "../docs/LanguageSelector";
+import { SearchTrigger } from "../SearchTrigger";
+import { SearchModal } from "../SearchModal";
+import { useToggle } from "../../hooks/index.js";
+import type { i18nStore as I18nStoreType } from "../../store/appI18n";
+import "./styles.css";
 
 interface HeaderExposed {
 	mobileMenuOpen: Signal<boolean>;
@@ -22,20 +22,20 @@ interface HeaderExposed {
 }
 
 const LOCALIZED_SECTIONS = [
-	'/components',
-	'/context',
-	'/docs',
-	'/form',
-	'/todos',
-	'/props',
-	'/emit',
-	'/i18n',
-	'/about',
+	"/components",
+	"/context",
+	"/docs",
+	"/form",
+	"/todos",
+	"/props",
+	"/emit",
+	"/i18n",
+	"/about",
 ] as const;
 
 export const Header = define<Record<string, never>, HeaderExposed>({
 	script: ({ useStore }) => {
-		const i18nStore = useStore('i18n') as typeof I18nStoreType;
+		const i18nStore = useStore("i18n") as typeof I18nStoreType;
 
 		const mobileMenu = useToggle({ initial: false });
 
@@ -68,11 +68,11 @@ export const Header = define<Record<string, never>, HeaderExposed>({
 		docsLabel,
 		aboutLabel,
 	}) => (
-		<>
+		<div>
 			<header class="header-main">
 				<div
 					class={() =>
-						`header-container ${isDocsPath.value ? 'docs-mode' : ''}`
+						`header-container ${isDocsPath.value ? "docs-mode" : ""}`
 					}
 				>
 					<div class="header-inner">
@@ -113,7 +113,9 @@ export const Header = define<Record<string, never>, HeaderExposed>({
 
 							<div
 								class={() =>
-									`header-desktop-actions ${isDocsPath.value ? 'visible' : 'hidden'}`
+									`header-desktop-actions ${
+										isDocsPath.value ? "visible" : "hidden"
+									}`
 								}
 							>
 								<div class="header-divider"></div>
@@ -134,7 +136,7 @@ export const Header = define<Record<string, never>, HeaderExposed>({
 
 					<nav
 						class={() =>
-							`header-mobile-menu ${mobileMenuOpen.value ? 'open' : 'closed'}`
+							`header-mobile-menu ${mobileMenuOpen.value ? "open" : "closed"}`
 						}
 					>
 						<div class="header-mobile-row">
@@ -158,7 +160,9 @@ export const Header = define<Record<string, never>, HeaderExposed>({
 							</Link>
 							<div
 								class={() =>
-									`header-lang-mobile ${isDocsPath.value ? 'visible' : 'hidden'}`
+									`header-lang-mobile ${
+										isDocsPath.value ? "visible" : "hidden"
+									}`
 								}
 							>
 								<LanguageSelector isMobile />
@@ -168,6 +172,6 @@ export const Header = define<Record<string, never>, HeaderExposed>({
 				</div>
 			</header>
 			<SearchModal />
-		</>
+		</div>
 	),
 });
