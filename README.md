@@ -6,6 +6,25 @@
 Official documentation for the <a href="https://github.com/chrismichaelps/effuse">Effuse framework</a>
 </p>
 
+
+Effuse is a personal exploration into building a modern reactive framework. It prioritizes simplicity and fine-grained reactivity using **Signals**, offering a familiar developer experience without the complexity of a virtual DOM.
+
+It's designed to be intuitive and minimalist, helping you build fast, interactive web applications with less boilerplate. While it borrows good ideas from the ecosystem, it aims to remain small and understandable.
+
+> **Alert:** Effuse is currently in development and is not ready for production use.
+
+> **Note:** This is an experimental project for learning and demonstration. It is not intended to compete with major frameworks like React, Vue, or Solid.
+
+## Packages
+
+- **@effuse/core**: The core reactivity engine (Signals) and DOM rendering system.
+- **@effuse/router**: A simple, type-safe router for SPA navigation.
+- **@effuse/store**: A functional, Effect-based state management library.
+- **@effuse/ink**: A reactive Markdown renderer with component embedding support.
+- **@effuse/query**: A reactive data fetching library with built-in reliability.
+- **@effuse/i18n**: A reactive internationalization library.
+- **@effuse/compiler**: An optimized JSX/TSX transformer that automatically handles reactive signal access, reducing boilerplate without impacting performance.
+
 ---
 
 ### **:busts_in_silhouette: Credits**
@@ -37,4 +56,4 @@ _*Chris M. Perez*_
 
 ---
 
-Copyright ©2025 [Effuse](https://github.com/chrismichaelps/effuse-doc).
+Copyright ©2025 [Effuse Doc](https://github.com/chrismichaelps/effuse-doc).
