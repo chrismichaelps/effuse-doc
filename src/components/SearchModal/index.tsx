@@ -6,10 +6,11 @@ import {
 	Portal,
 	type Signal,
 	type ReadonlySignal,
-} from '@effuse/core';
-import type { SearchStore, SearchResultItem } from '../../store/searchStore';
-import type { i18nStore as I18nStoreType } from '../../store/appI18n';
-import './styles.css';
+} from "@effuse/core";
+import { useRouter } from "@effuse/router";
+import type { SearchStore, SearchResultItem } from "../../store/searchStore";
+import type { i18nStore as I18nStoreType } from "../../store/appI18n";
+import "./styles.css";
 
 interface SearchModalExposed {
 	isOpen: Signal<boolean>;
@@ -29,10 +30,11 @@ interface SearchModalExposed {
 
 export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 	script: ({ onMount, useStore, useCallback, useLayerProvider }) => {
-		const searchProvider = useLayerProvider('search');
+		const searchProvider = useLayerProvider("search");
 		const store = searchProvider?.search as SearchStore;
 
-		const i18nStore = useStore('i18n') as typeof I18nStoreType;
+		const router = useRouter();
+		const i18nStore = useStore("i18n") as typeof I18nStoreType;
 		const t = computed(() => i18nStore.translations.value?.search);
 
 		const handleInput = useCallback((e: Event) => {
@@ -44,23 +46,23 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 			if (!store?.isOpen.value) return;
 
 			switch (e.key) {
-				case 'ArrowDown':
+				case "ArrowDown":
 					e.preventDefault();
 					store.selectNext();
 					break;
-				case 'ArrowUp':
+				case "ArrowUp":
 					e.preventDefault();
 					store.selectPrevious();
 					break;
-				case 'Enter': {
+				case "Enter": {
 					e.preventDefault();
 					const selected = store.getSelected();
 					if (selected?.filePath) {
 						const slug =
-							selected.filePath.split('/').pop()?.replace('.md', '') ?? '';
-						const anchor = selected.anchor ? `#${selected.anchor}` : '';
+							selected.filePath.split("/").pop()?.replace(".md", "") ?? "";
+						const anchor = selected.anchor ? `#${selected.anchor}` : "";
 						store.close();
-						window.location.href = `/docs/${slug}${anchor}`;
+						router.push(`/docs/${slug}${anchor}`);
 					}
 					break;
 				}
@@ -69,7 +71,7 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 
 		const handleBackdropClick = useCallback((e: MouseEvent) => {
 			if (
-				(e.target as HTMLElement).classList.contains('search-modal-backdrop')
+				(e.target as HTMLElement).classList.contains("search-modal-backdrop")
 			) {
 				store?.close();
 			}
@@ -77,18 +79,18 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 
 		const handleResultClick = useCallback((result: SearchResultItem) => {
 			if (result.filePath) {
-				const slug = result.filePath.split('/').pop()?.replace('.md', '') ?? '';
-				const anchor = result.anchor ? `#${result.anchor}` : '';
+				const slug = result.filePath.split("/").pop()?.replace(".md", "") ?? "";
+				const anchor = result.anchor ? `#${result.anchor}` : "";
 				const targetUrl = `/docs/${slug}${anchor}`;
 
 				store?.close();
-				window.location.href = targetUrl;
+				router.push(targetUrl);
 
 				if (result.anchor) {
 					setTimeout(() => {
 						const element = document.getElementById(result.anchor!);
 						if (element) {
-							element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+							element.scrollIntoView({ behavior: "smooth", block: "start" });
 						}
 					}, 100);
 				}
@@ -96,20 +98,20 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 		});
 
 		onMount(() => {
-			window.addEventListener('keydown', handleKeyDown);
+			window.addEventListener("keydown", handleKeyDown);
 
 			return () => {
-				window.removeEventListener('keydown', handleKeyDown);
-				document.body.style.overflow = '';
+				window.removeEventListener("keydown", handleKeyDown);
+				document.body.style.overflow = "";
 			};
 		});
 
 		effect(() => {
 			if (store?.isOpen.value) {
-				document.body.style.overflow = 'hidden';
+				document.body.style.overflow = "hidden";
 				(window as any).__lenis?.stop();
 			} else {
-				document.body.style.overflow = '';
+				document.body.style.overflow = "";
 				(window as any).__lenis?.start();
 			}
 		});
@@ -121,7 +123,7 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 					`.search-result-item:nth-child(${idx + 1})`
 				);
 				if (element) {
-					element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+					element.scrollIntoView({ behavior: "smooth", block: "nearest" });
 				}
 			}
 		});
@@ -181,7 +183,7 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 	}) => (
 		<Portal target="body" priority="overlay" key="search-modal">
 			<div
-				class={() => `search-modal-backdrop ${isOpen?.value ? '' : 'hidden'}`}
+				class={() => `search-modal-backdrop ${isOpen?.value ? "" : "hidden"}`}
 				onClick={handleBackdropClick}
 			>
 				<div class="search-modal">
@@ -199,13 +201,13 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 					</div>
 
 					<div class="search-results" data-lenis-prevent>
-						<div class={() => (showLoading.value ? '' : 'hidden')}>
+						<div class={() => (showLoading.value ? "" : "hidden")}>
 							<div class="search-loading">
 								<div class="search-loading-spinner"></div>
 							</div>
 						</div>
 
-						<div class={() => (showNoResults.value ? '' : 'hidden')}>
+						<div class={() => (showNoResults.value ? "" : "hidden")}>
 							<div class="search-empty">
 								<img
 									src="/icons/search-empty.svg"
@@ -217,12 +219,12 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 							</div>
 						</div>
 
-						<div class={() => (showEmptyState.value ? '' : 'hidden')}>
+						<div class={() => (showEmptyState.value ? "" : "hidden")}>
 							<div class="search-empty">
 								<img src="/icons/plus.svg" alt="" class="search-empty-icon" />
 								<div class="search-empty-title"> {t.value?.startTyping}</div>
 								<div class="search-empty-subtitle">
-									{' '}
+									{" "}
 									{t.value?.searchAcross}
 								</div>
 							</div>
@@ -230,7 +232,7 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 
 						<div
 							class={() =>
-								showResults.value ? 'search-results-list' : 'hidden'
+								showResults.value ? "search-results-list" : "hidden"
 							}
 						>
 							<For
@@ -240,7 +242,9 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 								{(result, index) => (
 									<div
 										class={() =>
-											`search-result-item ${selectedIndex?.value === index.value ? 'selected' : ''}`
+											`search-result-item ${
+												selectedIndex?.value === index.value ? "selected" : ""
+											}`
 										}
 										onClick={() => handleResultClick(result.value)}
 									>
@@ -249,24 +253,24 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 												() => result.value.heading ?? t.value?.documentation
 											)}
 											<span class="search-result-badges">
-												{result.value.matchedIn === 'code' ? (
+												{result.value.matchedIn === "code" ? (
 													<span class="search-result-badge code">
 														{t.value?.resultCode}
 													</span>
 												) : null}
-												{result.value.matchedIn === 'title' ? (
+												{result.value.matchedIn === "title" ? (
 													<span class="search-result-badge title">
 														{t.value?.resultTitle}
 													</span>
 												) : null}
-												{result.value.matchedIn === 'heading' ? (
+												{result.value.matchedIn === "heading" ? (
 													<span class="search-result-badge heading">
 														{t.value?.resultSection}
 													</span>
 												) : null}
 											</span>
 										</div>
-										{result.value.matchedIn === 'code' ? (
+										{result.value.matchedIn === "code" ? (
 											<pre class="search-result-text code-match">
 												{result.value.text}
 											</pre>
