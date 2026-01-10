@@ -1,4 +1,5 @@
-import { createStore, connectDevTools } from '@effuse/store';
+import { createI18n } from '@effuse/i18n';
+import { signal, type Signal } from '@effuse/core';
 
 export const LOCALES = {
 	EN: 'en',
@@ -9,12 +10,9 @@ export const LOCALES = {
 
 export type Locale = (typeof LOCALES)[keyof typeof LOCALES];
 
-const STORAGE_KEY = 'effuse-locale';
 const LOCALES_PATH = '/locales';
-const STORE_NAME = 'i18n';
-const DEFAULT_LOCALE = LOCALES.EN;
 
-interface Translations {
+interface AppTranslations {
 	nav: {
 		home: string;
 		docs: string;
@@ -341,86 +339,46 @@ interface Translations {
 	};
 }
 
-const isValidLocale = (value: string | null): value is Locale => {
-	return (
-		value === LOCALES.EN ||
-		value === LOCALES.ES ||
-		value === LOCALES.JA ||
-		value === LOCALES.ZH
-	);
-};
+export type Translations = AppTranslations;
 
-const getInitialLocale = (): Locale => {
-	if (typeof window === 'undefined') return DEFAULT_LOCALE;
+const i18n = createI18n({
+	defaultLocale: LOCALES.EN,
+	fallbackLocale: LOCALES.EN,
+	loadPath: (locale) => `${LOCALES_PATH}/${locale}.json`,
+	detectLocale: true,
+	persistLocale: true,
+});
 
-	const stored = localStorage.getItem(STORAGE_KEY);
-	if (isValidLocale(stored)) return stored;
+const translations = signal<AppTranslations | null>(null);
+const isLoading = signal<boolean>(true);
 
-	const browserLang = navigator.language.slice(0, 2);
-	if (isValidLocale(browserLang)) return browserLang;
-
-	return DEFAULT_LOCALE;
-};
-
-const buildLocaleUrl = (locale: Locale): string =>
-	`${LOCALES_PATH}/${locale}.json`;
-
-interface I18nState {
-	locale: Locale;
-	translations: Translations | null;
-	isLoading: boolean;
-}
-
-export const i18nStore = createStore<
-	I18nState & {
-		setLocale: (loc: Locale) => void;
-		init: () => void;
+const loadTranslations = async (locale: string) => {
+	isLoading.value = true;
+	try {
+		const response = await fetch(`${LOCALES_PATH}/${locale}.json`);
+		const data: AppTranslations = await response.json();
+		translations.value = data;
+	} catch (error) {
+		console.error(`Failed to load translations for ${locale}:`, error);
+	} finally {
+		isLoading.value = false;
 	}
->(
-	STORE_NAME,
-	{
-		locale: getInitialLocale(),
-		translations: null,
-		isLoading: true,
+};
 
-		setLocale(loc: Locale) {
-			this.locale.value = loc;
-			localStorage.setItem(STORAGE_KEY, loc);
-			this.isLoading.value = true;
+void loadTranslations(i18n.getLocale());
 
-			fetch(buildLocaleUrl(loc))
-				.then((response) => response.json())
-				.then((data: Translations) => {
-					this.translations.value = data;
-				})
-				.catch(() => {
-					console.error(`Failed to load translations for ${loc}`);
-				})
-				.finally(() => {
-					this.isLoading.value = false;
-				});
-		},
-
-		init() {
-			this.isLoading.value = true;
-			const currentLocale = this.locale.value;
-
-			fetch(buildLocaleUrl(currentLocale))
-				.then((response) => response.json())
-				.then((data: Translations) => {
-					this.translations.value = data;
-				})
-				.catch(() => {
-					console.error(`Failed to load translations for ${currentLocale}`);
-				})
-				.finally(() => {
-					this.isLoading.value = false;
-				});
-		},
+export const i18nStore = {
+	locale: i18n.locale as Signal<Locale>,
+	translations,
+	isLoading,
+	setLocale: async (loc: Locale) => {
+		await i18n.setLocale(loc);
+		await loadTranslations(loc);
 	},
-	{ devtools: true }
-);
+	init: () => {
+		void loadTranslations(i18n.getLocale());
+	},
+	t: i18n.t,
+};
 
-connectDevTools(i18nStore);
-
-export type { Translations };
+export { i18n };
