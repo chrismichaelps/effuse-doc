@@ -49,4 +49,4 @@ declare module '@effuse/core' {
 	}
 }
 
-export { };
+export {};
