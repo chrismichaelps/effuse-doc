@@ -1,0 +1,7 @@
+dist
+node_modules
+public
+.output
+.vercel
+coverage
+pnpm-lock.yaml

@@ -6,7 +6,6 @@
 Official documentation for the <a href="https://github.com/chrismichaelps/effuse">Effuse framework</a>
 </p>
 
-
 Effuse is a personal exploration into building a modern reactive framework. It prioritizes simplicity and fine-grained reactivity using **Signals**, offering a familiar developer experience without the complexity of a virtual DOM.
 
 It's designed to be intuitive and minimalist, helping you build fast, interactive web applications with less boilerplate. While it borrows good ideas from the ecosystem, it aims to remain small and understandable.

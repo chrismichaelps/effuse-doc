@@ -2,88 +2,83 @@
 
 ### Documentation
 
-* add package installation instructions for pnpm/npm/yarn ([c2f0553](https://github.com/chrismichaelps/effuse/commit/c2f0553501ef162133fb5e6ca0b23897ef89fe40))
+- add package installation instructions for pnpm/npm/yarn ([c2f0553](https://github.com/chrismichaelps/effuse/commit/c2f0553501ef162133fb5e6ca0b23897ef89fe40))
 
 ## @effuse/app [1.0.5](https://github.com/chrismichaelps/effuse/compare/@effuse/app@1.0.4...@effuse/app@1.0.5) (2026-01-08)
 
 ### Bug Fixes
 
-* explicit workspace:* references in app/package.json to unblock build ([168f0e4](https://github.com/chrismichaelps/effuse/commit/168f0e4925aebb2ed584fbdf237b6974ba2408e9))
-
+- explicit workspace:\* references in app/package.json to unblock build ([168f0e4](https://github.com/chrismichaelps/effuse/commit/168f0e4925aebb2ed584fbdf237b6974ba2408e9))
 
 ### Dependencies
 
-* **@effuse/core:** upgraded to 1.0.2
-* **@effuse/i18n:** upgraded to 1.0.2
-* **@effuse/ink:** upgraded to 1.0.2
-* **@effuse/query:** upgraded to 1.0.1
-* **@effuse/router:** upgraded to 1.0.1
-* **@effuse/store:** upgraded to 1.0.1
-* **@effuse/compiler:** upgraded to 1.0.3
+- **@effuse/core:** upgraded to 1.0.2
+- **@effuse/i18n:** upgraded to 1.0.2
+- **@effuse/ink:** upgraded to 1.0.2
+- **@effuse/query:** upgraded to 1.0.1
+- **@effuse/router:** upgraded to 1.0.1
+- **@effuse/store:** upgraded to 1.0.1
+- **@effuse/compiler:** upgraded to 1.0.3
 
 ## @effuse/app [1.0.4](https://github.com/chrismichaelps/effuse/compare/@effuse/app@1.0.3...@effuse/app@1.0.4) (2026-01-08)
 
 ### Bug Fixes
 
-* restore workspace:* references in app/package.json [skip ci] ([a7decac](https://github.com/chrismichaelps/effuse/commit/a7decacb84d4ab803b9c99cd88edfd0b3de997dc))
-
+- restore workspace:\* references in app/package.json [skip ci] ([a7decac](https://github.com/chrismichaelps/effuse/commit/a7decacb84d4ab803b9c99cd88edfd0b3de997dc))
 
 ### Dependencies
 
-* **@effuse/i18n:** upgraded to 1.0.1
-* **@effuse/ink:** upgraded to 1.0.1
-* **@effuse/query:** upgraded to 1.0.0
-* **@effuse/router:** upgraded to 1.0.0
-* **@effuse/store:** upgraded to 1.0.0
+- **@effuse/i18n:** upgraded to 1.0.1
+- **@effuse/ink:** upgraded to 1.0.1
+- **@effuse/query:** upgraded to 1.0.0
+- **@effuse/router:** upgraded to 1.0.0
+- **@effuse/store:** upgraded to 1.0.0
 
 ## @effuse/app [1.0.3](https://github.com/chrismichaelps/effuse/compare/@effuse/app@1.0.2...@effuse/app@1.0.3) (2026-01-08)
 
 ### Bug Fixes
 
-* restore workspace:* references in app/package.json ([95a42ac](https://github.com/chrismichaelps/effuse/commit/95a42ac866cc94d2cd25fee4d1f806ebb9c3de69))
-
+- restore workspace:\* references in app/package.json ([95a42ac](https://github.com/chrismichaelps/effuse/commit/95a42ac866cc94d2cd25fee4d1f806ebb9c3de69))
 
 ### Dependencies
 
-* **@effuse/core:** upgraded to 1.0.1
-* **@effuse/i18n:** upgraded to 1.0.1
-* **@effuse/ink:** upgraded to 1.0.1
-* **@effuse/query:** upgraded to 1.0.0
-* **@effuse/router:** upgraded to 1.0.0
-* **@effuse/store:** upgraded to 1.0.0
-* **@effuse/compiler:** upgraded to 1.0.2
+- **@effuse/core:** upgraded to 1.0.1
+- **@effuse/i18n:** upgraded to 1.0.1
+- **@effuse/ink:** upgraded to 1.0.1
+- **@effuse/query:** upgraded to 1.0.0
+- **@effuse/router:** upgraded to 1.0.0
+- **@effuse/store:** upgraded to 1.0.0
+- **@effuse/compiler:** upgraded to 1.0.2
 
 ## @effuse/app [1.0.2](https://github.com/chrismichaelps/effuse/compare/@effuse/app@1.0.1...@effuse/app@1.0.2) (2026-01-08)
 
 ### Bug Fixes
 
-* restore workspace references and update lockfile ([1be52c5](https://github.com/chrismichaelps/effuse/commit/1be52c5aee7f1130840f7428400d28ec5c2598fb))
-
+- restore workspace references and update lockfile ([1be52c5](https://github.com/chrismichaelps/effuse/commit/1be52c5aee7f1130840f7428400d28ec5c2598fb))
 
 ### Dependencies
 
-* **@effuse/i18n:** upgraded to 1.0.0
-* **@effuse/ink:** upgraded to 1.0.0
-* **@effuse/query:** upgraded to 1.0.0
-* **@effuse/router:** upgraded to 1.0.0
-* **@effuse/store:** upgraded to 1.0.0
+- **@effuse/i18n:** upgraded to 1.0.0
+- **@effuse/ink:** upgraded to 1.0.0
+- **@effuse/query:** upgraded to 1.0.0
+- **@effuse/router:** upgraded to 1.0.0
+- **@effuse/store:** upgraded to 1.0.0
 
 ## @effuse/app [1.0.1](https://github.com/chrismichaelps/effuse/compare/@effuse/app@1.0.0...@effuse/app@1.0.1) (2026-01-08)
 
 ### Bug Fixes
 
-* sync lockfile, restore workspace deps, update node engine ([652944d](https://github.com/chrismichaelps/effuse/commit/652944de75966caee5178d74c44620820d081f16))
-
+- sync lockfile, restore workspace deps, update node engine ([652944d](https://github.com/chrismichaelps/effuse/commit/652944de75966caee5178d74c44620820d081f16))
 
 ### Dependencies
 
-* **@effuse/core:** upgraded to 1.0.0
-* **@effuse/i18n:** upgraded to 1.0.0
-* **@effuse/ink:** upgraded to 1.0.0
-* **@effuse/query:** upgraded to 1.0.0
-* **@effuse/router:** upgraded to 1.0.0
-* **@effuse/store:** upgraded to 1.0.0
-* **@effuse/compiler:** upgraded to 1.0.1
+- **@effuse/core:** upgraded to 1.0.0
+- **@effuse/i18n:** upgraded to 1.0.0
+- **@effuse/ink:** upgraded to 1.0.0
+- **@effuse/query:** upgraded to 1.0.0
+- **@effuse/router:** upgraded to 1.0.0
+- **@effuse/store:** upgraded to 1.0.0
+- **@effuse/compiler:** upgraded to 1.0.1
 
 ## @effuse/app 1.0.0 (2026-01-07)
 
