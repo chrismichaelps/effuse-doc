@@ -94,11 +94,13 @@ export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
 				`docs-layout ${isCollapsed.value ? 'sidebar-collapsed' : ''}`
 			}
 		>
-			{(isOpen.value as boolean) && (
-				<div
-					class="md:hidden fixed inset-0 bg-black/20 z-30 backdrop-blur-sm"
-					onClick={docsStore.toggleSidebar}
-				/>
+			{computed(() =>
+				(isOpen.value as boolean) ? (
+					<div
+						class="md:hidden fixed inset-0 bg-black/20 z-30 backdrop-blur-sm"
+						onClick={docsStore.toggleSidebar}
+					/>
+				) : null
 			)}
 
 			<div
