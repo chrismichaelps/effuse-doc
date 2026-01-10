@@ -344,7 +344,6 @@ export type Translations = AppTranslations;
 const i18n = createI18n({
 	defaultLocale: LOCALES.EN,
 	fallbackLocale: LOCALES.EN,
-	loadPath: (locale) => `${LOCALES_PATH}/${locale}.json`,
 	detectLocale: true,
 	persistLocale: true,
 });
