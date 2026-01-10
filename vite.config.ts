@@ -3,11 +3,14 @@ import path from 'path';
 import { effuse } from '@effuse/compiler/vite';
 import pkg from './package.json';
 
+import tailwindcss from '@tailwindcss/vite';
+
 export default defineConfig({
 	define: {
 		__APP_VERSION__: JSON.stringify(pkg.version),
 	},
 	plugins: [
+		tailwindcss(),
 		effuse({
 			debug: false,
 		}),
