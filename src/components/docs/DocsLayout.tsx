@@ -95,7 +95,7 @@ export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
 			}
 		>
 			{computed(() =>
-				(isOpen.value as boolean) ? (
+				isOpen.value ? (
 					<div
 						class="md:hidden fixed inset-0 bg-black/20 z-30 backdrop-blur-sm"
 						onClick={docsStore.toggleSidebar}
