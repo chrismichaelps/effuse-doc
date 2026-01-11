@@ -225,6 +225,12 @@
 	gap: 0.75rem;
 }
 
+@media (min-width: 769px) {
+	.sidebar-header {
+		padding: 0;
+	}
+}
+
 @media (max-width: 768px) {
 	.sidebar-header {
 		padding-top: 3.5rem;
