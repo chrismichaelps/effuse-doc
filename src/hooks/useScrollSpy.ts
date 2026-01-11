@@ -14,6 +14,7 @@ interface ScrollSpyReturn {
 	activeId: Signal<string>;
 	items: Signal<TocItem[]>;
 	setItems: (newItems: TocItem[]) => void;
+	setActiveId: (id: string) => void;
 	init: () => void;
 }
 
@@ -24,6 +25,9 @@ export const useScrollSpy = defineHook<ScrollSpyConfig, ScrollSpyReturn>({
 		const items = signal<TocItem[]>([]);
 		const initialized = signal(false);
 
+		let scrollLocked = false;
+		let lockTimeout: ReturnType<typeof setTimeout> | null = null;
+
 		effect(() => {
 			if (!initialized.value) return undefined;
 
@@ -31,6 +35,8 @@ export const useScrollSpy = defineHook<ScrollSpyConfig, ScrollSpyReturn>({
 			if (!container) return undefined;
 
 			const handleScroll = () => {
+				if (scrollLocked) return;
+
 				const tocItems = items.value;
 				if (tocItems.length === 0) return;
 
@@ -53,6 +59,14 @@ export const useScrollSpy = defineHook<ScrollSpyConfig, ScrollSpyReturn>({
 						}
 					}
 				}
+
+				const scrollTop = window.scrollY || document.documentElement.scrollTop;
+				const scrollHeight = document.documentElement.scrollHeight;
+				const clientHeight = window.innerHeight;
+				if (scrollTop + clientHeight >= scrollHeight) {
+					foundId = tocItems[tocItems.length - 1]?.id || foundId;
+				}
+
 				activeId.value = foundId || tocItems[0]?.id || '';
 			};
 
@@ -70,6 +84,7 @@ export const useScrollSpy = defineHook<ScrollSpyConfig, ScrollSpyReturn>({
 			return () => {
 				container.removeEventListener('scroll', handleScroll);
 				window.removeEventListener('scroll', handleScroll);
+				if (lockTimeout) clearTimeout(lockTimeout);
 			};
 		});
 
@@ -78,6 +93,14 @@ export const useScrollSpy = defineHook<ScrollSpyConfig, ScrollSpyReturn>({
 			items,
 			setItems: (newItems: TocItem[]) => {
 				items.value = newItems;
+			},
+			setActiveId: (id: string) => {
+				scrollLocked = true;
+				if (lockTimeout) clearTimeout(lockTimeout);
+				lockTimeout = setTimeout(() => {
+					scrollLocked = false;
+				}, 1500);
+				activeId.value = id;
 			},
 			init: () => {
 				initialized.value = true;

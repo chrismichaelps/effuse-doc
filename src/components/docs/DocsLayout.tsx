@@ -26,6 +26,7 @@ interface DocsLayoutProps {
 interface DocsLayoutExposed {
 	docsStore: typeof DocsStoreType;
 	activeSectionId: Signal<string>;
+	handleTocClick: (e: Event, id: string, title: string) => void;
 	normalizedTocItems: ReadonlySignal<TocItem[]>;
 	t: (key: string, fallback?: string) => string;
 	isCollapsed: Signal<unknown>;
@@ -41,7 +42,13 @@ const unwrapTocItems = (
 };
 
 export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
-	script: ({ props, onMount, useLayerProps, useLayerProvider }) => {
+	script: ({
+		props,
+		onMount,
+		useCallback,
+		useLayerProps,
+		useLayerProvider,
+	}) => {
 		const sidebarProps = useLayerProps('sidebar')!;
 		const sidebarProvider = useLayerProvider('sidebar')!;
 		const { t } = useTranslation();
@@ -61,6 +68,44 @@ export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
 			duration: 1.2,
 		});
 
+		const handleTocClick = useCallback(
+			(e: Event, id: string, title: string) => {
+				e.preventDefault();
+				scrollSpy.setActiveId(id);
+
+				let el: HTMLElement | null = null;
+				try {
+					el = document.querySelector(`#${CSS.escape(id)}`);
+				} catch {
+					el = document.getElementById(id);
+				}
+
+				if (!el) {
+					const headings = document.querySelectorAll('h1, h2, h3');
+					for (const h of headings) {
+						if (h.textContent?.trim() === title) {
+							el = h as HTMLElement;
+							break;
+						}
+					}
+				}
+
+				if (el) {
+					const scrollContainer = document.querySelector('.docs-main');
+					if (scrollContainer) {
+						const rect = el.getBoundingClientRect();
+						const containerRect = scrollContainer.getBoundingClientRect();
+						const offsetTop =
+							rect.top - containerRect.top + scrollContainer.scrollTop;
+						scrollContainer.scrollTo({
+							top: offsetTop - 20,
+							behavior: 'smooth',
+						});
+					}
+				}
+			}
+		);
+
 		onMount(() => {
 			scrollSpy.setItems(normalizedTocItems.value);
 			scrollSpy.init();
@@ -71,6 +116,7 @@ export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
 		return {
 			docsStore,
 			activeSectionId: scrollSpy.activeId,
+			handleTocClick,
 			normalizedTocItems,
 			t,
 			isCollapsed: sidebarProps.isCollapsed,
@@ -81,6 +127,7 @@ export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
 		{
 			docsStore,
 			activeSectionId,
+			handleTocClick,
 			normalizedTocItems,
 			t,
 			children,
@@ -146,44 +193,13 @@ export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
 											class={() =>
 												`toc-sidebar-link ${activeSectionId.value === itemSignal.value.id ? 'active' : ''}`
 											}
-											onClick={(e: Event) => {
-												e.preventDefault();
-												const title = itemSignal.value.title;
-												const id = itemSignal.value.id;
-												let el: HTMLElement | null = null;
-												try {
-													el = document.querySelector(`#${CSS.escape(id)}`);
-												} catch {
-													el = document.getElementById(id);
-												}
-												if (!el) {
-													const headings =
-														document.querySelectorAll('h1, h2, h3');
-													for (const h of headings) {
-														if (h.textContent?.trim() === title) {
-															el = h as HTMLElement;
-															break;
-														}
-													}
-												}
-												if (el) {
-													const scrollContainer =
-														document.querySelector('.docs-main');
-													if (scrollContainer) {
-														const rect = el.getBoundingClientRect();
-														const containerRect =
-															scrollContainer.getBoundingClientRect();
-														const offsetTop =
-															rect.top -
-															containerRect.top +
-															scrollContainer.scrollTop;
-														scrollContainer.scrollTo({
-															top: offsetTop - 60,
-															behavior: 'smooth',
-														});
-													}
-												}
-											}}
+											onClick={(e: Event) =>
+												handleTocClick(
+													e,
+													itemSignal.value.id,
+													itemSignal.value.title
+												)
+											}
 										>
 											{itemSignal.value.title}
 										</a>
