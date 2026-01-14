@@ -77,6 +77,7 @@ const sectionsConfig: NavSection[] = [
 			{ labelKey: 'events', href: '/docs/emit' },
 			{ labelKey: 'context', href: '/docs/context' },
 			{ labelKey: 'errorHandling', href: '/docs/tagged-errors' },
+			{ labelKey: 'refs', href: '/docs/refs' },
 		],
 		isOpen: true,
 	},
