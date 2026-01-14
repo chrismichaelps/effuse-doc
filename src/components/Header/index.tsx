@@ -22,15 +22,16 @@ interface HeaderExposed {
 }
 
 const LOCALIZED_SECTIONS = [
+	'/about',
 	'/components',
 	'/context',
 	'/docs',
-	'/form',
-	'/todos',
-	'/props',
 	'/emit',
+	'/form',
 	'/i18n',
-	'/about',
+	'/props',
+	'/refs',
+	'/todos',
 ] as const;
 
 export const Header = define<Record<string, never>, HeaderExposed>({

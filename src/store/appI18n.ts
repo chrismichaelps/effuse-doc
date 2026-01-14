@@ -48,6 +48,7 @@ interface AppTranslations {
 		controlFlow: string;
 		repeat: string;
 		await: string;
+		refs: string;
 	};
 	toc: {
 		onThisPage: string;
@@ -231,6 +232,28 @@ interface AppTranslations {
 			card2: string;
 			card3: string;
 			card4: string;
+			codeSnippet: string;
+		};
+		refs: {
+			title: string;
+			description: string;
+			createRefDemo: string;
+			createRefDesc: string;
+			callbackRefDemo: string;
+			callbackRefDesc: string;
+			subscriptionDemo: string;
+			subscriptionDesc: string;
+			dimensions: string;
+			width: string;
+			height: string;
+			focusInput: string;
+			clickCount: string;
+			reset: string;
+			howItWorks: string;
+			toggleElement: string;
+			resizeMe: string;
+			subscribeCallbacks: string;
+			typePlaceholder: string;
 			codeSnippet: string;
 		};
 		controlFlow: {
