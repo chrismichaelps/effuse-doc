@@ -9,39 +9,39 @@ importers:
   .:
     dependencies:
       '@effuse/core':
-        specifier: 1.0.3
-        version: 1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)
+        specifier: 1.1.0
+        version: 1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)
       '@effuse/i18n':
-        specifier: 1.0.3
-        version: 1.0.3(@effuse/core@1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))
+        specifier: 1.0.4
+        version: 1.0.4(@effuse/core@1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))
       '@effuse/ink':
-        specifier: 1.0.3
-        version: 1.0.3(@effuse/core@1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))
+        specifier: 1.0.4
+        version: 1.0.4(@effuse/core@1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))
       '@effuse/query':
-        specifier: 1.0.2
-        version: 1.0.2(@effuse/core@1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))
+        specifier: 1.0.3
+        version: 1.0.3(@effuse/core@1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))
       '@effuse/router':
-        specifier: 1.0.2
-        version: 1.0.2(@effuse/core@1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))
+        specifier: 1.1.0
+        version: 1.1.0(@effuse/core@1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))
       '@effuse/store':
-        specifier: 1.0.2
-        version: 1.0.2(@effuse/core@1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))
+        specifier: 1.0.3
+        version: 1.0.3(@effuse/core@1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))
       lenis:
         specifier: ^1.3.17
         version: 1.3.17
       motion:
-        specifier: ^12.25.0
-        version: 12.25.0
+        specifier: ^12.26.2
+        version: 12.26.2
     devDependencies:
       '@effuse/compiler':
         specifier: 1.0.3
-        version: 1.0.3(vite@7.3.1(@types/node@25.0.5)(jiti@2.6.1)(lightningcss@1.30.2))
+        version: 1.0.3(vite@7.3.1(@types/node@25.0.8)(jiti@2.6.1)(lightningcss@1.30.2))
       '@tailwindcss/vite':
         specifier: ^4.1.18
-        version: 4.1.18(vite@7.3.1(@types/node@25.0.5)(jiti@2.6.1)(lightningcss@1.30.2))
+        version: 4.1.18(vite@7.3.1(@types/node@25.0.8)(jiti@2.6.1)(lightningcss@1.30.2))
       '@types/node':
-        specifier: ^25.0.5
-        version: 25.0.5
+        specifier: ^25.0.8
+        version: 25.0.8
       autoprefixer:
         specifier: ^10.4.23
         version: 10.4.23(postcss@8.5.6)
@@ -59,16 +59,16 @@ importers:
         version: 5.9.3
       vite:
         specifier: ^7.3.1
-        version: 7.3.1(@types/node@25.0.5)(jiti@2.6.1)(lightningcss@1.30.2)
+        version: 7.3.1(@types/node@25.0.8)(jiti@2.6.1)(lightningcss@1.30.2)
 
 packages:
 
-  '@babel/code-frame@7.27.1':
-    resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
+  '@babel/code-frame@7.28.6':
+    resolution: {integrity: sha512-JYgintcMjRiCvS8mMECzaEn+m3PfoQiyqukOMCCVQtoJGYJw8j/8LBJEiqkHLkfwCcs74E3pbAUFNg7d9VNJ+Q==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/generator@7.28.5':
-    resolution: {integrity: sha512-3EwLFhZ38J4VyIP6WNtt2kUdW9dokXA9Cr4IVIFHuCpZ3H8/YFOl5JjZHisrn1fATPBmKKqXzDFvh9fUwHz6CQ==}
+  '@babel/generator@7.28.6':
+    resolution: {integrity: sha512-lOoVRwADj8hjf7al89tvQ2a1lf53Z+7tiXMgpZJL3maQPDxh0DgLMN62B2MKUOFcoodBHLMbDM6WAbKgNy5Suw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-globals@7.28.0':
@@ -83,21 +83,21 @@ packages:
     resolution: {integrity: sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/parser@7.28.5':
-    resolution: {integrity: sha512-KKBU1VGYR7ORr3At5HAtUQ+TV3SzRCXmA/8OdDZiLDBIZxVyzXuztPjfLd3BV1PRAQGCMWWSHYhL0F8d5uHBDQ==}
+  '@babel/parser@7.28.6':
+    resolution: {integrity: sha512-TeR9zWR18BvbfPmGbLampPMW+uW1NZnJlRuuHso8i87QZNq2JRF9i6RgxRqtEq+wQGsS19NNTWr2duhnE49mfQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  '@babel/template@7.27.2':
-    resolution: {integrity: sha512-LPDZ85aEJyYSd18/DkjNh4/y1ntkE5KwUHWTiqgRxruuZL2F1yuHligVHLvcHY2vMHXttKFpJn6LwfI7cw7ODw==}
+  '@babel/template@7.28.6':
+    resolution: {integrity: sha512-YA6Ma2KsCdGb+WC6UpBVFJGXL58MDA6oyONbjyF/+5sBgxY/dwkhLogbMT2GXXyU84/IhRw/2D1Os1B/giz+BQ==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/traverse@7.28.5':
-    resolution: {integrity: sha512-TCCj4t55U90khlYkVV/0TfkJkAkUg3jZFA3Neb7unZT8CPok7iiRfaX0F+WnqWqt7OxhOn0uBKXCw4lbL8W0aQ==}
+  '@babel/traverse@7.28.6':
+    resolution: {integrity: sha512-fgWX62k02qtjqdSNTAGxmKYY/7FSL9WAS1o2Hu5+I5m9T0yxZzr4cnrfXQ/MX0rIifthCSs6FKTlzYbJcPtMNg==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/types@7.28.5':
-    resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
+  '@babel/types@7.28.6':
+    resolution: {integrity: sha512-0ZrskXVEHSWIqZM/sQZ4EV3jZJXRkio/WCxaqKZP1g//CEWEPSfeZFcms4XeKBCHU0ZKnIkdJeU/kF+eRp5lBg==}
     engines: {node: '>=6.9.0'}
 
   '@effect/opentelemetry@0.60.0':
@@ -142,39 +142,39 @@ packages:
       vite:
         optional: true
 
-  '@effuse/core@1.0.3':
-    resolution: {integrity: sha512-YSonvRSTsH8SahaU8W2zbe5sr9z7KVJyvMYfclxiAIoc2wuOZhDPYu6U67t4ERVBDJEXLJZCYvROArzm6YFvtg==}
+  '@effuse/core@1.1.0':
+    resolution: {integrity: sha512-eC09usjy3/rnXyKX+bbfZdI3JWnxuS2mcOPkcLfggcgCbEPGBf0UpLLKo1MdsCVvjiBu8AQ00XKnhz0Twd04OQ==}
     engines: {node: '>=22.14.0'}
 
-  '@effuse/i18n@1.0.3':
-    resolution: {integrity: sha512-LrSbEpZ2POP9/FAbq7b780kN82cDxa76Nt+VVjmkQCVIS0eejpOf7zDlXekM0kKnlTnCVEn3v/C9klZaHaIzSA==}
+  '@effuse/i18n@1.0.4':
+    resolution: {integrity: sha512-jHmeqVu1cg93lFNv+G8m80BggxcoMldWSG+rxX1hVWHr+bJ9nNXNMAjQu79turghYxdtxzwJ5E1yMRlcOLVWfA==}
     engines: {node: '>=22.14.0'}
     peerDependencies:
-      '@effuse/core': 1.0.3
+      '@effuse/core': 1.1.0
 
-  '@effuse/ink@1.0.3':
-    resolution: {integrity: sha512-LBZKoWxHe92LKsGu8zsWPBFwcMzLc7O3hmyOxhD4urvSY7QFxnglzihwvG689O9oV2nQt/PUIkHI8mLwJ8qDzg==}
+  '@effuse/ink@1.0.4':
+    resolution: {integrity: sha512-zRWZ3hlPbDi/EOwog2cz4YqpPlnAK7K4L8C304zlvGviSyiGtumFAd1M9Zrr1ioRGz2h7l1mFp4LRdl4BeXOFg==}
     engines: {node: '>=22.14.0'}
     peerDependencies:
-      '@effuse/core': 1.0.3
+      '@effuse/core': 1.1.0
 
-  '@effuse/query@1.0.2':
-    resolution: {integrity: sha512-9yCNsSs2a0KQeQvwnSE3lho3AxHQS4nimvdEH+7EGIJQh2AES+Yyk0DeRhlgTQj0W7WtiXDl+eX0pzn7+9cZ/g==}
+  '@effuse/query@1.0.3':
+    resolution: {integrity: sha512-KcuDVsI/fGB1yuuInLVmiNZWAxjjSg24ZjztGxmsIsJuKsz2vUee8Mnn/7J2QNY2OEIWDNN4qjdmxkLeTIYPOg==}
     engines: {node: '>=22.14.0'}
     peerDependencies:
-      '@effuse/core': 1.0.3
+      '@effuse/core': 1.1.0
 
-  '@effuse/router@1.0.2':
-    resolution: {integrity: sha512-2lzXKVTv2U+TbrsLLQoAglIVvaI3Q//SVTihfQxThscC9sC3rYEcYRY7EMMbNbrErSZ9CpKF/aZcIXOU9J6lIQ==}
+  '@effuse/router@1.1.0':
+    resolution: {integrity: sha512-IwoFDCumbzJDclCb59vj6lRWZON5lbdpQfd8l4csFBod+/ZtFA//z9kDgmYLJZhMOAvqioXBs0Ur1O/m4pwAag==}
     engines: {node: '>=22.14.0'}
     peerDependencies:
-      '@effuse/core': 1.0.3
+      '@effuse/core': 1.1.0
 
-  '@effuse/store@1.0.2':
-    resolution: {integrity: sha512-tU6hjms9IKBctfsn5L7sgBGgcIQlx/dXAunVerzNgB52JQAPH27k3l2hAR+xjaCS3AzuDzcVAt+fDF4uah+E2Q==}
+  '@effuse/store@1.0.3':
+    resolution: {integrity: sha512-Zi3KdBm/UV8j+Xqe1Ho4F5xquZqxxqQGQCaeEXhniXUon5FucfrJIa7O5eg94rhKej0zvCpSgGqP7j7WwvmytA==}
     engines: {node: '>=22.14.0'}
     peerDependencies:
-      '@effuse/core': 1.0.3
+      '@effuse/core': 1.1.0
 
   '@esbuild/aix-ppc64@0.27.2':
     resolution: {integrity: sha512-GZMB+a0mOMZs4MpDbj8RJp4cw+w1WV5NYD6xzgvzUJ5Ek2jerwfO2eADyI6ExDSUED+1X8aMbegahsJi+8mgpw==}
@@ -382,26 +382,26 @@ packages:
     resolution: {integrity: sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==}
     engines: {node: '>=8.0.0'}
 
-  '@opentelemetry/core@2.3.0':
-    resolution: {integrity: sha512-PcmxJQzs31cfD0R2dE91YGFcLxOSN4Bxz7gez5UwSUjCai8BwH/GI5HchfVshHkWdTkUs0qcaPJgVHKXUp7I3A==}
+  '@opentelemetry/core@2.4.0':
+    resolution: {integrity: sha512-KtcyFHssTn5ZgDu6SXmUznS80OFs/wN7y6MyFRRcKU6TOw8hNcGxKvt8hsdaLJfhzUszNSjURetq5Qpkad14Gw==}
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
-  '@opentelemetry/resources@2.3.0':
-    resolution: {integrity: sha512-shlr2l5g+87J8wqYlsLyaUsgKVRO7RtX70Ckd5CtDOWtImZgaUDmf4Z2ozuSKQLM2wPDR0TE/3bPVBNJtRm/cQ==}
+  '@opentelemetry/resources@2.4.0':
+    resolution: {integrity: sha512-RWvGLj2lMDZd7M/5tjkI/2VHMpXebLgPKvBUd9LRasEWR2xAynDwEYZuLvY9P2NGG73HF07jbbgWX2C9oavcQg==}
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
-  '@opentelemetry/sdk-trace-base@2.3.0':
-    resolution: {integrity: sha512-B0TQ2e9h0ETjpI+eGmCz8Ojb+lnYms0SE3jFwEKrN/PK4aSVHU28AAmnOoBmfub+I3jfgPwvDJgomBA5a7QehQ==}
+  '@opentelemetry/sdk-trace-base@2.4.0':
+    resolution: {integrity: sha512-WH0xXkz/OHORDLKqaxcUZS0X+t1s7gGlumr2ebiEgNZQl2b0upK2cdoD0tatf7l8iP74woGJ/Kmxe82jdvcWRw==}
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
-  '@opentelemetry/sdk-trace-web@2.3.0':
-    resolution: {integrity: sha512-HwsfSVbG1JnW/KfxCQ0G6LtzWiSeEUyyj3s/HIxFenaLRsCQMB18N9y64Kkx6t/aLRCPkSZVqITxWbbqqvl5Xw==}
+  '@opentelemetry/sdk-trace-web@2.4.0':
+    resolution: {integrity: sha512-1FYg7qnrgTugPev51SehxCp0v9J4P97MJn2MaXQ8QK//psfyLDorKAAC3LmSIhq7XaC726WSZ/Wm69r8NdjIsA==}
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
@@ -631,8 +631,8 @@ packages:
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
-  '@types/node@25.0.5':
-    resolution: {integrity: sha512-FuLxeLuSVOqHPxSN1fkcD8DLU21gAP7nCKqGRJ/FglbCUBs0NYN6TpHcdmyLeh8C0KwGIaZQJSv+OYG+KZz+Gw==}
+  '@types/node@25.0.8':
+    resolution: {integrity: sha512-powIePYMmC3ibL0UJ2i2s0WIbq6cg6UyVFQxSCpaPxxzAaziRfimGivjdF943sSGV6RADVbk0Nvlm5P/FB44Zg==}
 
   autoprefixer@10.4.23:
     resolution: {integrity: sha512-YYTXSFulfwytnjAPlw8QHncHJmlvFKtczb8InXaAx9Q0LbfDnfEYDE55omerIJKihhmU61Ft+cAOSzQVaBUmeA==}
@@ -650,8 +650,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
-  caniuse-lite@1.0.30001763:
-    resolution: {integrity: sha512-mh/dGtq56uN98LlNX9qdbKnzINhX0QzhiWBFEkFfsFO4QyCvL8YegrJAazCwXIeqkIob8BlZPGM3xdnY+sgmvQ==}
+  caniuse-lite@1.0.30001764:
+    resolution: {integrity: sha512-9JGuzl2M+vPL+pz70gtMF9sHdMFbY9FJaQBi186cHKH3pSzDvzoUJUPV6fqiKIMyXbud9ZLg4F3Yza1vJ1+93g==}
 
   debug@4.4.3:
     resolution: {integrity: sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==}
@@ -704,8 +704,8 @@ packages:
   fraction.js@5.3.4:
     resolution: {integrity: sha512-1X1NTtiJphryn/uLQz3whtY6jK3fTqoE3ohKs0tT+Ujr1W59oopxmoEh7Lu5p6vBaPbgoM0bzveAW4Qi5RyWDQ==}
 
-  framer-motion@12.25.0:
-    resolution: {integrity: sha512-mlWqd0rApIjeyhTCSNCqPYsUAEhkcUukZxH3ke6KbstBRPcxhEpuIjmiUQvB+1E9xkEm5SpNHBgHCapH/QHTWg==}
+  framer-motion@12.26.2:
+    resolution: {integrity: sha512-lflOQEdjquUi9sCg5Y1LrsZDlsjrHw7m0T9Yedvnk7Bnhqfkc89/Uha10J3CFhkL+TCZVCRw9eUGyM/lyYhXQA==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
@@ -825,14 +825,14 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
-  motion-dom@12.24.11:
-    resolution: {integrity: sha512-DlWOmsXMJrV8lzZyd+LKjG2CXULUs++bkq8GZ2Sr0R0RRhs30K2wtY+LKiTjhmJU3W61HK+rB0GLz6XmPvTA1A==}
+  motion-dom@12.26.2:
+    resolution: {integrity: sha512-KLMT1BroY8oKNeliA3JMNJ+nbCIsTKg6hJpDb4jtRAJ7nCKnnpg/LTq/NGqG90Limitz3kdAnAVXecdFVGlWTw==}
 
   motion-utils@12.24.10:
     resolution: {integrity: sha512-x5TFgkCIP4pPsRLpKoI86jv/q8t8FQOiM/0E8QKBzfMozWHfkKap2gA1hOki+B5g3IsBNpxbUnfOum1+dgvYww==}
 
-  motion@12.25.0:
-    resolution: {integrity: sha512-jBFohEYklpZ+TL64zv03sHdqr1Tsc8/yDy7u68hVzi7hTJYtv53AduchqCiY3aWi4vY1hweS8DWtgCuckusYdQ==}
+  motion@12.26.2:
+    resolution: {integrity: sha512-2Q6g0zK1gUJKhGT742DAe42LgietcdiJ3L3OcYAHCQaC1UkLnn6aC8S/obe4CxYTLAgid2asS1QdQ/blYfo5dw==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
@@ -971,16 +971,16 @@ packages:
 
 snapshots:
 
-  '@babel/code-frame@7.27.1':
+  '@babel/code-frame@7.28.6':
     dependencies:
       '@babel/helper-validator-identifier': 7.28.5
       js-tokens: 4.0.0
       picocolors: 1.1.1
 
-  '@babel/generator@7.28.5':
+  '@babel/generator@7.28.6':
     dependencies:
-      '@babel/parser': 7.28.5
-      '@babel/types': 7.28.5
+      '@babel/parser': 7.28.6
+      '@babel/types': 7.28.6
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
       jsesc: 3.1.0
@@ -991,43 +991,43 @@ snapshots:
 
   '@babel/helper-validator-identifier@7.28.5': {}
 
-  '@babel/parser@7.28.5':
+  '@babel/parser@7.28.6':
     dependencies:
-      '@babel/types': 7.28.5
+      '@babel/types': 7.28.6
 
-  '@babel/template@7.27.2':
+  '@babel/template@7.28.6':
     dependencies:
-      '@babel/code-frame': 7.27.1
-      '@babel/parser': 7.28.5
-      '@babel/types': 7.28.5
+      '@babel/code-frame': 7.28.6
+      '@babel/parser': 7.28.6
+      '@babel/types': 7.28.6
 
-  '@babel/traverse@7.28.5':
+  '@babel/traverse@7.28.6':
     dependencies:
-      '@babel/code-frame': 7.27.1
-      '@babel/generator': 7.28.5
+      '@babel/code-frame': 7.28.6
+      '@babel/generator': 7.28.6
       '@babel/helper-globals': 7.28.0
-      '@babel/parser': 7.28.5
-      '@babel/template': 7.27.2
-      '@babel/types': 7.28.5
+      '@babel/parser': 7.28.6
+      '@babel/template': 7.28.6
+      '@babel/types': 7.28.6
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/types@7.28.5':
+  '@babel/types@7.28.6':
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@effect/opentelemetry@0.60.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/api@1.9.0)(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-web@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)(effect@3.19.14)':
+  '@effect/opentelemetry@0.60.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/api@1.9.0)(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-web@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)(effect@3.19.14)':
     dependencies:
       '@effect/platform': 0.94.1(effect@3.19.14)
       '@opentelemetry/semantic-conventions': 1.38.0
       effect: 3.19.14
     optionalDependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/resources': 2.3.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-base': 2.3.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-web': 2.3.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/resources': 2.4.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-base': 2.4.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-web': 2.4.0(@opentelemetry/api@1.9.0)
 
   '@effect/platform@0.94.1(effect@3.19.14)':
     dependencies:
@@ -1036,24 +1036,24 @@ snapshots:
       msgpackr: 1.11.8
       multipasta: 0.2.7
 
-  '@effuse/compiler@1.0.3(vite@7.3.1(@types/node@25.0.5)(jiti@2.6.1)(lightningcss@1.30.2))':
+  '@effuse/compiler@1.0.3(vite@7.3.1(@types/node@25.0.8)(jiti@2.6.1)(lightningcss@1.30.2))':
     dependencies:
-      '@babel/generator': 7.28.5
-      '@babel/parser': 7.28.5
-      '@babel/traverse': 7.28.5
-      '@babel/types': 7.28.5
+      '@babel/generator': 7.28.6
+      '@babel/parser': 7.28.6
+      '@babel/traverse': 7.28.6
+      '@babel/types': 7.28.6
       effect: 3.19.14
     optionalDependencies:
-      vite: 7.3.1(@types/node@25.0.5)(jiti@2.6.1)(lightningcss@1.30.2)
+      vite: 7.3.1(@types/node@25.0.8)(jiti@2.6.1)(lightningcss@1.30.2)
     transitivePeerDependencies:
       - supports-color
 
-  '@effuse/core@1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)':
+  '@effuse/core@1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)':
     dependencies:
-      '@effect/opentelemetry': 0.60.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/api@1.9.0)(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-web@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)(effect@3.19.14)
+      '@effect/opentelemetry': 0.60.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/api@1.9.0)(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-web@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)(effect@3.19.14)
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/sdk-trace-base': 2.3.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-web': 2.3.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-base': 2.4.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-web': 2.4.0(@opentelemetry/api@1.9.0)
       effect: 3.19.14
     transitivePeerDependencies:
       - '@effect/platform'
@@ -1063,29 +1063,29 @@ snapshots:
       - '@opentelemetry/sdk-trace-node'
       - '@opentelemetry/semantic-conventions'
 
-  '@effuse/i18n@1.0.3(@effuse/core@1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))':
+  '@effuse/i18n@1.0.4(@effuse/core@1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))':
     dependencies:
-      '@effuse/core': 1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)
+      '@effuse/core': 1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)
       effect: 3.19.14
 
-  '@effuse/ink@1.0.3(@effuse/core@1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))':
+  '@effuse/ink@1.0.4(@effuse/core@1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))':
     dependencies:
-      '@effuse/core': 1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)
+      '@effuse/core': 1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)
       effect: 3.19.14
 
-  '@effuse/query@1.0.2(@effuse/core@1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))':
+  '@effuse/query@1.0.3(@effuse/core@1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))':
     dependencies:
-      '@effuse/core': 1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)
+      '@effuse/core': 1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)
       effect: 3.19.14
 
-  '@effuse/router@1.0.2(@effuse/core@1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))':
+  '@effuse/router@1.1.0(@effuse/core@1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))':
     dependencies:
-      '@effuse/core': 1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)
+      '@effuse/core': 1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)
       effect: 3.19.14
 
-  '@effuse/store@1.0.2(@effuse/core@1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))':
+  '@effuse/store@1.0.3(@effuse/core@1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0))':
     dependencies:
-      '@effuse/core': 1.0.3(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)
+      '@effuse/core': 1.1.0(@effect/platform@0.94.1(effect@3.19.14))(@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.38.0)
       effect: 3.19.14
 
   '@esbuild/aix-ppc64@0.27.2':
@@ -1205,29 +1205,29 @@ snapshots:
 
   '@opentelemetry/api@1.9.0': {}
 
-  '@opentelemetry/core@2.3.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/core@2.4.0(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/semantic-conventions': 1.38.0
 
-  '@opentelemetry/resources@2.3.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/resources@2.4.0(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 2.3.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 2.4.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.38.0
 
-  '@opentelemetry/sdk-trace-base@2.3.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/sdk-trace-base@2.4.0(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 2.3.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/resources': 2.3.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 2.4.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/resources': 2.4.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.38.0
 
-  '@opentelemetry/sdk-trace-web@2.3.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/sdk-trace-web@2.4.0(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 2.3.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-trace-base': 2.3.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 2.4.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-base': 2.4.0(@opentelemetry/api@1.9.0)
 
   '@opentelemetry/semantic-conventions@1.38.0': {}
 
@@ -1369,23 +1369,23 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.1.18
       '@tailwindcss/oxide-win32-x64-msvc': 4.1.18
 
-  '@tailwindcss/vite@4.1.18(vite@7.3.1(@types/node@25.0.5)(jiti@2.6.1)(lightningcss@1.30.2))':
+  '@tailwindcss/vite@4.1.18(vite@7.3.1(@types/node@25.0.8)(jiti@2.6.1)(lightningcss@1.30.2))':
     dependencies:
       '@tailwindcss/node': 4.1.18
       '@tailwindcss/oxide': 4.1.18
       tailwindcss: 4.1.18
-      vite: 7.3.1(@types/node@25.0.5)(jiti@2.6.1)(lightningcss@1.30.2)
+      vite: 7.3.1(@types/node@25.0.8)(jiti@2.6.1)(lightningcss@1.30.2)
 
   '@types/estree@1.0.8': {}
 
-  '@types/node@25.0.5':
+  '@types/node@25.0.8':
     dependencies:
       undici-types: 7.16.0
 
   autoprefixer@10.4.23(postcss@8.5.6):
     dependencies:
       browserslist: 4.28.1
-      caniuse-lite: 1.0.30001763
+      caniuse-lite: 1.0.30001764
       fraction.js: 5.3.4
       picocolors: 1.1.1
       postcss: 8.5.6
@@ -1396,12 +1396,12 @@ snapshots:
   browserslist@4.28.1:
     dependencies:
       baseline-browser-mapping: 2.9.14
-      caniuse-lite: 1.0.30001763
+      caniuse-lite: 1.0.30001764
       electron-to-chromium: 1.5.267
       node-releases: 2.0.27
       update-browserslist-db: 1.2.3(browserslist@4.28.1)
 
-  caniuse-lite@1.0.30001763: {}
+  caniuse-lite@1.0.30001764: {}
 
   debug@4.4.3:
     dependencies:
@@ -1464,9 +1464,9 @@ snapshots:
 
   fraction.js@5.3.4: {}
 
-  framer-motion@12.25.0:
+  framer-motion@12.26.2:
     dependencies:
-      motion-dom: 12.24.11
+      motion-dom: 12.26.2
       motion-utils: 12.24.10
       tslib: 2.8.1
 
@@ -1536,15 +1536,15 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  motion-dom@12.24.11:
+  motion-dom@12.26.2:
     dependencies:
       motion-utils: 12.24.10
 
   motion-utils@12.24.10: {}
 
-  motion@12.25.0:
+  motion@12.26.2:
     dependencies:
-      framer-motion: 12.25.0
+      framer-motion: 12.26.2
       tslib: 2.8.1
 
   ms@2.1.3: {}
@@ -1646,7 +1646,7 @@ snapshots:
       escalade: 3.2.0
       picocolors: 1.1.1
 
-  vite@7.3.1(@types/node@25.0.5)(jiti@2.6.1)(lightningcss@1.30.2):
+  vite@7.3.1(@types/node@25.0.8)(jiti@2.6.1)(lightningcss@1.30.2):
     dependencies:
       esbuild: 0.27.2
       fdir: 6.5.0(picomatch@4.0.3)
@@ -1655,7 +1655,7 @@ snapshots:
       rollup: 4.55.1
       tinyglobby: 0.2.15
     optionalDependencies:
-      '@types/node': 25.0.5
+      '@types/node': 25.0.8
       fsevents: 2.3.3
       jiti: 2.6.1
       lightningcss: 1.30.2
