@@ -103,6 +103,7 @@ const sectionsConfig: NavSection[] = [
 			{ labelKey: 'props', href: '/props' },
 			{ labelKey: 'i18n', href: '/i18n' },
 			{ labelKey: 'emit', href: '/emit' },
+			{ labelKey: 'refs', href: '/refs' },
 		],
 		isOpen: false,
 	},
@@ -167,6 +168,7 @@ const createStableSectionStates = (): SectionState[] => {
 				controlFlow: sidebar?.controlFlow,
 				repeat: sidebar?.repeat,
 				await: sidebar?.await,
+				refs: sidebar?.refs,
 			};
 			return section.items.map((item) => ({
 				label: labelMapping[item.labelKey] ?? item.labelKey,

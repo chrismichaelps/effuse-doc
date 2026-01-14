@@ -33,7 +33,8 @@
 		"errorHandling": "エラーハンドリング",
 		"controlFlow": "コントロールフロー",
 		"repeat": "Repeat",
-		"await": "Await"
+		"await": "Await",
+		"refs": "Refs"
 	},
 	"toc": {
 		"onThisPage": "このページの内容"
@@ -71,7 +72,15 @@
 		"role": "作成者 @ Effuse",
 		"location": "New York, USA ⇄ Puerto Rico",
 		"languages": "英語, スペイン語",
-		"projects": ["core", "i18n", "ink", "query", "router", "store", "compiler"],
+		"projects": [
+			"core",
+			"i18n",
+			"ink",
+			"query",
+			"router",
+			"store",
+			"compiler"
+		],
 		"focusTitle": "現在の注力分野",
 		"meta": {
 			"title": "私について - Effuse",
@@ -220,6 +229,28 @@
 			"card3": "カード 3",
 			"card4": "カード 4",
 			"codeSnippet": "```tsx\n// デフォルト値を使用してコンテキストを作成\nconst ThemeContext = createContext<ThemeConfig>({\n  id: 'app-theme',\n  defaultValue: { mode: 'dark', primary: '#818cf8' },\n});\n\n// 任意のコンポーネントで消費\nconst MyComponent = define({\n  script: () => {\n    const theme = useContext(ThemeContext);\n    return { theme };\n  },\n  template: ({ theme }) => (\n    <div style={{ color: theme.primary }}>\n      現在のテーマ: {theme.mode}\n    </div>\n  ),\n});\n\n// プロバイダーが子要素をラップ\n<ThemeContext.Provider value={customTheme}>\n  <MyComponent />\n</ThemeContext.Provider>\n```"
+		},
+		"refs": {
+			"title": "RefsとDOMアクセス",
+			"description": "createRef、コールバックref、リアクティブサブスクリプションを使用した直接DOM要素アクセスのデモ。",
+			"createRefDemo": "createRef デモ",
+			"createRefDesc": "リアクティブなcurrentプロパティとサイズ追跡を持つrefオブジェクトを作成。",
+			"callbackRefDemo": "コールバックRef デモ",
+			"callbackRefDesc": "要素への即座アクセスとフォーカス制御のための関数ベースrefを使用。",
+			"subscriptionDemo": "サブスクリプション デモ",
+			"subscriptionDesc": "要素のマウント/アンマウント時のリアクティブ更新のためにrefの変更を購読。",
+			"dimensions": "サイズ",
+			"width": "幅",
+			"height": "高さ",
+			"focusInput": "入力をフォーカス",
+			"clickCount": "クリック数",
+			"reset": "リセット",
+			"howItWorks": "仕組み:",
+			"toggleElement": "要素を切り替え",
+			"resizeMe": "リサイズしてください！",
+			"subscribeCallbacks": "サブスクリプションコールバック:",
+			"typePlaceholder": "ここに入力...",
+			"codeSnippet": "```tsx\nimport { createRef, type RefCallback } from '@effuse/core';\n\nconst boxRef = createRef<HTMLDivElement>();\n\nboxRef.subscribe((el) => {\n  if (el) {\n    console.log('要素のサイズ:', el.offsetWidth, el.offsetHeight);\n  }\n});\n\nconst current = boxRef.current;\n\nconst inputCallback: RefCallback<HTMLInputElement> = (el) => {\n  if (el) el.focus();\n};\n\n<div ref={boxRef}>追跡される要素</div>\n<input ref={inputCallback} />\n```"
 		},
 		"controlFlow": {
 			"title": "制御フローコンポーネント",

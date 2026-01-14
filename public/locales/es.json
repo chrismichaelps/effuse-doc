@@ -33,7 +33,8 @@
 		"errorHandling": "Manejo de Errores",
 		"controlFlow": "Flujo de Control",
 		"repeat": "Repeat",
-		"await": "Await"
+		"await": "Await",
+		"refs": "Refs"
 	},
 	"toc": {
 		"onThisPage": "En esta página"
@@ -71,7 +72,15 @@
 		"role": "Creador @ Effuse",
 		"location": "New York, USA ⇄ Puerto Rico",
 		"languages": "Inglés, Español",
-		"projects": ["core", "i18n", "ink", "query", "router", "store", "compiler"],
+		"projects": [
+			"core",
+			"i18n",
+			"ink",
+			"query",
+			"router",
+			"store",
+			"compiler"
+		],
 		"focusTitle": "Enfoque Activo",
 		"meta": {
 			"title": "Sobre Mí - Effuse",
@@ -220,6 +229,28 @@
 			"card3": "Tarjeta 3",
 			"card4": "Tarjeta 4",
 			"codeSnippet": "```tsx\n// Crear un contexto con un valor predeterminado\nconst ThemeContext = createContext<ThemeConfig>({\n  id: 'app-theme',\n  defaultValue: { mode: 'dark', primary: '#818cf8' },\n});\n\n// Consumir en cualquier componente\nconst MyComponent = define({\n  script: () => {\n    const theme = useContext(ThemeContext);\n    return { theme };\n  },\n  template: ({ theme }) => (\n    <div style={{ color: theme.primary }}>\n      Tema actual: {theme.mode}\n    </div>\n  ),\n});\n\n// El proveedor envuelve a los hijos\n<ThemeContext.Provider value={customTheme}>\n  <MyComponent />\n</ThemeContext.Provider>\n```"
+		},
+		"refs": {
+			"title": "Refs y Acceso al DOM",
+			"description": "Demostrando acceso directo a elementos del DOM usando createRef, callback refs y suscripciones reactivas.",
+			"createRefDemo": "Demo de createRef",
+			"createRefDesc": "Crea un objeto ref con propiedad current reactiva y seguimiento de dimensiones.",
+			"callbackRefDemo": "Demo de Callback Ref",
+			"callbackRefDesc": "Usa refs basados en funciones para acceso inmediato al elemento y control de foco.",
+			"subscriptionDemo": "Demo de Suscripción",
+			"subscriptionDesc": "Suscríbete a cambios del ref para actualizaciones reactivas cuando elementos se montan/desmontan.",
+			"dimensions": "Dimensiones",
+			"width": "Ancho",
+			"height": "Alto",
+			"focusInput": "Enfocar Input",
+			"clickCount": "Contador de Clics",
+			"reset": "Reiniciar",
+			"howItWorks": "Cómo funciona:",
+			"toggleElement": "Alternar Elemento",
+			"resizeMe": "¡Redimensióname!",
+			"subscribeCallbacks": "Callbacks de suscripción:",
+			"typePlaceholder": "Escribe aquí...",
+			"codeSnippet": "```tsx\nimport { createRef, type RefCallback } from '@effuse/core';\n\nconst boxRef = createRef<HTMLDivElement>();\n\nboxRef.subscribe((el) => {\n  if (el) {\n    console.log('Dimensiones:', el.offsetWidth, el.offsetHeight);\n  }\n});\n\nconst current = boxRef.current;\n\nconst inputCallback: RefCallback<HTMLInputElement> = (el) => {\n  if (el) el.focus();\n};\n\n<div ref={boxRef}>Elemento rastreado</div>\n<input ref={inputCallback} />\n```"
 		},
 		"controlFlow": {
 			"title": "Componentes de Flujo de Control",

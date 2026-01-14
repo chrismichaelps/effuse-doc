@@ -20,6 +20,7 @@ import { AboutPage } from '../pages/About';
 import { EmitDemoPage } from '../pages/Emit';
 import { ContextPage } from '../pages/Context';
 import { ComponentsPage } from '../pages/Components';
+import { RefsPage } from '../pages/Refs';
 
 const routes: RouteRecord[] = [
 	{ path: '/', name: 'home', component: HomePage },
@@ -37,6 +38,7 @@ const routes: RouteRecord[] = [
 	{ path: '/emit', name: 'emit-demo', component: EmitDemoPage },
 	{ path: '/context', name: 'context-demo', component: ContextPage },
 	{ path: '/components', name: 'components-demo', component: ComponentsPage },
+	{ path: '/refs', name: 'refs', component: RefsPage },
 	{ path: '*', name: 'not-found', component: NotFoundPage },
 ];
 
