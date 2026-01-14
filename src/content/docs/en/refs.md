@@ -14,20 +14,18 @@ The `createRef` function creates a mutable ref object that can hold a DOM elemen
 import { createRef, onMount } from '@effuse/core';
 
 const MyComponent = define({
-  script: () => {
-    // Create a typed ref
-    const inputRef = createRef<HTMLInputElement>();
+	script: () => {
+		// Create a typed ref
+		const inputRef = createRef<HTMLInputElement>();
 
-    onMount(() => {
-      // Access the element via .current
-      inputRef.current?.focus();
-    });
+		onMount(() => {
+			// Access the element via .current
+			inputRef.current?.focus();
+		});
 
-    return { inputRef };
-  },
-  template: ({ inputRef }) => (
-    <input ref={inputRef} />
-  )
+		return { inputRef };
+	},
+	template: ({ inputRef }) => <input ref={inputRef} />,
 });
 ```
 
@@ -40,12 +38,12 @@ const boxRef = createRef<HTMLDivElement>();
 
 // Callback fires whenever the element changes (mounts/unmounts)
 boxRef.subscribe((el) => {
-  if (el) {
-    console.log('Element mounted:', el);
-    // You can attach observers here (e.g., ResizeObserver)
-  } else {
-    console.log('Element unmounted');
-  }
+	if (el) {
+		console.log('Element mounted:', el);
+		// You can attach observers here (e.g., ResizeObserver)
+	} else {
+		console.log('Element unmounted');
+	}
 });
 ```
 
@@ -57,14 +55,14 @@ For more granular control, you can pass a function directly to the `ref` attribu
 import type { RefCallback } from '@effuse/core';
 
 const handleInputRef: RefCallback<HTMLInputElement> = (el) => {
-  if (el) {
-    console.log('Input mounted');
-    el.focus();
-  }
+	if (el) {
+		console.log('Input mounted');
+		el.focus();
+	}
 };
 
 // In template:
-<input ref={handleInputRef} />
+<input ref={handleInputRef} />;
 ```
 
 ## Best Practices

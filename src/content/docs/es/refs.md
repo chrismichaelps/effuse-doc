@@ -14,20 +14,18 @@ La función `createRef` crea un objeto ref mutable que puede contener un element
 import { createRef, onMount } from '@effuse/core';
 
 const MyComponent = define({
-  script: () => {
-    // Crear una ref tipada
-    const inputRef = createRef<HTMLInputElement>();
+	script: () => {
+		// Crear una ref tipada
+		const inputRef = createRef<HTMLInputElement>();
 
-    onMount(() => {
-      // Acceder al elemento via .current
-      inputRef.current?.focus();
-    });
+		onMount(() => {
+			// Acceder al elemento via .current
+			inputRef.current?.focus();
+		});
 
-    return { inputRef };
-  },
-  template: ({ inputRef }) => (
-    <input ref={inputRef} />
-  )
+		return { inputRef };
+	},
+	template: ({ inputRef }) => <input ref={inputRef} />,
 });
 ```
 
@@ -40,12 +38,12 @@ const boxRef = createRef<HTMLDivElement>();
 
 // El callback se dispara cuando el elemento cambia (se monta/desmonta)
 boxRef.subscribe((el) => {
-  if (el) {
-    console.log('Elemento montado:', el);
-    // Puedes adjuntar observadores aquí (ej: ResizeObserver)
-  } else {
-    console.log('Elemento desmontado');
-  }
+	if (el) {
+		console.log('Elemento montado:', el);
+		// Puedes adjuntar observadores aquí (ej: ResizeObserver)
+	} else {
+		console.log('Elemento desmontado');
+	}
 });
 ```
 
@@ -57,14 +55,14 @@ Para un control más granular, puedes pasar una función directamente al atribut
 import type { RefCallback } from '@effuse/core';
 
 const handleInputRef: RefCallback<HTMLInputElement> = (el) => {
-  if (el) {
-    console.log('Input montado');
-    el.focus();
-  }
+	if (el) {
+		console.log('Input montado');
+		el.focus();
+	}
 };
 
 // En el template:
-<input ref={handleInputRef} />
+<input ref={handleInputRef} />;
 ```
 
 ## Buenas Prácticas

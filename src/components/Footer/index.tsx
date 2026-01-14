@@ -120,7 +120,7 @@ export const Footer = define({
 							<span class="footer-badge-label">Effuse</span>
 						</div>
 						<div class="footer-badge-copyright">
-							© {new Date().getFullYear()} Effuse. MIT License.
+							© 2025 - {new Date().getFullYear()} Effuse. MIT License.
 						</div>
 					</div>
 				</div>

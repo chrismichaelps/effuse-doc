@@ -14,20 +14,18 @@ title: Refs 与 DOM 访问
 import { createRef, onMount } from '@effuse/core';
 
 const MyComponent = define({
-  script: () => {
-    // 创建一个带类型的 ref
-    const inputRef = createRef<HTMLInputElement>();
+	script: () => {
+		// 创建一个带类型的 ref
+		const inputRef = createRef<HTMLInputElement>();
 
-    onMount(() => {
-      // 通过 .current 访问元素
-      inputRef.current?.focus();
-    });
+		onMount(() => {
+			// 通过 .current 访问元素
+			inputRef.current?.focus();
+		});
 
-    return { inputRef };
-  },
-  template: ({ inputRef }) => (
-    <input ref={inputRef} />
-  )
+		return { inputRef };
+	},
+	template: ({ inputRef }) => <input ref={inputRef} />,
 });
 ```
 
@@ -40,12 +38,12 @@ const boxRef = createRef<HTMLDivElement>();
 
 // 当元素发生变化（挂载/卸载）时触发回调
 boxRef.subscribe((el) => {
-  if (el) {
-    console.log('元素已挂载:', el);
-    // 你可以在这里附加观察者（例如：ResizeObserver）
-  } else {
-    console.log('元素已卸载');
-  }
+	if (el) {
+		console.log('元素已挂载:', el);
+		// 你可以在这里附加观察者（例如：ResizeObserver）
+	} else {
+		console.log('元素已卸载');
+	}
 });
 ```
 
@@ -57,14 +55,14 @@ boxRef.subscribe((el) => {
 import type { RefCallback } from '@effuse/core';
 
 const handleInputRef: RefCallback<HTMLInputElement> = (el) => {
-  if (el) {
-    console.log('Input 已挂载');
-    el.focus();
-  }
+	if (el) {
+		console.log('Input 已挂载');
+		el.focus();
+	}
 };
 
 // 在模板中：
-<input ref={handleInputRef} />
+<input ref={handleInputRef} />;
 ```
 
 ## 最佳实践

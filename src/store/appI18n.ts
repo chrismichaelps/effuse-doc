@@ -49,6 +49,7 @@ interface AppTranslations {
 		repeat: string;
 		await: string;
 		refs: string;
+		ecosystem: string;
 	};
 	toc: {
 		onThisPage: string;

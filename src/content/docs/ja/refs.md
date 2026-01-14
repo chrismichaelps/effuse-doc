@@ -14,20 +14,18 @@ Effuseの宣言的モデルは、ほとんどのDOM更新を自動的に処理�
 import { createRef, onMount } from '@effuse/core';
 
 const MyComponent = define({
-  script: () => {
-    // 型付きのrefを作成
-    const inputRef = createRef<HTMLInputElement>();
+	script: () => {
+		// 型付きのrefを作成
+		const inputRef = createRef<HTMLInputElement>();
 
-    onMount(() => {
-      // .current経由で要素にアクセス
-      inputRef.current?.focus();
-    });
+		onMount(() => {
+			// .current経由で要素にアクセス
+			inputRef.current?.focus();
+		});
 
-    return { inputRef };
-  },
-  template: ({ inputRef }) => (
-    <input ref={inputRef} />
-  )
+		return { inputRef };
+	},
+	template: ({ inputRef }) => <input ref={inputRef} />,
 });
 ```
 
@@ -40,12 +38,12 @@ const boxRef = createRef<HTMLDivElement>();
 
 // 要素が変更される（マウント/アンマウントされる）とコールバックが発火します
 boxRef.subscribe((el) => {
-  if (el) {
-    console.log('要素がマウントされました:', el);
-    // ここでオブザーバーをアタッチできます（例: ResizeObserver）
-  } else {
-    console.log('要素がアンマウントされました');
-  }
+	if (el) {
+		console.log('要素がマウントされました:', el);
+		// ここでオブザーバーをアタッチできます（例: ResizeObserver）
+	} else {
+		console.log('要素がアンマウントされました');
+	}
 });
 ```
 
@@ -57,14 +55,14 @@ boxRef.subscribe((el) => {
 import type { RefCallback } from '@effuse/core';
 
 const handleInputRef: RefCallback<HTMLInputElement> = (el) => {
-  if (el) {
-    console.log('Inputがマウントされました');
-    el.focus();
-  }
+	if (el) {
+		console.log('Inputがマウントされました');
+		el.focus();
+	}
 };
 
 // テンプレート内:
-<input ref={handleInputRef} />
+<input ref={handleInputRef} />;
 ```
 
 ## ベストプラクティス

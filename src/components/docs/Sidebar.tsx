@@ -12,6 +12,7 @@ import {
 	applyHoverTranslate,
 } from '../../utils/motion';
 import { SidebarToggle } from './SidebarToggle.js';
+import { SidebarVersions } from './SidebarVersions.js';
 import { docsStore } from '../../store/docsUIStore.js';
 import { i18nStore } from '../../store/appI18n';
 
@@ -271,6 +272,7 @@ export const Sidebar = define<SidebarProps, SidebarExposed>({
 					</div>
 				))}
 			</nav>
+			<SidebarVersions />
 		</aside>
 	),
 });
