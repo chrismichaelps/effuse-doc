@@ -34,7 +34,8 @@
 		"controlFlow": "Flujo de Control",
 		"repeat": "Repeat",
 		"await": "Await",
-		"refs": "Refs"
+		"refs": "Refs",
+		"ecosystem": "Ecosistema Effuse"
 	},
 	"toc": {
 		"onThisPage": "En esta página"

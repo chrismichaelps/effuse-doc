@@ -34,7 +34,8 @@
 		"controlFlow": "控制流",
 		"repeat": "Repeat",
 		"await": "Await",
-		"refs": "Refs"
+		"refs": "Refs",
+		"ecosystem": "Effuse 生态系统"
 	},
 	"toc": {
 		"onThisPage": "本页目录"

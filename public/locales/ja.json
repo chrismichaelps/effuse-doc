@@ -34,7 +34,8 @@
 		"controlFlow": "コントロールフロー",
 		"repeat": "Repeat",
 		"await": "Await",
-		"refs": "Refs"
+		"refs": "Refs",
+		"ecosystem": "Effuse エコシステム"
 	},
 	"toc": {
 		"onThisPage": "このページの内容"
