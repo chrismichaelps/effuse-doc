@@ -1,6 +1,7 @@
 import { define, For } from '@effuse/core';
 import { Link } from '@effuse/router';
 import './styles.css';
+import pkg from '../../../package.json';
 
 interface FooterLink {
 	label: string;
@@ -54,7 +55,7 @@ const footerSections: FooterSection[] = [
 
 export const Footer = define({
 	script: () => {
-		const version = (globalThis as any).__APP_VERSION__;
+		const version = pkg.version;
 		return { sections: footerSections, version };
 	},
 	template: ({ sections, version }) => (
