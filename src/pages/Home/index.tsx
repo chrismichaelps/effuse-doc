@@ -15,8 +15,8 @@ export const HomePage = define({
 		return {};
 	},
 	template: () => (
-		<div class="home-page">
-			<div class="vibrant-bg">
+		<main class="home-page">
+			<div class="vibrant-bg" aria-hidden="true">
 				<div class="aurora-blob blob-1"></div>
 				<div class="aurora-blob blob-2"></div>
 			</div>
@@ -44,6 +44,7 @@ export const HomePage = define({
 								fill="none"
 								stroke="currentColor"
 								stroke-width="2"
+								aria-hidden="true"
 							>
 								<path d="M5 12h14M12 5l7 7-7 7" />
 							</svg>
@@ -68,46 +69,54 @@ export const HomePage = define({
 			</section>
 
 			{/* Features Section */}
-			<section class="features-section">
+			<section class="features-section" aria-labelledby="features-title">
 				<div class="features-container reveal-on-scroll">
 					<div class="features-header">
-						<h2 class="features-title">Everything you need</h2>
+						<h2 id="features-title" class="features-title">
+							Everything you need
+						</h2>
 						<p class="features-subtitle">
 							Build modern, reactive applications with confidence.
 						</p>
 					</div>
 					<div class="features-grid">
-						<FeatureCard
-							icon="/logo/signals.svg"
-							title="Signals"
-							description="Fine-grained reactivity. Only update what changes."
-						/>
-						<FeatureCard
-							icon="/logo/components.svg"
-							title="Components"
-							description="Type-safe components with script and template."
-						/>
-						<FeatureCard
-							icon="/logo/efficient.svg"
-							title="Efficient"
-							description="Optimized for performance and small bundle size."
-						/>
+						<article>
+							<FeatureCard
+								icon="/logo/signals.svg"
+								title="Signals"
+								description="Fine-grained reactivity. Only update what changes."
+							/>
+						</article>
+						<article>
+							<FeatureCard
+								icon="/logo/components.svg"
+								title="Components"
+								description="Type-safe components with script and template."
+							/>
+						</article>
+						<article>
+							<FeatureCard
+								icon="/logo/efficient.svg"
+								title="Efficient"
+								description="Optimized for performance and small bundle size."
+							/>
+						</article>
 					</div>
 				</div>
 			</section>
 
 			{/* Code Example */}
-			<section class="code-section">
+			<section class="code-section" aria-label="Code example">
 				<div class="code-container reveal-on-scroll">
-					<div class="code-window">
-						<div class="code-header">
-							<div class="code-dots">
+					<figure class="code-window">
+						<figcaption class="code-header">
+							<div class="code-dots" aria-hidden="true">
 								<span class="code-dot"></span>
 								<span class="code-dot"></span>
 								<span class="code-dot"></span>
 							</div>
 							<span class="code-filename">Counter.tsx</span>
-						</div>
+						</figcaption>
 						<pre class="code-body">
 							<code>{`import { define, signal } from '@effuse/core';
 							
@@ -123,7 +132,7 @@ const Counter = define({
   ),
 });`}</code>
 						</pre>
-					</div>
+					</figure>
 				</div>
 			</section>
 
@@ -143,12 +152,13 @@ const Counter = define({
 							fill="none"
 							stroke="currentColor"
 							stroke-width="2"
+							aria-hidden="true"
 						>
 							<path d="M5 12h14M12 5l7 7-7 7" />
 						</svg>
 					</Link>
 				</div>
 			</section>
-		</div>
+		</main>
 	),
 });

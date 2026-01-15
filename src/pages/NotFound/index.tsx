@@ -20,16 +20,18 @@ export const NotFoundPage = define({
 		return { t };
 	},
 	template: ({ t }) => (
-		<div class="not-found-page">
+		<main class="not-found-page">
 			<div class="vibrant-bg">
 				<div class="aurora-blob blob-1"></div>
 				<div class="aurora-blob blob-2"></div>
 				<div class="aurora-blob blob-3"></div>
 			</div>
 
-			<div class="not-found-content">
+			<section class="not-found-content" aria-labelledby="not-found-title">
 				<div class="error-code">{t('notFound.code', '')}</div>
-				<h1 class="error-title">{t('notFound.title', '')}</h1>
+				<h1 id="not-found-title" class="error-title">
+					{t('notFound.title', '')}
+				</h1>
 				<p class="error-message">
 					{t(
 						'notFound.description',
@@ -42,7 +44,7 @@ export const NotFoundPage = define({
 					{t('notFound.goHome', '')}
 					<img src="/icons/home.svg" alt="Home" class="w-5 h-5 text-zinc-950" />
 				</Link>
-			</div>
-		</div>
+			</section>
+		</main>
 	),
 });
