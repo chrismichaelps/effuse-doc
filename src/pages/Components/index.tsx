@@ -33,8 +33,10 @@ const ShowDemo = define({
 		return { isLoggedIn, user, toggleLogin, t };
 	},
 	template: ({ isLoggedIn, user, toggleLogin, t }) => (
-		<div class="demo-section">
-			<h3 class="demo-title">{() => t.value?.show.title}</h3>
+		<section class="demo-section" aria-labelledby="show-demo-title">
+			<h3 id="show-demo-title" class="demo-title">
+				{() => t.value?.show.title}
+			</h3>
 			<p class="demo-description">{() => t.value?.show.description}</p>
 
 			<div class="demo-controls">
@@ -75,7 +77,7 @@ const ShowDemo = define({
 \`\`\`
 `.trim()}
 			/>
-		</div>
+		</section>
 	),
 });
 
@@ -94,8 +96,10 @@ const SwitchDemo = define({
 		return { status, setStatus, t };
 	},
 	template: ({ status, setStatus, t }) => (
-		<div class="demo-section">
-			<h3 class="demo-title">{() => t.value?.switch.title}</h3>
+		<section class="demo-section" aria-labelledby="switch-demo-title">
+			<h3 id="switch-demo-title" class="demo-title">
+				{() => t.value?.switch.title}
+			</h3>
 			<p class="demo-description">{() => t.value?.switch.description}</p>
 
 			<div class="demo-controls">
@@ -143,7 +147,7 @@ const SwitchDemo = define({
 \`\`\`
 `.trim()}
 			/>
-		</div>
+		</section>
 	),
 });
 
@@ -170,8 +174,10 @@ const ForDemo = define({
 		return { items, newItem, addItem, removeItem, t };
 	},
 	template: ({ items, newItem, addItem, removeItem, t }) => (
-		<div class="demo-section">
-			<h3 class="demo-title">{() => t.value?.for.title}</h3>
+		<section class="demo-section" aria-labelledby="for-demo-title">
+			<h3 id="for-demo-title" class="demo-title">
+				{() => t.value?.for.title}
+			</h3>
 			<p class="demo-description">{() => t.value?.for.description}</p>
 
 			<div class="demo-controls">
@@ -202,12 +208,14 @@ const ForDemo = define({
 			</div>
 
 			<div class="demo-result">
-				<ul class="demo-list">
+				<ul class="demo-list list-none p-0 m-0">
 					<For
 						each={items}
 						keyExtractor={(item, i) => `${item}-${String(i)}`}
 						fallback={
-							<li class="demo-fallback">{() => t.value?.for.noItems}</li>
+							<li class="demo-fallback font-medium text-slate-500 italic">
+								{() => t.value?.for.noItems}
+							</li>
 						}
 					>
 						{(item, index) => (
@@ -241,7 +249,7 @@ const ForDemo = define({
 \`\`\`
 `.trim()}
 			/>
-		</div>
+		</section>
 	),
 });
 
@@ -263,8 +271,10 @@ const DynamicStyleDemo = define({
 		return { currentColor, nextColor, t };
 	},
 	template: ({ currentColor, nextColor, t }) => (
-		<div class="demo-section">
-			<h3 class="demo-title">{() => t.value?.dynamic.title}</h3>
+		<section class="demo-section" aria-labelledby="dynamic-style-demo-title">
+			<h3 id="dynamic-style-demo-title" class="demo-title">
+				{() => t.value?.dynamic.title}
+			</h3>
 			<p class="demo-description">{() => t.value?.dynamic.description}</p>
 
 			<div class="demo-controls">
@@ -279,7 +289,7 @@ const DynamicStyleDemo = define({
 				</button>
 			</div>
 
-			<div
+			<article
 				class="demo-result demo-color-box"
 				style={() => ({
 					backgroundColor: `var(--accent-${currentColor.value})`,
@@ -291,7 +301,7 @@ const DynamicStyleDemo = define({
 				})}
 			>
 				{() => t.value?.dynamic.current}: {currentColor.value}
-			</div>
+			</article>
 
 			<Ink
 				content={`
@@ -305,7 +315,7 @@ const DynamicStyleDemo = define({
 \`\`\`
 `.trim()}
 			/>
-		</div>
+		</section>
 	),
 });
 
@@ -328,8 +338,14 @@ const RepeatDemo = define({
 		return { skeletonCount, increment, decrement, t };
 	},
 	template: ({ skeletonCount, increment, decrement, t }) => (
-		<div class="demo-section" id="repeat">
-			<h3 class="demo-title">{() => t.value?.repeat?.title}</h3>
+		<section
+			class="demo-section"
+			id="repeat"
+			aria-labelledby="repeat-demo-title"
+		>
+			<h3 id="repeat-demo-title" class="demo-title">
+				{() => t.value?.repeat?.title}
+			</h3>
 			<p class="demo-description">{() => t.value?.repeat?.description}</p>
 
 			<div class="demo-controls">
@@ -365,7 +381,7 @@ const RepeatDemo = define({
 						}
 					>
 						{(index) => (
-							<div class="skeleton-item">
+							<article class="skeleton-item">
 								<div class="skeleton-avatar" />
 								<div class="skeleton-content">
 									<div class="skeleton-title" />
@@ -374,7 +390,7 @@ const RepeatDemo = define({
 								<span class="skeleton-index">
 									{() => t.value?.repeat?.item} {index + 1}
 								</span>
-							</div>
+							</article>
 						)}
 					</Repeat>
 				</div>
@@ -392,7 +408,7 @@ const RepeatDemo = define({
 \`\`\`
 `.trim()}
 			/>
-		</div>
+		</section>
 	),
 });
 
@@ -429,8 +445,10 @@ const AwaitDemo = define({
 		return { userPromise, fetchNewUser, currentUserId, t };
 	},
 	template: ({ userPromise, fetchNewUser, currentUserId, t }) => (
-		<div class="demo-section" id="await">
-			<h3 class="demo-title">{() => t.value?.await?.title}</h3>
+		<section class="demo-section" id="await" aria-labelledby="await-demo-title">
+			<h3 id="await-demo-title" class="demo-title">
+				{() => t.value?.await?.title}
+			</h3>
 			<p class="demo-description">{() => t.value?.await?.description}</p>
 
 			<div class="demo-controls">
@@ -462,7 +480,7 @@ const AwaitDemo = define({
 					)}
 				>
 					{(user) => (
-						<div class="user-card">
+						<article class="user-card">
 							<div class="user-avatar">{user.name.charAt(0)}</div>
 							<div class="user-info">
 								<p>
@@ -476,7 +494,7 @@ const AwaitDemo = define({
 									{() => t.value?.await?.userId}: {String(user.id)}
 								</p>
 							</div>
-						</div>
+						</article>
 					)}
 				</Await>
 			</div>
@@ -494,7 +512,7 @@ const AwaitDemo = define({
 \`\`\`
 `.trim()}
 			/>
-		</div>
+		</section>
 	),
 });
 
@@ -517,21 +535,24 @@ export const ComponentsPage = define({
 	},
 	template: ({ t }) => (
 		<DocsLayout currentPath="/components">
-			<div class="example-container animate-water-drop">
+			<section
+				class="example-container animate-water-drop"
+				aria-label="Built-in components example"
+			>
 				<header class="example-header">
 					<h1 class="example-title">{() => t.value?.title}</h1>
 					<p class="example-description">{() => t.value?.description}</p>
 				</header>
 
-				<div class="components-demo-grid">
+				<section class="components-demo-grid" aria-label="Control flow demos">
 					<ShowDemo />
 					<SwitchDemo />
 					<ForDemo />
 					<DynamicStyleDemo />
 					<RepeatDemo />
 					<AwaitDemo />
-				</div>
-			</div>
+				</section>
+			</section>
 		</DocsLayout>
 	),
 });
