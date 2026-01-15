@@ -7,9 +7,43 @@ import './styles.css';
 export const HomePage = define({
 	script: ({ onMount }) => {
 		useHead({
-			title: 'Effuse - Modern Reactive UI Framework',
+			title:
+				'Effuse - Modern Reactive UI Framework | High-Performance Reactive Web Development',
 			description:
-				'A signal-based UI framework with fine-grained reactivity, type-safe components, and Effect-powered architecture.',
+				'Effuse is a modern, signal-based UI framework for building high-performance web applications with fine-grained reactivity and type-safe components. Powered by Effect.',
+			og: {
+				title: 'Effuse - Modern Reactive UI Framework',
+				description: 'Fine-grained reactivity, type-safe components',
+				type: 'website',
+				url: 'https://effuse-doc.vercel.app/',
+				siteName: 'Effuse',
+			},
+			twitter: {
+				card: 'summary_large_image',
+				site: '@effuse',
+				title: 'Effuse - Modern Reactive UI Framework',
+				description:
+					'Built for scale with fine-grained signals and type-safe components.',
+			},
+			script: [
+				{
+					type: 'application/ld+json',
+					innerHTML: JSON.stringify({
+						'@context': 'https://schema.org',
+						'@type': 'SoftwareApplication',
+						name: 'Effuse',
+						operatingSystem: 'Any',
+						applicationCategory: 'DeveloperApplication',
+						description:
+							'A signal-based UI framework with fine-grained reactivity and type-safe components.',
+						offers: {
+							'@type': 'Offer',
+							price: '0',
+							priceCurrency: 'USD',
+						},
+					}),
+				} as any,
+			],
 		});
 		useScrollReveal(onMount);
 		return {};

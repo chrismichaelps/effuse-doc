@@ -82,7 +82,19 @@ export const DocsPage = define<{}, DocsPageExposed>({
 		effect(() => {
 			useHead({
 				title: `${pageTitle.value} - Effuse Docs`,
-				description: `Documentation for ${pageTitle.value} in the Effuse framework.`,
+				description: `Learn about ${pageTitle.value} in Effuse. Detailed guide and examples for ${pageTitle.value.toLowerCase()} in the Effuse framework.`,
+				og: {
+					title: `${pageTitle.value} - Effuse Docs`,
+					description: `Documentation for ${pageTitle.value} in the Effuse framework.`,
+					type: 'article',
+					url: `https://effuse-doc.vercel.app/docs/${currentSlug.value}`,
+					siteName: 'Effuse',
+				},
+				twitter: {
+					card: 'summary',
+					title: `${pageTitle.value} - Effuse Docs`,
+					description: `Documentation for ${pageTitle.value} in the Effuse framework.`,
+				},
 			});
 		});
 
