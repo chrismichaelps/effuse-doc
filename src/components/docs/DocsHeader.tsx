@@ -224,27 +224,29 @@ export const DocsHeader = define<DocsHeaderProps, DocsHeaderExposed>({
 						<img src="/icons/list.svg" width="14" height="14" alt="List" />
 						{onThisPageText}
 					</div>
-					<div class="toc-items">
+					<ul class="toc-items list-none p-0 m-0">
 						<For each={tocItems} keyExtractor={(item: TocItem) => item.id}>
 							{(itemSignal: ReadonlySignal<TocItem>) => (
-								<a
-									href={`#${itemSignal.value.id}`}
-									class={() =>
-										`toc-item ${activeSectionId.value === itemSignal.value.id ? 'active' : ''}`
-									}
-									onClick={(e: Event) =>
-										handleTocItemClick(
-											e,
-											itemSignal.value.id,
-											itemSignal.value.title
-										)
-									}
-								>
-									{itemSignal.value.title}
-								</a>
+								<li class="p-0 m-0">
+									<a
+										href={`#${itemSignal.value.id}`}
+										class={() =>
+											`toc-item block px-4 py-2 hover:bg-white/5 transition-colors ${activeSectionId.value === itemSignal.value.id ? 'active bg-white/5 text-mint font-medium' : ''}`
+										}
+										onClick={(e: Event) =>
+											handleTocItemClick(
+												e,
+												itemSignal.value.id,
+												itemSignal.value.title
+											)
+										}
+									>
+										{itemSignal.value.title}
+									</a>
+								</li>
 							)}
 						</For>
-					</div>
+					</ul>
 				</nav>
 			</div>
 		</header>

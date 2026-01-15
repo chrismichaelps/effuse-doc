@@ -111,7 +111,7 @@ export const LanguageSelector = define<
 					class="lang-icon"
 				/>
 			</button>
-			<div class={dropdownClass}>
+			<ul class={dropdownClass}>
 				<For
 					each={availableLanguages}
 					keyExtractor={(item: LanguageOption) =>
@@ -119,21 +119,23 @@ export const LanguageSelector = define<
 					}
 				>
 					{(itemSignal: ReadonlySignal<LanguageOption>) => (
-						<button
-							type="button"
-							onClick={(e: MouseEvent) =>
-								handleSelect(e, itemSignal.value.locale)
-							}
-							class={() =>
-								`lang-option ${currentLocale.value === itemSignal.value.locale ? 'active' : ''}`
-							}
-						>
-							<span class="lang-flag">{itemSignal.value.flag}</span>
-							<span class="lang-label">{itemSignal.value.label}</span>
-						</button>
+						<li class="m-0 p-0">
+							<button
+								type="button"
+								onClick={(e: MouseEvent) =>
+									handleSelect(e, itemSignal.value.locale)
+								}
+								class={() =>
+									`lang-option ${currentLocale.value === itemSignal.value.locale ? 'active' : ''}`
+								}
+							>
+								<span class="lang-flag">{itemSignal.value.flag}</span>
+								<span class="lang-label">{itemSignal.value.label}</span>
+							</button>
+						</li>
 					)}
 				</For>
-			</div>
+			</ul>
 		</div>
 	),
 });

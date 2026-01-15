@@ -20,18 +20,18 @@ export const SidebarVersions = define({
 		return { pkgList, title };
 	},
 	template: ({ pkgList, title }) => (
-		<div class="sidebar-versions">
-			<div class="sidebar-versions-title">{title.value}</div>
-			<div class="sidebar-versions-list">
+		<section class="sidebar-versions">
+			<h4 class="sidebar-versions-title">{title.value}</h4>
+			<ul class="sidebar-versions-list list-none p-0 m-0">
 				<For each={pkgList} keyExtractor={(item) => item.name}>
 					{(item) => (
-						<div class="sidebar-version-item">
+						<li class="sidebar-version-item">
 							<span class="sv-name ">{item.value.name}</span>
 							<span class="sv-version">v{item.value.version}</span>
-						</div>
+						</li>
 					)}
 				</For>
-			</div>
-		</div>
+			</ul>
+		</section>
 	),
 });
