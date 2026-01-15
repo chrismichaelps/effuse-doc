@@ -25,6 +25,7 @@ interface SearchModalExposed {
 	handleInput: (e: Event) => void;
 	handleBackdropClick: (e: MouseEvent) => void;
 	handleResultClick: (result: SearchResultItem) => void;
+	highlight: (text: string) => any;
 	t: ReadonlySignal<any>;
 }
 
@@ -165,6 +166,21 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 			handleBackdropClick,
 			handleResultClick,
 			t,
+			highlight: (text: string) => {
+				if (!store?.query.value) return <span>{text}</span>;
+				const parts = text.split(new RegExp(`(${store.query.value})`, 'gi'));
+				return (
+					<span>
+						{parts.map((part) =>
+							part.toLowerCase() === store.query.value.toLowerCase() ? (
+								<mark class="search-highlight">{part}</mark>
+							) : (
+								part
+							)
+						)}
+					</span>
+				);
+			},
 		};
 	},
 	template: ({
@@ -180,13 +196,19 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 		showEmptyState,
 		showResults,
 		t,
+		highlight,
 	}) => (
 		<Portal target="body" priority="overlay" key="search-modal">
 			<div
 				class={() => `search-modal-backdrop ${isOpen?.value ? '' : 'hidden'}`}
 				onClick={handleBackdropClick}
 			>
-				<div class="search-modal">
+				<aside
+					class="search-modal"
+					role="dialog"
+					aria-modal="true"
+					aria-label="Search Documentation"
+				>
 					<div class="search-input-wrapper">
 						<img src="/icons/search.svg" alt="" class="search-icon" />
 						<input
@@ -230,9 +252,11 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 							</div>
 						</div>
 
-						<div
+						<ul
 							class={() =>
-								showResults.value ? 'search-results-list' : 'hidden'
+								showResults.value
+									? 'search-results-list list-none p-0 m-0'
+									: 'hidden'
 							}
 						>
 							<For
@@ -240,7 +264,7 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 								keyExtractor={(item) => item.id}
 							>
 								{(result, index) => (
-									<div
+									<li
 										class={() =>
 											`search-result-item ${
 												selectedIndex?.value === index.value ? 'selected' : ''
@@ -272,18 +296,20 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 										</div>
 										{result.value.matchedIn === 'code' ? (
 											<pre class="search-result-text code-match">
-												{result.value.text}
+												{computed(() => highlight(result.value.text))}
 											</pre>
 										) : (
-											<div class="search-result-text">{result.value.text}</div>
+											<div class="search-result-text">
+												{computed(() => highlight(result.value.text))}
+											</div>
 										)}
-									</div>
+									</li>
 								)}
 							</For>
-						</div>
+						</ul>
 					</div>
 
-					<div class="search-footer">
+					<footer class="search-footer">
 						<div class="search-footer-actions">
 							<span class="search-footer-action">
 								<kbd>↑</kbd>
@@ -304,8 +330,8 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 							/>
 							<span>{t.value?.poweredBySuffix}</span>
 						</div>
-					</div>
-				</div>
+					</footer>
+				</aside>
 			</div>
 		</Portal>
 	),
