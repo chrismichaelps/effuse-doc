@@ -59,7 +59,7 @@ const StatDisplay = define<DisplayProps, StatDisplayExposed>({
 		onAction,
 		triggerUpdateText,
 	}: StatDisplayExposed) => (
-		<div
+		<article
 			class="stat-card"
 			style={() => ({
 				borderColor:
@@ -90,7 +90,7 @@ const StatDisplay = define<DisplayProps, StatDisplayExposed>({
 					{triggerUpdateText.value}
 				</button>
 			)}
-		</div>
+		</article>
 	),
 });
 
@@ -167,14 +167,19 @@ export const PropsPage = define({
 		codeSnippet,
 	}) => (
 		<DocsLayout currentPath="/props">
-			<div class="example-container animate-water-drop">
+			<section
+				class="example-container animate-water-drop"
+				aria-label="Props example"
+			>
 				<header class="example-header">
 					<h1 class="example-title">{t.value?.title}</h1>
 					<p class="example-description">{t.value?.description}</p>
 				</header>
 
-				<div class="example-card">
-					<h2 class="example-card-title">{t.value?.parentControls}</h2>
+				<section class="example-card" aria-labelledby="parent-controls-title">
+					<h2 id="parent-controls-title" class="example-card-title">
+						{t.value?.parentControls}
+					</h2>
 					<div class="flex flex-wrap gap-4">
 						<button
 							onClick={() => {
@@ -218,9 +223,9 @@ export const PropsPage = define({
 							{t.value?.reset}
 						</button>
 					</div>
-				</div>
+				</section>
 
-				<div class="stat-grid">
+				<section class="stat-grid" aria-label="Statistics">
 					<StatDisplay
 						label={t.value?.currentCount ?? ''}
 						value={count}
@@ -248,15 +253,22 @@ export const PropsPage = define({
 						color={isActive.value ? 'mint' : 'cyan'}
 						onAction={toggleActive}
 					/>
-				</div>
+				</section>
 
-				<div class="example-card" style={{ padding: '1.5rem' }}>
-					<p class="stat-label" style={{ marginBottom: '1rem' }}>
+				<details class="example-card" style={{ padding: '1.5rem' }}>
+					<summary
+						class="stat-label"
+						style={{ marginBottom: '1rem', cursor: 'pointer', outline: 'none' }}
+					>
 						{t.value?.howItWorks}
-					</p>
-					<Ink content={codeSnippet} />
-				</div>
-			</div>
+					</summary>
+					<div style={{ marginTop: '1rem' }}>
+						<figure>
+							<Ink content={codeSnippet} />
+						</figure>
+					</div>
+				</details>
+			</section>
 		</DocsLayout>
 	),
 });

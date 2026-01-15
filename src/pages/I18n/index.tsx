@@ -8,6 +8,7 @@ import {
 	type Signal,
 } from '@effuse/core';
 import { DocsLayout } from '../../components/docs/DocsLayout';
+import { Ink } from '@effuse/ink';
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
 import { triggerHaptic } from '../../components/Haptics';
 import '../../styles/examples.css';
@@ -94,22 +95,34 @@ export const I18nPage = define<object, I18nPageExposed>({
 		yourNameLabel,
 	}) => (
 		<DocsLayout currentPath="/i18n">
-			<div class="example-container animate-water-drop">
+			<section
+				class="example-container animate-water-drop"
+				aria-label="Internationalization example"
+			>
 				<header class="example-header">
 					<h1 class="example-title">{t.value?.title}</h1>
 					<p class="example-description">{t.value?.description}</p>
 				</header>
 
-				<div class="flex flex-wrap justify-center gap-3 mb-10">
+				<section
+					class="flex flex-wrap justify-center gap-3 mb-10"
+					aria-label="Example features"
+				>
 					<span class="example-badge">@effuse/i18n</span>
 					<span class="example-badge">Type-Safe Keys</span>
 					<span class="example-badge">Reactive Signals</span>
-				</div>
+				</section>
 
-				<div class="example-card" style="padding: 0; overflow: hidden;">
-					<div class="bg-white/5 px-6 py-4">
-						<h2 class="text-xl font-semibold text-white">{t.value?.welcome}</h2>
-					</div>
+				<section
+					class="example-card"
+					style="padding: 0; overflow: hidden;"
+					aria-labelledby="i18n-demo-title"
+				>
+					<header class="bg-white/5 px-6 py-4">
+						<h2 id="i18n-demo-title" class="text-xl font-semibold text-white">
+							{t.value?.welcome}
+						</h2>
+					</header>
 
 					<div class="p-6 space-y-8">
 						<div class="flex items-center justify-between p-5 bg-white/5 rounded-2xl">
@@ -147,7 +160,7 @@ export const I18nPage = define<object, I18nPageExposed>({
 							<h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">
 								{t.value?.featuresTitle}
 							</h3>
-							<ul class="space-y-3">
+							<ul class="space-y-3 list-none p-0 m-0">
 								{[
 									t.value?.featuresTypeSafe,
 									t.value?.featuresInterpolation,
@@ -211,13 +224,32 @@ export const I18nPage = define<object, I18nPageExposed>({
 						</div>
 					</div>
 
-					<div class="px-6 pb-6 mt-4">
+					<footer class="px-6 pb-6 mt-4">
 						<p class="text-center text-slate-500 text-sm italic">
 							{t.value?.footer}
 						</p>
-					</div>
-				</div>
-			</div>
+					</footer>
+
+					<details style="padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05);">
+						<summary class="text-xs font-bold text-slate-500 uppercase tracking-widest cursor-pointer outline-none">
+							{(t.value as any)?.howItWorks}
+						</summary>
+						<div style="margin-top: 1rem;">
+							<figure>
+								<Ink
+									content={`
+\`\`\`tsx
+const i18n = useStore('i18n');
+const t = computed(() => i18n.translations.value);
+
+<span>{t.value?.welcome}</span>
+\`\`\``.trim()}
+								/>
+							</figure>
+						</div>
+					</details>
+				</section>
+			</section>
 		</DocsLayout>
 	),
 });
