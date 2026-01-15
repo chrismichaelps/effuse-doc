@@ -225,7 +225,7 @@ export const Sidebar = define<SidebarProps, SidebarExposed>({
 
 	template: ({ sectionStates }) => (
 		<aside class="docs-sidebar" data-lenis-prevent>
-			<div class="sidebar-header">
+			<header class="sidebar-header">
 				<div class="sidebar-top-row">
 					<div class="flex items-center gap-2">
 						<img src="/logo/logo-white.svg" width="20" height="20" alt="Logo" />
@@ -233,44 +233,49 @@ export const Sidebar = define<SidebarProps, SidebarExposed>({
 					</div>
 					<SidebarToggle class="sidebar-brand-toggle" />
 				</div>
-			</div>
-			<nav class="sidebar-nav">
-				{sectionStates.map((section) => (
-					<div class="sidebar-section">
-						<button
-							class="sidebar-section-header"
-							onClick={() => section.toggle()}
-						>
-							<span class="sidebar-title">{section.title.value}</span>
-							<ChevronIcon isOpen={section.isOpen} />
-						</button>
-
-						<div
-							class={() =>
-								`sidebar-items ${section.isOpen.value ? 'open' : ''}`
-							}
-							ref={(el: unknown) => {
-								section.containerRef.value = el as HTMLElement;
-							}}
-						>
-							<For
-								each={section.items}
-								keyExtractor={(item: NavItem) => item.href}
+			</header>
+			<nav class="sidebar-nav" aria-label="Documentation sidebar">
+				<ul class="sidebar-sections-list list-none p-0 m-0">
+					{sectionStates.map((section) => (
+						<li class="sidebar-section">
+							<button
+								class="sidebar-section-header"
+								onClick={() => section.toggle()}
+								aria-expanded={section.isOpen.value}
 							>
-								{(itemSignal: ReadonlySignal<NavItem>) => (
-									<Link
-										to={itemSignal.value.href}
-										class="sidebar-link"
-										activeClass="router-link-exact-active"
-										exactActiveClass="router-link-exact-active"
-									>
-										{itemSignal.value.label}
-									</Link>
-								)}
-							</For>
-						</div>
-					</div>
-				))}
+								<span class="sidebar-title">{section.title.value}</span>
+								<ChevronIcon isOpen={section.isOpen} />
+							</button>
+
+							<ul
+								class={() =>
+									`sidebar-items ${section.isOpen.value ? 'open' : ''} list-none p-0 m-0`
+								}
+								ref={(el: unknown) => {
+									section.containerRef.value = el as HTMLElement;
+								}}
+							>
+								<For
+									each={section.items}
+									keyExtractor={(item: NavItem) => item.href}
+								>
+									{(itemSignal: ReadonlySignal<NavItem>) => (
+										<li class="sidebar-item">
+											<Link
+												to={itemSignal.value.href}
+												class="sidebar-link"
+												activeClass="router-link-exact-active"
+												exactActiveClass="router-link-exact-active"
+											>
+												{itemSignal.value.label}
+											</Link>
+										</li>
+									)}
+								</For>
+							</ul>
+						</li>
+					))}
+				</ul>
 			</nav>
 			<SidebarVersions />
 		</aside>
