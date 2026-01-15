@@ -1,0 +1,23 @@
+{
+  "name": "Effuse - Modern Reactive UI Framework",
+  "short_name": "Effuse",
+  "description": "A signal-based UI framework with fine-grained reactivity and type-safe components.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "/icons/ico.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
