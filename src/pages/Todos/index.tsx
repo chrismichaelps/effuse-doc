@@ -1,6 +1,7 @@
-import { define, computed, For, useHead, signal, effect } from '@effuse/core';
+import { define, signal, computed, effect, For, useHead } from '@effuse/core';
 import { isTaggedError } from '@effuse/core';
 import { useInfiniteQuery, useMutation } from '@effuse/query';
+import { Ink } from '@effuse/ink';
 import type {
 	todosStore as TodosStoreType,
 	Todo,
@@ -158,6 +159,18 @@ export const TodosPage = define({
 
 		infiniteScroll.onLoadMore(() => loadMore());
 
+		const codeSnippet = `
+\`\`\`tsx
+const query = useInfiniteQuery({
+  queryKey: ['todos'],
+  queryFn: ({ pageParam }) => fetchTodos(pageParam)
+});
+
+const mutation = useMutation({
+  mutationFn: (id) => toggleTodo(id)
+});
+\`\`\``.trim();
+
 		return {
 			t,
 			todosQuery,
@@ -185,6 +198,7 @@ export const TodosPage = define({
 			handleScroll: infiniteScroll.handleScroll,
 			hasNextPage: todosQuery.hasNextPage,
 			isFetchingNextPage: todosQuery.isFetchingNextPage,
+			codeSnippet,
 		};
 	},
 	template: ({
@@ -214,19 +228,28 @@ export const TodosPage = define({
 		hasNextPage,
 		isFetchingNextPage,
 		todosQuery,
+		codeSnippet,
 	}) => (
 		<DocsLayout currentPath="/todos">
-			<div class="example-container">
+			<section class="example-container">
 				{computed(() =>
 					isEditModalOpen.value ? (
 						<div class="modal-overlay">
 							<div class="modal-backdrop" onClick={() => closeEditModal()} />
-							<div class="modal-card">
-								<div class="px-6 py-4 bg-white/5">
-									<h3 class="text-xl font-bold text-white">
+							<article
+								class="modal-card"
+								role="dialog"
+								aria-modal="true"
+								aria-labelledby="todo-modal-title"
+							>
+								<header class="px-6 py-4 bg-white/5">
+									<h3
+										id="todo-modal-title"
+										class="text-xl font-bold text-white"
+									>
 										{t.value?.editTodo}
 									</h3>
-								</div>
+								</header>
 								<div class="p-6">
 									<label class="block mb-2 text-sm font-medium text-slate-400">
 										{t.value?.todoTitle}
@@ -249,7 +272,7 @@ export const TodosPage = define({
 										autoFocus
 									/>
 								</div>
-								<div class="px-6 py-4 bg-white/5 flex justify-end gap-3">
+								<footer class="px-6 py-4 bg-white/5 flex justify-end gap-3">
 									<button
 										type="button"
 										onClick={() => closeEditModal()}
@@ -264,8 +287,8 @@ export const TodosPage = define({
 									>
 										{t.value?.saveChanges}
 									</button>
-								</div>
-							</div>
+								</footer>
+							</article>
 						</div>
 					) : null
 				)}
@@ -275,7 +298,27 @@ export const TodosPage = define({
 					<p class="example-description">{t.value?.description}</p>
 				</header>
 
-				<div class="flex flex-wrap justify-center gap-3 mb-10">
+				<details
+					class="example-card"
+					style="padding: 1.5rem; margin-top: 2rem;"
+				>
+					<summary
+						class="stat-label"
+						style="margin-bottom: 1rem; cursor: pointer; outline: none;"
+					>
+						{(t.value as any)?.howItWorks}
+					</summary>
+					<div style="margin-top: 1rem;">
+						<figure>
+							<Ink content={codeSnippet} />
+						</figure>
+					</div>
+				</details>
+
+				<section
+					class="example-info flex flex-wrap justify-center gap-3 mb-10"
+					aria-label="Example features"
+				>
 					<span class="example-badge">useInfiniteQuery</span>
 					<span class="example-badge">Portal Modal</span>
 					<span
@@ -284,9 +327,9 @@ export const TodosPage = define({
 					>
 						@effuse/store
 					</span>
-				</div>
+				</section>
 
-				<div class="example-card">
+				<section class="example-card" aria-label="Add new todo">
 					<div class="flex gap-3">
 						<input
 							type="text"
@@ -295,6 +338,7 @@ export const TodosPage = define({
 							onInput={handleInputChange}
 							onKeyDown={handleKeyDown}
 							class="example-input"
+							aria-label="New todo title"
 						/>
 						<button
 							type="button"
@@ -311,34 +355,34 @@ export const TodosPage = define({
 							{isAdding.value ? t.value?.adding : t.value?.add}
 						</button>
 					</div>
-				</div>
+				</section>
 
-				<div class="stat-grid">
-					<div
+				<section class="stat-grid" aria-label="Task statistics">
+					<article
 						class="stat-card"
 						style="background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.05);"
 					>
-						<div class="stat-label">{t.value?.total}</div>
+						<h4 class="stat-label">{t.value?.total}</h4>
 						<div class="stat-value" style="color: var(--text-primary);">
 							{totalCount.value}
 						</div>
-					</div>
-					<div class="stat-card">
-						<div class="stat-label">{t.value?.completed}</div>
+					</article>
+					<article class="stat-card">
+						<h4 class="stat-label">{t.value?.completed}</h4>
 						<div class="stat-value">{completedCount.value}</div>
-					</div>
-					<div
+					</article>
+					<article
 						class="stat-card"
 						style="background: rgba(182, 157, 248, 0.03); border-color: rgba(182, 157, 248, 0.1);"
 					>
-						<div class="stat-label">{t.value?.pending}</div>
+						<h4 class="stat-label">{t.value?.pending}</h4>
 						<div class="stat-value" style="color: var(--accent-lilac);">
 							{pendingCount.value}
 						</div>
-					</div>
-				</div>
+					</article>
+				</section>
 
-				<div class="flex justify-center gap-2 mb-6">
+				<nav class="flex justify-center gap-2 mb-6" aria-label="Filter todos">
 					<button
 						type="button"
 						onClick={() => {
@@ -378,9 +422,13 @@ export const TodosPage = define({
 					>
 						{t.value?.pending}
 					</button>
-				</div>
+				</nav>
 
-				<div class="example-card" style="padding: 0; overflow: hidden;">
+				<section
+					class="example-card"
+					style="padding: 0; overflow: hidden;"
+					aria-label="Todo list"
+				>
 					<div
 						class="max-h-[500px] overflow-y-auto custom-scrollbar"
 						onScroll={handleScroll}
@@ -401,65 +449,68 @@ export const TodosPage = define({
 							) : null
 						)}
 
-						<For each={filteredTodos} keyExtractor={(t) => t.id}>
-							{(todoSignal) => (
-								<div class="px-6 py-5 flex items-center gap-4 hover:bg-white/[0.02] transition-colors group">
-									<button
-										type="button"
-										onClick={() => {
-											triggerHaptic('light');
-											toggleTodo(todoSignal.value.id);
-										}}
-										class={() =>
-											todoSignal.value.completed
-												? 'w-6 h-6 rounded-full bg-mint text-slate-900 flex items-center justify-center flex-shrink-0 animate-water-drop'
-												: 'w-6 h-6 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center flex-shrink-0 transition-colors'
-										}
-										style={() => ({
-											background: todoSignal.value.completed
-												? 'var(--accent-mint)'
-												: 'rgba(255,255,255,0.05)',
-										})}
-									>
-										{todoSignal.value.completed ? (
-											<span class="text-[10px] font-black">✓</span>
-										) : null}
-									</button>
-									<div class="flex-1 min-w-0">
-										<p
+						<ul class="todo-list list-none p-0 m-0">
+							<For each={filteredTodos} keyExtractor={(t) => t.id}>
+								{(todoSignal) => (
+									<li class="px-6 py-5 flex items-center gap-4 hover:bg-white/[0.02] transition-colors group">
+										<button
+											type="button"
+											onClick={() => {
+												triggerHaptic('light');
+												toggleTodo(todoSignal.value.id);
+											}}
+											aria-label={`Toggle ${todoSignal.value.title}`}
 											class={() =>
 												todoSignal.value.completed
-													? 'text-slate-500 line-through'
-													: 'text-slate-200 font-medium'
+													? 'w-6 h-6 rounded-full bg-mint text-slate-900 flex items-center justify-center flex-shrink-0 animate-water-drop'
+													: 'w-6 h-6 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center flex-shrink-0 transition-colors'
 											}
+											style={() => ({
+												background: todoSignal.value.completed
+													? 'var(--accent-mint)'
+													: 'rgba(255,255,255,0.05)',
+											})}
 										>
-											{todoSignal.value.title}
-										</p>
-									</div>
-									<div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
-										<button
-											type="button"
-											onClick={() => openEditModal(todoSignal.value)}
-											class="btn-secondary"
-											style="padding: 0.3rem 0.8rem; font-size: 0.75rem;"
-										>
-											{t.value?.edit}
+											{todoSignal.value.completed ? (
+												<span class="text-[10px] font-black">✓</span>
+											) : null}
 										</button>
-										<button
-											type="button"
-											onClick={() => deleteTodo(todoSignal.value.id)}
-											class="btn-secondary"
-											style="padding: 0.3rem 0.8rem; font-size: 0.75rem; border-color: rgba(255, 100, 100, 0.2); color: #ff6b6b;"
-										>
-											{t.value?.delete}
-										</button>
-									</div>
-									<span class="flex-shrink-0 example-badge">
-										ID: {todoSignal.value.userId}
-									</span>
-								</div>
-							)}
-						</For>
+										<div class="flex-1 min-w-0">
+											<p
+												class={() =>
+													todoSignal.value.completed
+														? 'text-slate-500 line-through'
+														: 'text-slate-200 font-medium'
+												}
+											>
+												{todoSignal.value.title}
+											</p>
+										</div>
+										<div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+											<button
+												type="button"
+												onClick={() => openEditModal(todoSignal.value)}
+												class="btn-secondary"
+												style="padding: 0.3rem 0.8rem; font-size: 0.75rem;"
+											>
+												{t.value?.edit}
+											</button>
+											<button
+												type="button"
+												onClick={() => deleteTodo(todoSignal.value.id)}
+												class="btn-secondary"
+												style="padding: 0.3rem 0.8rem; font-size: 0.75rem; border-color: rgba(255, 100, 100, 0.2); color: #ff6b6b;"
+											>
+												{t.value?.delete}
+											</button>
+										</div>
+										<span class="flex-shrink-0 example-badge">
+											ID: {todoSignal.value.userId}
+										</span>
+									</li>
+								)}
+							</For>
+						</ul>
 
 						{computed(() =>
 							todosQuery.isFetching.value && totalCount.value > 0 ? (
@@ -497,8 +548,8 @@ export const TodosPage = define({
 							</div>
 						) : null
 					)}
-				</div>
-			</div>
+				</section>
+			</section>
 		</DocsLayout>
 	),
 });

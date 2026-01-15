@@ -63,7 +63,7 @@ const ThemeCard = define<ThemeCardProps, ThemeCardExposed>({
 		return { label: props.label, theme: props.theme };
 	},
 	template: ({ label, theme }) => (
-		<div
+		<article
 			class="context-theme-card"
 			style={() => ({
 				background: theme.value.background,
@@ -77,7 +77,7 @@ const ThemeCard = define<ThemeCardProps, ThemeCardExposed>({
 				gap: '0.75rem',
 			})}
 		>
-			<div style={{ fontWeight: '600' }}>{label}</div>
+			<h3 style={{ fontWeight: '600', fontSize: '1rem' }}>{label}</h3>
 			<div
 				style={() => ({
 					background: theme.value.primary,
@@ -88,7 +88,7 @@ const ThemeCard = define<ThemeCardProps, ThemeCardExposed>({
 			<div style={{ fontSize: '0.875rem', opacity: '0.8' }}>
 				{theme.value.mode}
 			</div>
-		</div>
+		</article>
 	),
 });
 
@@ -145,14 +145,16 @@ export const ContextPage = define({
 		cycleNestedTheme,
 	}) => (
 		<DocsLayout currentPath="/context">
-			<div class="example-container animate-water-drop">
+			<section class="example-container animate-water-drop">
 				<header class="example-header">
 					<h1 class="example-title">{t.value?.title}</h1>
 					<p class="example-description">{t.value?.description}</p>
 				</header>
 
-				<div class="example-card">
-					<h2 class="example-card-title">{t.value?.themeSwitcher}</h2>
+				<section class="example-card" aria-labelledby="theme-switcher-title">
+					<h2 id="theme-switcher-title" class="example-card-title">
+						{t.value?.themeSwitcher}
+					</h2>
 					<p class="stat-label" style={{ marginBottom: '1rem' }}>
 						{t.value?.themeSwitcherDesc}
 					</p>
@@ -180,16 +182,22 @@ export const ContextPage = define({
 						</button>
 					</div>
 
-					<div class="stat-grid">
+					<section class="stat-grid" aria-label="Theme previews">
 						<ThemeCard label={t.value?.card1} theme={themeConfig} />
 						<ThemeCard label={t.value?.card2} theme={themeConfig} />
 						<ThemeCard label={t.value?.card3} theme={themeConfig} />
 						<ThemeCard label={t.value?.card4} theme={themeConfig} />
-					</div>
-				</div>
+					</section>
+				</section>
 
-				<div class="example-card" id="nested-provider-section">
-					<h2 class="example-card-title">{t.value?.nestedProviderTitle}</h2>
+				<section
+					class="example-card"
+					id="nested-provider-section"
+					aria-labelledby="nested-provider-title"
+				>
+					<h2 id="nested-provider-title" class="example-card-title">
+						{t.value?.nestedProviderTitle}
+					</h2>
 					<p class="stat-label" style={{ marginBottom: '1rem' }}>
 						{t.value?.nestedProviderDesc}
 					</p>
@@ -236,15 +244,22 @@ export const ContextPage = define({
 							/>
 						</div>
 					</div>
-				</div>
+				</section>
 
-				<div class="example-card" style={{ padding: '1.5rem' }}>
-					<p class="stat-label" style={{ marginBottom: '1rem' }}>
-						{t.value?.howItWorks}
-					</p>
-					<Ink content={computed(() => t.value?.codeSnippet ?? '')} />
-				</div>
-			</div>
+				<details class="example-card" style={{ padding: '1.5rem' }}>
+					<summary
+						class="stat-label"
+						style={{ marginBottom: '1rem', cursor: 'pointer', outline: 'none' }}
+					>
+						{(t.value as any)?.howItWorks ?? 'How it works'}
+					</summary>
+					<div style={{ marginTop: '1rem' }}>
+						<figure>
+							<Ink content={computed(() => t.value?.codeSnippet ?? '')} />
+						</figure>
+					</div>
+				</details>
+			</section>
 		</DocsLayout>
 	),
 });

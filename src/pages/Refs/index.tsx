@@ -249,20 +249,25 @@ export const RefsPage = define<object, RefsExposed>({
 		handleToggleMount,
 	}) => (
 		<DocsLayout currentPath="/refs">
-			<div class="example-container animate-water-drop">
+			<section
+				class="example-container animate-water-drop"
+				aria-label="Refs example"
+			>
 				<header class="example-header">
 					<h1 class="example-title">{translations.value.title}</h1>
 					<p class="example-description">{translations.value.description}</p>
 				</header>
 
-				<div class="example-card">
-					<h2 class="example-card-title">{translations.value.createRefDemo}</h2>
+				<section class="example-card" aria-labelledby="create-ref-title">
+					<h2 id="create-ref-title" class="example-card-title">
+						{translations.value.createRefDemo}
+					</h2>
 					<p class="stat-label" style={{ marginBottom: '1rem' }}>
 						{translations.value.createRefDesc}
 					</p>
 
 					{isMounted.value && (
-						<div
+						<article
 							ref={handleBoxRef}
 							class="stat-card resizable-box animate-water-drop"
 							style={{
@@ -313,7 +318,7 @@ export const RefsPage = define<object, RefsExposed>({
 							>
 								{translations.value.resizeMe}
 							</div>
-						</div>
+						</article>
 					)}
 
 					<div
@@ -329,10 +334,10 @@ export const RefsPage = define<object, RefsExposed>({
 							{translations.value.toggleElement}
 						</button>
 					</div>
-				</div>
+				</section>
 
-				<div class="example-card">
-					<h2 class="example-card-title">
+				<section class="example-card" aria-labelledby="callback-ref-title">
+					<h2 id="callback-ref-title" class="example-card-title">
 						{translations.value.callbackRefDemo}
 					</h2>
 					<p class="stat-label" style={{ marginBottom: '1rem' }}>
@@ -359,18 +364,18 @@ export const RefsPage = define<object, RefsExposed>({
 							{translations.value.focusInput}
 						</button>
 					</div>
-				</div>
+				</section>
 
-				<div class="example-card">
-					<h2 class="example-card-title">
+				<section class="example-card" aria-labelledby="subscription-demo-title">
+					<h2 id="subscription-demo-title" class="example-card-title">
 						{translations.value.subscriptionDemo}
 					</h2>
 					<p class="stat-label" style={{ marginBottom: '1rem' }}>
 						{translations.value.subscriptionDesc}
 					</p>
 
-					<div class="stat-grid">
-						<div
+					<section class="stat-grid" aria-label="Statistics">
+						<article
 							class="stat-card"
 							onClick={handleIncrementClick}
 							style={{ cursor: 'pointer' }}
@@ -379,22 +384,29 @@ export const RefsPage = define<object, RefsExposed>({
 							<div class="stat-value" style={{ color: 'var(--accent-mint)' }}>
 								{clickCount.value}
 							</div>
-						</div>
-						<div class="stat-card">
+						</article>
+						<article class="stat-card">
 							<button onClick={handleReset} class="btn-secondary">
 								{translations.value.reset}
 							</button>
-						</div>
-					</div>
-				</div>
+						</article>
+					</section>
+				</section>
 
-				<div class="example-card" style={{ padding: '1.5rem' }}>
-					<p class="stat-label" style={{ marginBottom: '1rem' }}>
+				<details class="example-card" style={{ padding: '1.5rem' }}>
+					<summary
+						class="stat-label"
+						style={{ marginBottom: '1rem', cursor: 'pointer', outline: 'none' }}
+					>
 						{translations.value.howItWorks}
-					</p>
-					<Ink content={computed(() => translations.value.codeSnippet)} />
-				</div>
-			</div>
+					</summary>
+					<div style={{ marginTop: '1rem' }}>
+						<figure>
+							<Ink content={computed(() => translations.value.codeSnippet)} />
+						</figure>
+					</div>
+				</details>
+			</section>
 		</DocsLayout>
 	),
 });

@@ -55,7 +55,7 @@ const StatDisplay = define<StatDisplayProps, StatDisplayExposed>({
 		color: props.color || 'mint',
 	}),
 	template: ({ label, value, color }: StatDisplayExposed) => (
-		<div class="text-center">
+		<article class="text-center">
 			<div
 				class="text-2xl font-bold"
 				style={() => ({ color: `var(--accent-${color})` })}
@@ -65,7 +65,7 @@ const StatDisplay = define<StatDisplayProps, StatDisplayExposed>({
 			<div class="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">
 				{label}
 			</div>
-		</div>
+		</article>
 	),
 });
 
@@ -239,13 +239,19 @@ emit('message', { text: 'Hello!', author: 'Dev' });
 		t,
 	}) => (
 		<DocsLayout currentPath="/emit">
-			<div class="example-container animate-water-drop">
+			<section
+				class="example-container animate-water-drop"
+				aria-label="Event signals example"
+			>
 				<header class="example-header">
 					<h1 class="example-title">{t.value?.title || ''}</h1>
 					<p class="example-description">{t.value?.description || ''}</p>
 				</header>
 
-				<div class="flex flex-wrap justify-center gap-3 mb-10">
+				<section
+					class="flex flex-wrap justify-center gap-3 mb-10"
+					aria-label="Features"
+				>
 					<span
 						class="example-badge"
 						style="background: rgba(182, 157, 248, 0.1); color: var(--accent-lilac);"
@@ -258,7 +264,7 @@ emit('message', { text: 'Hello!', author: 'Dev' });
 					>
 						useEventSignal
 					</span>
-				</div>
+				</section>
 
 				<div class="example-card">
 					<div class="flex gap-3">
@@ -304,7 +310,7 @@ emit('message', { text: 'Hello!', author: 'Dev' });
 					</div>
 				</div>
 
-				<div class="stat-grid">
+				<section class="stat-grid" aria-label="Statistics">
 					<StatDisplay
 						label={t.value?.stats?.messages || ''}
 						value={messages.value.length}
@@ -320,9 +326,12 @@ emit('message', { text: 'Hello!', author: 'Dev' });
 						value={presence.value.filter((p) => p.status === 'online').length}
 						color="cyan"
 					/>
-				</div>
+				</section>
 
-				<div class="flex flex-wrap justify-center gap-3 mb-8">
+				<nav
+					class="flex flex-wrap justify-center gap-3 mb-8"
+					aria-label="Switch User"
+				>
 					<For each={presence} keyExtractor={(p) => p.userId}>
 						{(p) => (
 							<button
@@ -363,18 +372,22 @@ emit('message', { text: 'Hello!', author: 'Dev' });
 					>
 						{t.value?.reset || ''}
 					</button>
-				</div>
+				</nav>
 
-				<div class="example-card" style="padding: 0; overflow: hidden;">
-					<div
+				<section
+					class="example-card"
+					style="padding: 0; overflow: hidden;"
+					aria-label="Chat messages"
+				>
+					<ul
 						ref={setChatContainer}
-						class="h-[400px] overflow-y-auto custom-scrollbar p-6 space-y-4"
+						class="h-[400px] overflow-y-auto custom-scrollbar p-6 space-y-4 list-none m-0"
 					>
 						{computed(() =>
 							messages.value.length === 0 ? (
-								<div class="h-full flex items-center justify-center text-slate-500 italic">
+								<li class="h-full flex items-center justify-center text-slate-500 italic font-medium">
 									{t.value?.noMessages}
-								</div>
+								</li>
 							) : null
 						)}
 
@@ -385,7 +398,7 @@ emit('message', { text: 'Hello!', author: 'Dev' });
 									userStyles[isSystem ? 'System' : msg.value.author];
 
 								return (
-									<div
+									<li
 										class={() =>
 											`flex flex-col ${isSystem ? 'items-center' : 'items-start'} gap-1 w-full`
 										}
@@ -395,9 +408,12 @@ emit('message', { text: 'Hello!', author: 'Dev' });
 												<span class="text-[10px] font-black uppercase tracking-widest text-slate-500">
 													{msg.value.author}
 												</span>
-												<span class="text-[10px] text-slate-600">
+												<time
+													class="text-[10px] text-slate-600"
+													dateTime={new Date(msg.value.timestamp).toISOString()}
+												>
 													{new Date(msg.value.timestamp).toLocaleTimeString()}
-												</span>
+												</time>
 											</div>
 										)}
 										<div
@@ -427,20 +443,27 @@ emit('message', { text: 'Hello!', author: 'Dev' });
 												return template;
 											})}
 										</div>
-									</div>
+									</li>
 								);
 							}}
 						</For>
-					</div>
-				</div>
+					</ul>
+				</section>
 
-				<div class="example-card" style="padding: 1.5rem;">
-					<p class="stat-label" style="margin-bottom: 1rem;">
-						{t.value?.howItWorks || ''}
-					</p>
-					<Ink content={codeSnippet} />
-				</div>
-			</div>
+				<details class="example-card" style="padding: 1.5rem;">
+					<summary
+						class="stat-label"
+						style="margin-bottom: 1rem; cursor: pointer; outline: none;"
+					>
+						{(t.value as any)?.howItWorks || 'How it works'}
+					</summary>
+					<div style="margin-top: 1rem;">
+						<figure>
+							<Ink content={codeSnippet} />
+						</figure>
+					</div>
+				</details>
+			</section>
 		</DocsLayout>
 	),
 });

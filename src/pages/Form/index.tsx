@@ -11,6 +11,7 @@ import {
 	isTaggedError,
 } from '@effuse/core';
 import { useMutation } from '@effuse/query';
+import { Ink } from '@effuse/ink';
 import { DocsLayout } from '../../components/docs/DocsLayout';
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
 import { triggerHaptic } from '../../components/Haptics';
@@ -222,6 +223,20 @@ export const FormDemoPage = define({
 			postsCount,
 			handleSubmit,
 			resetAll,
+			codeSnippet: `
+\`\`\`tsx
+const { form } = useForm({
+  initial: { title: signal(''), body: signal('') },
+  validators: {
+    title: v.required('Title is required'),
+    body: v.minLength(10, 'Body too short'),
+  }
+});
+
+const mutation = useMutation({
+  mutationFn: (vars) => fetch('/api/posts', { ... })
+});
+\`\`\``.trim(),
 		};
 	},
 	template: ({
@@ -243,27 +258,35 @@ export const FormDemoPage = define({
 		postsCount,
 		handleSubmit,
 		resetAll,
+		codeSnippet,
 	}) => (
 		<DocsLayout currentPath="/form">
-			<div class="example-container animate-water-drop">
+			<section class="example-container animate-water-drop">
 				<header class="example-header">
 					<h1 class="example-title">{t.value?.title}</h1>
 					<p class="example-description">{t.value?.description}</p>
 				</header>
 
-				<div class="flex flex-wrap justify-center gap-3 mb-10">
+				<section
+					class="example-info flex flex-wrap justify-center gap-3 mb-10"
+					aria-label="Example features"
+				>
 					<span class="example-badge">Schema Validation</span>
 					<span class="example-badge">Reactive Signals</span>
 					<span class="example-badge">useMutation</span>
-				</div>
+				</section>
 
-				<div class="example-card" style="padding: 0; overflow: hidden;">
-					<div class="bg-white/5 px-6 py-4">
-						<h2 class="text-xl font-semibold text-white">
+				<section
+					class="example-card"
+					style="padding: 0; overflow: hidden;"
+					aria-labelledby="form-title"
+				>
+					<header class="bg-white/5 px-6 py-4">
+						<h2 id="form-title" class="text-xl font-semibold text-white">
 							{t.value?.createPost}
 						</h2>
 						<p class="text-slate-400 text-sm mt-1">{t.value?.apiNote}</p>
-					</div>
+					</header>
 					<form
 						class="p-6"
 						onSubmit={(e: Event) => {
@@ -476,7 +499,7 @@ export const FormDemoPage = define({
 							</div>
 						) : null
 					)}
-				</div>
+				</section>
 
 				<Suspense
 					fallback={
@@ -489,56 +512,78 @@ export const FormDemoPage = define({
 						</div>
 					}
 				>
-					<div class="example-card" style="padding: 0; overflow: hidden;">
-						<div class="bg-white/5 px-6 py-4 flex justify-between items-center">
-							<h2 class="text-xl font-semibold text-white">
+					<section
+						class="example-card"
+						style="padding: 0; overflow: hidden;"
+						aria-labelledby="posts-title"
+					>
+						<header class="bg-white/5 px-6 py-4 flex justify-between items-center">
+							<h2 id="posts-title" class="text-xl font-semibold text-white">
 								{t.value?.createdPosts}
 							</h2>
 							<span class="example-badge">{postsCount.value}</span>
-						</div>
+						</header>
 						<div class="max-h-[400px] overflow-y-auto custom-scrollbar">
-							<For
-								each={submittedPosts}
-								keyExtractor={(post) => post.id}
-								fallback={
-									<p class="text-slate-500 text-center py-12 italic">
-										{t.value?.noPosts}
-									</p>
-								}
-							>
-								{(postSignal) => {
-									const post = postSignal.value;
-									return (
-										<div class="px-6 py-5 hover:bg-white/[0.02] transition-colors">
-											<div class="flex items-start justify-between gap-4">
-												<div class="flex-1 min-w-0">
-													<div class="flex items-center gap-2 mb-2">
-														<span class="text-slate-500 text-xs font-mono">
-															#{String(post.id)}
-														</span>
-														<h3 class="font-semibold text-slate-200 truncate">
-															{post.title}
-														</h3>
+							<ul class="posts-list list-none p-0 m-0">
+								<For
+									each={submittedPosts}
+									keyExtractor={(post) => post.id}
+									fallback={
+										<li class="text-slate-500 text-center py-12 italic">
+											{t.value?.noPosts}
+										</li>
+									}
+								>
+									{(postSignal) => {
+										const post = postSignal.value;
+										return (
+											<li class="px-6 py-5 hover:bg-white/[0.02] transition-colors border-b border-white/5 last:border-0">
+												<article class="flex items-start justify-between gap-4">
+													<div class="flex-1 min-w-0">
+														<header class="flex items-center gap-2 mb-2">
+															<span class="text-slate-500 text-xs font-mono">
+																#{String(post.id)}
+															</span>
+															<h3 class="font-semibold text-slate-200 truncate">
+																{post.title}
+															</h3>
+														</header>
+														<p class="text-slate-400 text-sm line-clamp-2 leading-relaxed">
+															{post.body}
+														</p>
 													</div>
-													<p class="text-slate-400 text-sm line-clamp-2 leading-relaxed">
-														{post.body}
-													</p>
-												</div>
-												<span
-													class="flex-shrink-0 example-badge"
-													style="background: rgba(182, 157, 248, 0.1); color: var(--accent-lilac); border-color: rgba(182, 157, 248, 0.1);"
-												>
-													USER {String(post.userId)}
-												</span>
-											</div>
-										</div>
-									);
-								}}
-							</For>
+													<footer class="flex-shrink-0">
+														<span
+															class="example-badge"
+															style="background: rgba(182, 157, 248, 0.1); color: var(--accent-lilac); border-color: rgba(182, 157, 248, 0.1);"
+														>
+															USER {String(post.userId)}
+														</span>
+													</footer>
+												</article>
+											</li>
+										);
+									}}
+								</For>
+							</ul>
 						</div>
-					</div>
+					</section>
+
+					<details class="example-card" style="padding: 1.5rem;">
+						<summary
+							class="stat-label"
+							style="margin-bottom: 1rem; cursor: pointer; outline: none;"
+						>
+							{(t.value as any)?.howItWorks}
+						</summary>
+						<div style="margin-top: 1rem;">
+							<figure>
+								<Ink content={codeSnippet} />
+							</figure>
+						</div>
+					</details>
 				</Suspense>
-			</div>
+			</section>
 		</DocsLayout>
 	),
 });
