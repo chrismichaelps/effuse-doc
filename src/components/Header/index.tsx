@@ -69,7 +69,7 @@ export const Header = define<Record<string, never>, HeaderExposed>({
 		docsLabel,
 		aboutLabel,
 	}) => (
-		<div>
+		<>
 			<header class="header-main">
 				<div
 					class={() =>
@@ -89,23 +89,29 @@ export const Header = define<Record<string, never>, HeaderExposed>({
 						</div>
 
 						<div class="header-right">
-							<nav class="header-nav">
-								<Link
-									to="/docs"
-									class="header-nav-link"
-									activeClass="header-nav-link-active"
-									exactActiveClass="header-nav-link-active"
-								>
-									{docsLabel}
-								</Link>
-								<Link
-									to="/about"
-									class="header-nav-link"
-									activeClass="header-nav-link-active"
-									exactActiveClass="header-nav-link-active"
-								>
-									{aboutLabel}
-								</Link>
+							<nav class="header-nav" aria-label="Main navigation">
+								<ul class="header-nav-list flex items-center gap-6">
+									<li class="header-nav-item">
+										<Link
+											to="/docs"
+											class="header-nav-link"
+											activeClass="header-nav-link-active"
+											exactActiveClass="header-nav-link-active"
+										>
+											{docsLabel}
+										</Link>
+									</li>
+									<li class="header-nav-item">
+										<Link
+											to="/about"
+											class="header-nav-link"
+											activeClass="header-nav-link-active"
+											exactActiveClass="header-nav-link-active"
+										>
+											{aboutLabel}
+										</Link>
+									</li>
+								</ul>
 							</nav>
 
 							<div class="header-search-wrapper">
@@ -137,29 +143,34 @@ export const Header = define<Record<string, never>, HeaderExposed>({
 
 					<nav
 						class={() =>
-							`header-mobile-menu ${mobileMenuOpen.value ? 'open' : 'closed'}`
+							`header-mobile-menu ${mobileMenuOpen.value ? 'open' : ''}`
 						}
+						aria-label="Mobile navigation"
 					>
-						<div class="header-mobile-row">
-							<Link
-								to="/docs"
-								class="header-mobile-link"
-								activeClass="header-mobile-link-active"
-								exactActiveClass="header-mobile-link-active"
-								onClick={toggleMenu}
-							>
-								{docsLabel}
-							</Link>
-							<Link
-								to="/about"
-								class="header-mobile-link"
-								activeClass="header-mobile-link-active"
-								exactActiveClass="header-mobile-link-active"
-								onClick={toggleMenu}
-							>
-								{aboutLabel}
-							</Link>
-							<div
+						<ul class="header-mobile-list">
+							<li class="header-mobile-item">
+								<Link
+									to="/docs"
+									class="header-mobile-link"
+									activeClass="header-mobile-link-active"
+									exactActiveClass="header-mobile-link-active"
+									onClick={toggleMenu}
+								>
+									{docsLabel}
+								</Link>
+							</li>
+							<li class="header-mobile-item">
+								<Link
+									to="/about"
+									class="header-mobile-link"
+									activeClass="header-mobile-link-active"
+									exactActiveClass="header-mobile-link-active"
+									onClick={toggleMenu}
+								>
+									{aboutLabel}
+								</Link>
+							</li>
+							<li
 								class={() =>
 									`header-lang-mobile ${
 										isDocsPath.value ? 'visible' : 'hidden'
@@ -167,12 +178,12 @@ export const Header = define<Record<string, never>, HeaderExposed>({
 								}
 							>
 								<LanguageSelector isMobile />
-							</div>
-						</div>
+							</li>
+						</ul>
 					</nav>
 				</div>
 			</header>
 			<SearchModal />
-		</div>
+		</>
 	),
 });

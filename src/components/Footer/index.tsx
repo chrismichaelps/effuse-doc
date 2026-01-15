@@ -61,17 +61,17 @@ export const Footer = define({
 	template: ({ sections, version }) => (
 		<footer class="footer-motion">
 			<div class="footer-content">
-				<nav class="footer-nav">
+				<nav class="footer-nav" aria-label="Footer navigation">
 					<For
 						each={() => sections}
 						children={(section) => (
 							<section class="footer-section">
 								<h2 class="footer-section-title">{section.value.title}</h2>
-								<ul class="footer-section-links">
+								<ul class="footer-section-links list-none p-0 m-0">
 									<For
 										each={() => section.value.links}
 										children={(link) => (
-											<li>
+											<li class="footer-link-item">
 												{link.value.external ? (
 													<a
 														href={link.value.href}
@@ -121,7 +121,11 @@ export const Footer = define({
 							<span class="footer-badge-label">Effuse</span>
 						</div>
 						<div class="footer-badge-copyright">
-							© 2025 - {new Date().getFullYear()} Effuse. MIT License.
+							© <time datetime="2025">2025</time> -{' '}
+							<time datetime={new Date().getFullYear().toString()}>
+								{new Date().getFullYear()}
+							</time>{' '}
+							Effuse. MIT License.
 						</div>
 					</div>
 				</div>

@@ -178,33 +178,37 @@ export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
 
 					<aside class="docs-toc-sidebar lg:block hidden">
 						<div class="toc-sidebar-container">
-							<div class="toc-sidebar-title flex items-center gap-2">
+							<h3 class="toc-sidebar-title flex items-center gap-2">
 								<img src="/icons/list.svg" width="14" height="14" alt="List" />
 								{t('toc.onThisPage', '')}
-							</div>
-							<nav class="toc-sidebar-nav">
-								<For
-									each={normalizedTocItems}
-									keyExtractor={(item: TocItem) => item.id}
-								>
-									{(itemSignal: ReadonlySignal<TocItem>) => (
-										<a
-											href={`#${itemSignal.value.id}`}
-											class={() =>
-												`toc-sidebar-link ${activeSectionId.value === itemSignal.value.id ? 'active' : ''}`
-											}
-											onClick={(e: Event) =>
-												handleTocClick(
-													e,
-													itemSignal.value.id,
-													itemSignal.value.title
-												)
-											}
-										>
-											{itemSignal.value.title}
-										</a>
-									)}
-								</For>
+							</h3>
+							<nav class="toc-sidebar-nav" aria-label="Table of contents">
+								<ul class="toc-sidebar-list list-none p-0 m-0">
+									<For
+										each={normalizedTocItems}
+										keyExtractor={(item: TocItem) => item.id}
+									>
+										{(itemSignal: ReadonlySignal<TocItem>) => (
+											<li class="toc-sidebar-item">
+												<a
+													href={`#${itemSignal.value.id}`}
+													class={() =>
+														`toc-sidebar-link ${activeSectionId.value === itemSignal.value.id ? 'active' : ''}`
+													}
+													onClick={(e: Event) =>
+														handleTocClick(
+															e,
+															itemSignal.value.id,
+															itemSignal.value.title
+														)
+													}
+												>
+													{itemSignal.value.title}
+												</a>
+											</li>
+										)}
+									</For>
+								</ul>
 							</nav>
 						</div>
 					</aside>
