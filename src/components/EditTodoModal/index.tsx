@@ -40,12 +40,17 @@ export const EditTodoModal = define<EditTodoModalProps, EditTodoModalExposed>({
 					onClick={() => onClose()}
 				/>
 
-				<div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
-					<div class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4">
-						<h2 class="text-xl font-semibold text-white">
+				<section
+					class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+					role="dialog"
+					aria-modal="true"
+					aria-labelledby="edit-todo-title"
+				>
+					<header class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4">
+						<h2 id="edit-todo-title" class="text-xl font-semibold text-white">
 							{t.value?.editTodo}
 						</h2>
-					</div>
+					</header>
 
 					<div class="p-6">
 						<label class="block mb-2 text-sm font-medium text-slate-700">
@@ -66,7 +71,7 @@ export const EditTodoModal = define<EditTodoModalProps, EditTodoModalExposed>({
 						/>
 					</div>
 
-					<div class="px-6 py-4 bg-slate-50 flex justify-end gap-3">
+					<footer class="px-6 py-4 bg-slate-50 flex justify-end gap-3">
 						<button
 							type="button"
 							onClick={() => onClose()}
@@ -81,8 +86,8 @@ export const EditTodoModal = define<EditTodoModalProps, EditTodoModalExposed>({
 						>
 							{t.value?.saveChanges}
 						</button>
-					</div>
-				</div>
+					</footer>
+				</section>
 			</div>
 		);
 	},
