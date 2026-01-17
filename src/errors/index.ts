@@ -3,12 +3,14 @@ export * from './api.js';
 export * from './todo.js';
 export * from './form.js';
 export * from './search.js';
+export * from './i18n.js';
 
 import type { NetworkError } from './network.js';
 import type { ApiError } from './api.js';
 import type { TodoError } from './todo.js';
 import type { FormSubmissionError } from './form.js';
 import type { SearchUIError, SearchIndexError } from './search.js';
+import type { I18nError } from './i18n.js';
 
 export type AppError =
 	| NetworkError
@@ -16,4 +18,5 @@ export type AppError =
 	| TodoError
 	| FormSubmissionError
 	| SearchUIError
-	| SearchIndexError;
+	| SearchIndexError
+	| I18nError;
