@@ -1,4 +1,5 @@
 import { createStore, connectDevTools } from '@effuse/store';
+import { taggedEnum, Option, some, none } from '../utils/data/index.js';
 
 export interface Todo {
 	id: number;
@@ -7,16 +8,39 @@ export interface Todo {
 	completed: boolean;
 }
 
+type TodoFilter = 'all' | 'completed' | 'pending';
+
+type EditModalClosed = { readonly _tag: 'Closed' };
+type EditModalOpen = {
+	readonly _tag: 'Open';
+	readonly editingTodo: Todo;
+	readonly title: string;
+};
+type EditModalState = EditModalClosed | EditModalOpen;
+
+const EditModal = taggedEnum<EditModalState>();
+
 interface TodosUIState {
 	todos: Todo[];
-	editingTodo: Todo | null;
-	isEditModalOpen: boolean;
-	editTitle: string;
 	newTodoTitle: string;
-	filter: 'all' | 'completed' | 'pending';
+	editModalState: EditModalState;
+	filter: TodoFilter;
 }
 
 let nextLocalId = 1000;
+
+const todoFilterPredicate =
+	(filter: TodoFilter) =>
+	(todo: Todo): boolean => {
+		switch (filter) {
+			case 'completed':
+				return todo.completed;
+			case 'pending':
+				return !todo.completed;
+			default:
+				return true;
+		}
+	};
 
 export const todosStore = createStore<
 	TodosUIState & {
@@ -30,18 +54,22 @@ export const todosStore = createStore<
 		closeEditModal: () => void;
 		setEditTitle: (title: string) => void;
 		saveEdit: () => void;
+		saveEditWithTitle: (title: string) => void;
 		setNewTodoTitle: (title: string) => void;
-		setFilter: (filter: 'all' | 'completed' | 'pending') => void;
+		setFilter: (filter: TodoFilter) => void;
 		generateId: () => number;
+		getFilteredTodos: () => readonly Todo[];
+		getEditModalState: () => EditModalState;
+		isEditModalOpen: () => boolean;
+		getEditingTodo: () => Option<Todo>;
+		getEditTitle: () => string;
 	}
 >(
 	'todosUI',
 	{
 		todos: [],
-		editingTodo: null,
-		isEditModalOpen: false,
-		editTitle: '',
 		newTodoTitle: '',
+		editModalState: EditModal.Closed({}),
 		filter: 'all',
 		setTodos(todos: Todo[]) {
 			this.todos.value = todos;
@@ -67,40 +95,94 @@ export const todosStore = createStore<
 			);
 		},
 		openEditModal(todo: Todo) {
-			this.editingTodo.value = todo;
-			this.editTitle.value = todo.title;
-			this.isEditModalOpen.value = true;
+			const newState = EditModal.Open({ editingTodo: todo, title: todo.title });
+			this.editModalState.value = newState;
 		},
 		closeEditModal() {
-			this.editingTodo.value = null;
-			this.editTitle.value = '';
-			this.isEditModalOpen.value = false;
+			const newState = EditModal.Closed({});
+			this.editModalState.value = newState;
 		},
 		setEditTitle(title: string) {
-			this.editTitle.value = title;
+			const currentState = this.editModalState.value;
+			EditModal.$match(currentState, {
+				Closed: () => {},
+				Open: ({ editingTodo }) => {
+					const newState = EditModal.Open({ editingTodo, title });
+					this.editModalState.value = newState;
+				},
+			});
 		},
 		saveEdit() {
-			const todo = this.editingTodo.value;
-			const title = this.editTitle.value.trim();
-			if (todo && title) {
-				this.todos.value = this.todos.value.map((t) =>
-					t.id === todo.id ? { ...t, title } : t
-				);
-			}
-			this.editingTodo.value = null;
-			this.editTitle.value = '';
-			this.isEditModalOpen.value = false;
+			const currentState = this.editModalState.value;
+			EditModal.$match(currentState, {
+				Closed: () => {},
+				Open: ({ editingTodo, title }) => {
+					const trimmedTitle = title.trim();
+					if (trimmedTitle) {
+						this.todos.value = this.todos.value.map((t) =>
+							t.id === editingTodo.id ? { ...t, title: trimmedTitle } : t
+						);
+					}
+					const newState = EditModal.Closed({});
+					this.editModalState.value = newState;
+				},
+			});
+		},
+		saveEditWithTitle(title: string) {
+			const currentState = this.editModalState.value;
+			EditModal.$match(currentState, {
+				Closed: () => {},
+				Open: ({ editingTodo }) => {
+					const trimmedTitle = title.trim();
+					if (trimmedTitle) {
+						this.todos.value = this.todos.value.map((t) =>
+							t.id === editingTodo.id ? { ...t, title: trimmedTitle } : t
+						);
+					}
+					const newState = EditModal.Closed({});
+					this.editModalState.value = newState;
+				},
+			});
 		},
 		setNewTodoTitle(title: string) {
 			this.newTodoTitle.value = title;
 		},
-		setFilter(filter: 'all' | 'completed' | 'pending') {
+		setFilter(filter: TodoFilter) {
 			this.filter.value = filter;
 		},
 		generateId() {
 			return nextLocalId++;
 		},
+		getFilteredTodos() {
+			return this.todos.value.filter(todoFilterPredicate(this.filter.value));
+		},
+		getEditModalState() {
+			return this.editModalState.value;
+		},
+		isEditModalOpen() {
+			const state = this.editModalState.value;
+			return EditModal.$match(state, {
+				Closed: () => false,
+				Open: () => true,
+			});
+		},
+		getEditingTodo(): Option<Todo> {
+			const state = this.editModalState.value;
+			return EditModal.$match(state, {
+				Closed: () => none(),
+				Open: ({ editingTodo }) => some(editingTodo),
+			});
+		},
+		getEditTitle() {
+			const state = this.editModalState.value;
+			return EditModal.$match(state, {
+				Closed: () => '',
+				Open: ({ title }) => title,
+			});
+		},
 	},
 	{ devtools: true }
 );
 connectDevTools(todosStore);
+
+export type { EditModalState };

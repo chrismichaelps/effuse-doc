@@ -1,5 +1,7 @@
 import { createI18n } from '@effuse/i18n';
 import { signal, type Signal } from '@effuse/core';
+import { Either, right, left, isRight } from '../utils/data/index.js';
+import { I18nError } from '../errors/index.js';
 
 export const LOCALES = {
 	EN: 'en',
@@ -372,34 +374,61 @@ const i18n = createI18n({
 	persistLocale: true,
 });
 
-const translations = signal<AppTranslations | null>(null);
-const isLoading = signal<boolean>(true);
+type TranslationResult = Either<Error, AppTranslations>;
 
-const loadTranslations = async (locale: string) => {
-	isLoading.value = true;
+const translations = signal<AppTranslations | null>(null);
+
+const loadTranslations = async (locale: string): Promise<TranslationResult> => {
 	try {
 		const response = await fetch(`${LOCALES_PATH}/${locale}.json`);
+		if (!response.ok) {
+			return left(
+				new I18nError({
+					locale,
+					statusCode: response.status,
+				})
+			);
+		}
 		const data: AppTranslations = await response.json();
-		translations.value = data;
+		return right(data);
 	} catch (error) {
-		console.error(`Failed to load translations for ${locale}:`, error);
-	} finally {
-		isLoading.value = false;
+		return left(
+			new I18nError({
+				locale,
+				cause: error,
+			})
+		);
 	}
 };
 
-void loadTranslations(i18n.getLocale());
+const initializeI18n = async () => {
+	const locale = i18n.getLocale();
+	const result = await loadTranslations(locale);
+
+	if (isRight(result)) {
+		translations.value = result.right;
+	}
+};
+
+void initializeI18n();
 
 export const i18nStore = {
 	locale: i18n.locale as Signal<Locale>,
 	translations,
-	isLoading,
+	isLoading: signal<boolean>(false),
 	setLocale: async (loc: Locale) => {
 		await i18n.setLocale(loc);
-		await loadTranslations(loc);
+		const result = await loadTranslations(loc);
+		if (isRight(result)) {
+			translations.value = result.right;
+		}
 	},
 	init: () => {
-		void loadTranslations(i18n.getLocale());
+		void loadTranslations(i18n.getLocale()).then((result) => {
+			if (isRight(result)) {
+				translations.value = result.right;
+			}
+		});
 	},
 	t: i18n.t,
 };
