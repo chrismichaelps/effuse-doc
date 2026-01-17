@@ -29,9 +29,11 @@ interface SearchModalExposed {
 	showEmptyState: ReadonlySignal<boolean>;
 	showResults: ReadonlySignal<boolean>;
 	isOpen: ReadonlySignal<boolean>;
+	isClosing: ReadonlySignal<boolean>;
 	handleInput: (e: Event) => void;
 	handleBackdropClick: (e: MouseEvent) => void;
 	handleResultClick: (result: SearchResultItem) => void;
+	handleAnimationEnd: () => void;
 	highlight: (text: string) => any;
 	t: ReadonlySignal<any>;
 }
@@ -160,6 +162,22 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 			})
 		);
 
+		const isClosing = computed(() =>
+			matchTag(store?.modalState.value, {
+				Closing: () => true,
+				Closed: () => false,
+				Opening: () => false,
+				Open: () => false,
+				_: () => false,
+			})
+		);
+
+		const handleAnimationEnd = useCallback(() => {
+			if (isClosing.value) {
+				store?.completeClose();
+			}
+		});
+
 		const results = computed(() =>
 			matchTag(store?.searchStatus.value, {
 				Idle: () => [] as readonly SearchResultItem[],
@@ -211,9 +229,11 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 			showEmptyState,
 			showResults,
 			isOpen,
+			isClosing,
 			handleInput,
 			handleBackdropClick,
 			handleResultClick,
+			handleAnimationEnd,
 			t,
 			highlight: (text: string) => {
 				if (!store?.query.value) return <span>{text}</span>;
@@ -246,11 +266,14 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 		t,
 		highlight,
 		isOpen,
+		isClosing,
+		handleAnimationEnd,
 	}) => (
 		<Portal target="body" priority="overlay" key="search-modal">
 			<div
-				class={() => `search-modal-backdrop ${isOpen?.value ? '' : 'hidden'}`}
+				class={() => `search-modal-backdrop ${isOpen?.value ? '' : 'hidden'} ${isClosing?.value ? 'closing' : ''}`}
 				onClick={handleBackdropClick}
+				onAnimationEnd={handleAnimationEnd}
 			>
 				<aside
 					class="search-modal"

@@ -84,6 +84,7 @@ interface SearchActions {
 	clearResults: () => void;
 	open: () => void;
 	close: () => void;
+	completeClose: () => void;
 	toggle: () => void;
 	selectNext: () => void;
 	selectPrevious: () => void;
@@ -191,6 +192,17 @@ export const searchStore = createStore<SearchState & SearchActions>(
 			});
 			this.modalState.value = newState;
 			this.clearResults();
+		},
+
+		completeClose() {
+			const currentModal = this.modalState.value;
+			const newState = ModalState.$match<SearchModalState>(currentModal, {
+				Closed: () => ModalState.Closed({}),
+				Opening: () => ModalState.Closed({}),
+				Open: () => ModalState.Closed({}),
+				Closing: () => ModalState.Closed({}),
+			});
+			this.modalState.value = newState;
 		},
 
 		toggle() {
