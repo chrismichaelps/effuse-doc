@@ -144,3 +144,46 @@ export const getOrThrow = <E, A>(either: Either<E, A>): A => {
 	}
 	return either.right;
 };
+
+export type Result<A> = Either<Error, A>;
+
+export const ok = <A>(a: A): Result<A> => right(a);
+
+export const fail = <A>(e: Error): Result<A> => left(e);
+
+export const toResult = <A>(fn: () => A): Result<A> =>
+	tryCatch(fn, (e) => (e instanceof Error ? e : new Error(String(e))));
+
+export const toResultAsync = async <A>(
+	fn: () => Promise<A>
+): Promise<Result<A>> =>
+	tryCatchAsync(fn, (e) => (e instanceof Error ? e : new Error(String(e))));
+
+export const resultFromNullable = <A>(
+	value: A | null | undefined,
+	onNull: () => Error
+): Result<NonNullable<A>> =>
+	value == null ? fail(onNull()) : ok(value as NonNullable<A>);
+
+export const resultGetOrThrow = <A>(result: Result<A>): A => {
+	if (isLeft(result)) {
+		throw result.left;
+	}
+	return result.right;
+};
+
+export const resultGetOrElse = <A>(result: Result<A>, defaultValue: A): A =>
+	isLeft(result) ? defaultValue : result.right;
+
+export const resultMap = <A, B>(result: Result<A>, f: (a: A) => B): Result<B> =>
+	map(result, f);
+
+export const resultMapError = <A>(
+	result: Result<A>,
+	f: (e: Error) => Error
+): Result<A> => mapLeft(result, f);
+
+export const resultFlatMap = <A, B>(
+	result: Result<A>,
+	f: (a: A) => Result<B>
+): Result<B> => flatMap(result, f);

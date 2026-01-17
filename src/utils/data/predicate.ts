@@ -56,3 +56,81 @@ export function all<A>(predicates: readonly Predicate<A>[]): Predicate<A> {
 export function any<A>(predicates: readonly Predicate<A>[]): Predicate<A> {
 	return (a) => predicates.some((p) => p(a));
 }
+
+export const isFunction = (u: unknown): u is Function =>
+	typeof u === 'function';
+
+export const isPromise = (u: unknown): u is Promise<unknown> =>
+	u instanceof Promise;
+
+export const isDate = (u: unknown): u is Date => u instanceof Date;
+
+export const isRegExp = (u: unknown): u is RegExp => u instanceof RegExp;
+
+export const isError = (u: unknown): u is Error => u instanceof Error;
+
+export const isEmptyString = (u: unknown): u is '' => u === '';
+
+export const isNonEmptyString = (u: unknown): u is string =>
+	isString(u) && u.length > 0;
+
+export const isPositiveNumber = (u: unknown): u is number =>
+	isNumber(u) && u > 0;
+
+export const isNegativeNumber = (u: unknown): u is number =>
+	isNumber(u) && u < 0;
+
+export const isInteger = (u: unknown): u is number =>
+	isNumber(u) && Number.isInteger(u);
+
+export const isFiniteNumber = (u: unknown): u is number =>
+	isNumber(u) && Number.isFinite(u);
+
+export const isSafeInteger = (u: unknown): u is number =>
+	isNumber(u) && Number.isSafeInteger(u);
+
+export const isPlainObject = (u: unknown): u is Record<string, unknown> => {
+	if (!isRecord(u)) return false;
+	return Object.getPrototypeOf(u) === Object.prototype;
+};
+
+export const isEmptyArray = (u: unknown): u is unknown[] =>
+	isArray(u) && u.length === 0;
+
+export const isNonEmptyArray = <A>(u: unknown): u is A[] =>
+	isArray(u) && u.length > 0;
+
+export const isEmptyObject = (u: unknown): u is Record<string, never> =>
+	isPlainObject(u) && Object.keys(u).length === 0;
+
+export const hasProperty = <A, K extends string>(
+	obj: A,
+	key: K
+): obj is A & Record<K, unknown> => isNotNullish(obj) && key in (obj as object);
+
+export const getProperty = <
+	A extends Record<string, unknown>,
+	K extends string,
+>(
+	obj: A,
+	key: K
+): A[K] | undefined => {
+	if (!isPlainObject(obj)) return undefined;
+	return obj[key] as A[K] | undefined;
+};
+
+export const tuple = <T extends readonly unknown[]>(...values: T): T => values;
+
+export const collect =
+	<T>(predicate: Predicate<T>) =>
+	(list: readonly T[]): readonly T[] =>
+		list.filter(predicate);
+
+export const partition =
+	<T>(predicate: Predicate<T>) =>
+	(list: readonly T[]): [readonly T[], readonly T[]] =>
+		list.reduce(
+			([pass, fail], item) =>
+				predicate(item) ? [[...pass, item], fail] : [pass, [...fail, item]],
+			[[], []] as [readonly T[], readonly T[]]
+		);
