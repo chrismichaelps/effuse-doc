@@ -8,20 +8,27 @@ import {
 	type ReadonlySignal,
 } from '@effuse/core';
 import { useRouter } from '@effuse/router';
-import type { SearchStore, SearchResultItem } from '../../store/searchStore';
+import type {
+	SearchStore,
+	SearchResultItem,
+	SearchStatus,
+} from '../../store/searchStore';
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
+import { matchTag } from '../../utils/data/index.js';
 import './styles.css';
 
 interface SearchModalExposed {
-	isOpen: Signal<boolean>;
+	modalState: Signal<any>;
+	searchStatus: Signal<SearchStatus>;
 	query: Signal<string>;
-	results: Signal<readonly SearchResultItem[]>;
-	isLoading: Signal<boolean>;
+	results: ReadonlySignal<readonly SearchResultItem[]>;
+	isLoading: ReadonlySignal<boolean>;
 	selectedIndex: Signal<number>;
 	showLoading: ReadonlySignal<boolean>;
 	showNoResults: ReadonlySignal<boolean>;
 	showEmptyState: ReadonlySignal<boolean>;
 	showResults: ReadonlySignal<boolean>;
+	isOpen: ReadonlySignal<boolean>;
 	handleInput: (e: Event) => void;
 	handleBackdropClick: (e: MouseEvent) => void;
 	handleResultClick: (result: SearchResultItem) => void;
@@ -44,25 +51,32 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 		});
 
 		const handleKeyDown = useCallback((e: KeyboardEvent) => {
-			if (!store?.isOpen.value) return;
+			const isOpen = matchTag(store?.modalState.value, {
+				Closed: () => false,
+				Opening: () => true,
+				Open: () => true,
+				Closing: () => true,
+				_: () => false,
+			});
+			if (!isOpen) return;
 
 			switch (e.key) {
 				case 'ArrowDown':
 					e.preventDefault();
-					store.selectNext();
+					store?.selectNext();
 					break;
 				case 'ArrowUp':
 					e.preventDefault();
-					store.selectPrevious();
+					store?.selectPrevious();
 					break;
 				case 'Enter': {
 					e.preventDefault();
-					const selected = store.getSelected();
+					const selected = store?.getSelected();
 					if (selected?.filePath) {
 						const slug =
 							selected.filePath.split('/').pop()?.replace('.md', '') ?? '';
 						const anchor = selected.anchor ? `#${selected.anchor}` : '';
-						store.close();
+						store?.close();
 						router.push(`/docs/${slug}${anchor}`);
 					}
 					break;
@@ -108,7 +122,14 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 		});
 
 		effect(() => {
-			if (store?.isOpen.value) {
+			const isOpen = matchTag(store?.modalState.value, {
+				Closed: () => false,
+				Opening: () => true,
+				Open: () => true,
+				Closing: () => true,
+				_: () => false,
+			});
+			if (isOpen) {
 				document.body.style.overflow = 'hidden';
 				(window as any).__lenis?.stop();
 			} else {
@@ -129,39 +150,67 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 			}
 		});
 
+		const isOpen = computed(() =>
+			matchTag(store?.modalState.value, {
+				Closed: () => false,
+				Opening: () => true,
+				Open: () => true,
+				Closing: () => true,
+				_: () => false,
+			})
+		);
+
+		const results = computed(() =>
+			matchTag(store?.searchStatus.value, {
+				Idle: () => [] as readonly SearchResultItem[],
+				Loading: () => [] as readonly SearchResultItem[],
+				Results: ({ results }) => results,
+				Error: () => [] as readonly SearchResultItem[],
+				_: () => [] as readonly SearchResultItem[],
+			})
+		);
+
+		const isLoading = computed(() =>
+			matchTag(store?.searchStatus.value, {
+				Idle: () => false,
+				Loading: () => true,
+				Results: () => false,
+				Error: () => false,
+				_: () => false,
+			})
+		);
+
 		const showLoading = computed(
-			() =>
-				(store?.isLoading.value ?? false) &&
-				(store?.query.value.length ?? 0) > 0
+			() => (isLoading.value ?? false) && (store?.query.value.length ?? 0) > 0
 		);
 		const showNoResults = computed(
 			() =>
-				!(store?.isLoading.value ?? true) &&
+				!(isLoading.value ?? true) &&
 				(store?.query.value.length ?? 0) > 0 &&
-				(store?.results.value.length ?? 0) === 0
+				(results.value.length ?? 0) === 0
 		);
 		const showEmptyState = computed(
-			() =>
-				!(store?.isLoading.value ?? true) &&
-				(store?.query.value.length ?? 0) === 0
+			() => !(isLoading.value ?? true) && (store?.query.value.length ?? 0) === 0
 		);
 		const showResults = computed(
 			() =>
-				!(store?.isLoading.value ?? true) &&
+				!(isLoading.value ?? true) &&
 				(store?.query.value.length ?? 0) > 0 &&
-				(store?.results.value.length ?? 0) > 0
+				(results.value.length ?? 0) > 0
 		);
 
 		return {
-			isOpen: store?.isOpen,
+			modalState: store?.modalState,
+			searchStatus: store?.searchStatus,
 			query: store?.query,
-			results: store?.results,
-			isLoading: store?.isLoading,
+			results,
+			isLoading,
 			selectedIndex: store?.selectedIndex,
 			showLoading,
 			showNoResults,
 			showEmptyState,
 			showResults,
+			isOpen,
 			handleInput,
 			handleBackdropClick,
 			handleResultClick,
@@ -184,7 +233,6 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 		};
 	},
 	template: ({
-		isOpen,
 		query,
 		results,
 		selectedIndex,
@@ -197,6 +245,7 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 		showResults,
 		t,
 		highlight,
+		isOpen,
 	}) => (
 		<Portal target="body" priority="overlay" key="search-modal">
 			<div

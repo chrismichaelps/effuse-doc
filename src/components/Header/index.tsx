@@ -9,7 +9,7 @@ import { HamburgerButton } from '../HamburgerButton';
 import { LanguageSelector } from '../docs/LanguageSelector';
 import { SearchTrigger } from '../SearchTrigger';
 import { SearchModal } from '../SearchModal';
-import { useToggle } from '../../hooks/index.js';
+import { useToggle, useBreakpoint } from '../../hooks/index.js';
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
 import './styles.css';
 
@@ -19,6 +19,7 @@ interface HeaderExposed {
 	isDocsPath: ReadonlySignal<boolean>;
 	docsLabel: ReadonlySignal<string>;
 	aboutLabel: ReadonlySignal<string>;
+	isMobile: ReadonlySignal<boolean>;
 }
 
 const LOCALIZED_SECTIONS = [
@@ -37,6 +38,8 @@ const LOCALIZED_SECTIONS = [
 export const Header = define<Record<string, never>, HeaderExposed>({
 	script: ({ useStore }) => {
 		const i18nStore = useStore('i18n') as typeof I18nStoreType;
+		const breakpoint = useBreakpoint({});
+		const isMobile = breakpoint.isMobile;
 
 		const mobileMenu = useToggle({ initial: false });
 
@@ -60,6 +63,7 @@ export const Header = define<Record<string, never>, HeaderExposed>({
 			isDocsPath,
 			docsLabel,
 			aboutLabel,
+			isMobile,
 		};
 	},
 	template: ({
@@ -68,14 +72,11 @@ export const Header = define<Record<string, never>, HeaderExposed>({
 		isDocsPath,
 		docsLabel,
 		aboutLabel,
+		isMobile,
 	}) => (
 		<>
 			<header class="header-main">
-				<div
-					class={() =>
-						`header-container ${isDocsPath.value ? 'docs-mode' : ''}`
-					}
-				>
+				<div class={() => `header-container ${isDocsPath ? 'docs-mode' : ''}`}>
 					<div class="header-inner">
 						<div class="header-left">
 							<Link to="/" class="header-brand">
@@ -132,18 +133,18 @@ export const Header = define<Record<string, never>, HeaderExposed>({
 								<div class="header-divider"></div>
 							</div>
 
-							<div class="md:hidden">
+							{isMobile.value && (
 								<HamburgerButton
 									isOpen={mobileMenuOpen}
 									onToggle={toggleMenu}
 								/>
-							</div>
+							)}
 						</div>
 					</div>
 
 					<nav
 						class={() =>
-							`header-mobile-menu ${mobileMenuOpen.value ? 'open' : ''}`
+							`header-mobile-menu ${mobileMenuOpen.value ? 'open' : 'closed'}`
 						}
 						aria-label="Mobile navigation"
 					>
@@ -177,7 +178,7 @@ export const Header = define<Record<string, never>, HeaderExposed>({
 									}`
 								}
 							>
-								<LanguageSelector isMobile />
+								<LanguageSelector isMobile={isMobile.value} />
 							</li>
 						</ul>
 					</nav>

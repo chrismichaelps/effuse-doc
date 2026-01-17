@@ -68,14 +68,14 @@ export const LanguageSelector = define<
 		const handleSelect = useCallback((e: MouseEvent, loc: Locale) => {
 			e.stopPropagation();
 			(i18nProvider.i18n as { setLocale: (l: Locale) => void }).setLocale(loc);
-			toggle.close();
+			toggle.setOff();
 		});
 
 		const dropdownClass = () =>
 			`lang-dropdown ${toggle.isOpen.value ? 'open' : ''} ${props.isMobile ? 'is-mobile' : ''}`;
 
 		onMount(() => {
-			clickOutside.onClickOutside(() => toggle.close());
+			clickOutside.onOutside(() => toggle.setOff());
 			clickOutside.init();
 			return undefined;
 		});

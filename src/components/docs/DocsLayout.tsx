@@ -12,8 +12,16 @@ import {
 	useScrollSpy,
 	useSmoothScroll,
 	useTranslation,
+	useBreakpoint,
 } from '../../hooks/index.js';
 import type { docsStore as DocsStoreType } from '../../store/docsUIStore.js';
+import {
+	isArray,
+	isNullish,
+	getOrElse,
+	fromNullable,
+	Option,
+} from '../../utils/data/index.js';
 import './styles.css';
 
 interface DocsLayoutProps {
@@ -31,14 +39,20 @@ interface DocsLayoutExposed {
 	t: (key: string, fallback?: string) => string;
 	isCollapsed: Signal<unknown>;
 	isOpen: Signal<unknown>;
+	sidebarClass: ReadonlySignal<string>;
+	isMobile: ReadonlySignal<boolean>;
 }
 
 const unwrapTocItems = (
 	items: TocItem[] | ReadonlySignal<TocItem[]> | undefined
 ): TocItem[] => {
-	if (!items) return [];
-	if (Array.isArray(items)) return items;
-	return items.value;
+	const toOption = (): Option<TocItem[]> => {
+		if (isNullish(items)) return fromNullable(undefined);
+		if (isArray(items)) return fromNullable(items);
+		return fromNullable(items?.value);
+	};
+
+	return getOrElse(toOption(), () => []);
 };
 
 export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
@@ -52,6 +66,8 @@ export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
 		const sidebarProps = useLayerProps('sidebar')!;
 		const sidebarProvider = useLayerProvider('sidebar')!;
 		const { t } = useTranslation();
+
+		const breakpoint = useBreakpoint({});
 
 		const docsStore = sidebarProvider.docsUI as typeof DocsStoreType;
 
@@ -106,6 +122,13 @@ export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
 			}
 		);
 
+		const sidebarClass = computed(() => {
+			const open = sidebarProps.isOpen.value;
+			const collapsed = sidebarProps.isCollapsed.value;
+			const className = `sidebar-desktop-wrapper ${open ? 'sidebar-mobile-open' : 'sidebar-mobile-closed'} ${collapsed ? 'collapsed' : ''}`;
+			return className;
+		});
+
 		onMount(() => {
 			scrollSpy.setItems(normalizedTocItems.value);
 			scrollSpy.init();
@@ -121,6 +144,8 @@ export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
 			t,
 			isCollapsed: sidebarProps.isCollapsed,
 			isOpen: sidebarProps.isOpen,
+			sidebarClass,
+			isMobile: breakpoint.isMobile,
 		};
 	},
 	template: (
@@ -133,6 +158,8 @@ export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
 			children,
 			isCollapsed,
 			isOpen,
+			sidebarClass,
+			isMobile,
 		},
 		props
 	) => (
@@ -142,21 +169,15 @@ export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
 			}
 		>
 			{computed(() =>
-				isOpen.value ? (
+				isOpen.value && isMobile.value ? (
 					<div
-						class="md:hidden fixed inset-0 bg-black/20 z-30 backdrop-blur-sm"
-						onClick={docsStore.toggleSidebar}
+						class="fixed inset-0 bg-black/20 z-30 backdrop-blur-sm"
+						onClick={docsStore.close}
 					/>
 				) : null
 			)}
 
-			<div
-				class={() => `
-					sidebar-desktop-wrapper
-					${isOpen.value ? 'sidebar-mobile-open' : 'sidebar-mobile-closed'}
-					${isCollapsed.value ? 'collapsed' : ''}
-				`}
-			>
+			<div class={() => sidebarClass.value}>
 				<Sidebar currentPath={props.currentPath} />
 			</div>
 
@@ -167,12 +188,13 @@ export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
 					}
 				/>
 
-				<DocsHeader
-					class="md:hidden"
-					pageTitle={props.pageTitle}
-					tocItems={normalizedTocItems}
-					activeId={activeSectionId}
-				/>
+				{isMobile.value && (
+					<DocsHeader
+						pageTitle={props.pageTitle}
+						tocItems={normalizedTocItems}
+						activeId={activeSectionId}
+					/>
+				)}
 				<div class="docs-content-wrapper">
 					<div class="docs-content">{children}</div>
 
