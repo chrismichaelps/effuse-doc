@@ -8,12 +8,10 @@ export const SearchLayer = defineLayer({
 	dependencies: [],
 	store: searchStore,
 	deriveProps: (store) => ({
-		isOpen: store.isOpen,
+		modalState: store.modalState,
 		query: store.query,
-		results: store.results,
-		isLoading: store.isLoading,
+		searchStatus: store.searchStatus,
 		selectedIndex: store.selectedIndex,
-		error: store.error,
 	}),
 	provides: {
 		search: () => searchStore,

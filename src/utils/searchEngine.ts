@@ -6,6 +6,7 @@ import {
 	type InvertedIndex,
 	type SearchMatch,
 } from './invertedIndex.js';
+import { isSome } from './data/index.js';
 
 export interface SearchResultItem {
 	id: string;
@@ -146,8 +147,8 @@ export const createSearchEngine = (
 			return matches
 				.map((match) => {
 					const doc = getDoc(index, match.docId);
-					if (!doc) return null;
-					return convertMatch(match, doc, config);
+					if (!isSome(doc)) return null;
+					return convertMatch(match, doc.value, config);
 				})
 				.filter((r): r is SearchResultItem => r !== null);
 		},
