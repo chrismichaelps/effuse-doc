@@ -9,53 +9,66 @@ import {
 import { Ink } from '@effuse/ink';
 import { DocsLayout } from '../../components/docs/DocsLayout';
 import { triggerHaptic } from '../../components/Haptics';
+import { taggedEnum } from '../../utils/data/index.js';
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
 import '../../styles/examples.css';
 
-type ThemeMode = 'light' | 'dark' | 'ocean' | 'forest';
+type ThemeLight = { readonly _tag: 'Light'; readonly primary: string };
+type ThemeDark = { readonly _tag: 'Dark'; readonly primary: string };
+type ThemeOcean = { readonly _tag: 'Ocean'; readonly primary: string };
+type ThemeForest = { readonly _tag: 'Forest'; readonly primary: string };
+type ThemeMode = ThemeLight | ThemeDark | ThemeOcean | ThemeForest;
 
-interface ThemeConfig {
-	mode: ThemeMode;
-	primary: string;
-	background: string;
-	text: string;
-}
+const State = taggedEnum<ThemeMode>();
 
-const themes: Record<ThemeMode, ThemeConfig> = {
-	light: {
-		mode: 'light',
-		primary: '#6366f1',
-		background: '#ffffff',
-		text: '#1a1a2e',
-	},
-	dark: {
-		mode: 'dark',
-		primary: '#818cf8',
-		background: '#0f0f0f',
-		text: '#f8fafc',
-	},
-	ocean: {
-		mode: 'ocean',
-		primary: '#06b6d4',
-		background: '#0c4a6e',
-		text: '#e0f2fe',
-	},
-	forest: {
-		mode: 'forest',
-		primary: '#22c55e',
-		background: '#14532d',
-		text: '#dcfce7',
-	},
-};
+const getPrimaryColor = (theme: ThemeMode): string =>
+	State.$match(theme, {
+		Light: () => '#6366f1',
+		Dark: () => '#818cf8',
+		Ocean: () => '#06b6d4',
+		Forest: () => '#22c55e',
+	});
+
+const getBackgroundColor = (theme: ThemeMode): string =>
+	State.$match(theme, {
+		Light: () => '#ffffff',
+		Dark: () => '#0f0f0f',
+		Ocean: () => '#0c4a6e',
+		Forest: () => '#14532d',
+	});
+
+const getTextColor = (theme: ThemeMode): string =>
+	State.$match(theme, {
+		Light: () => '#1a1a2e',
+		Dark: () => '#f8fafc',
+		Ocean: () => '#e0f2fe',
+		Forest: () => '#dcfce7',
+	});
+
+const getThemeLabel = (theme: ThemeMode): string =>
+	State.$match(theme, {
+		Light: () => 'Light',
+		Dark: () => 'Dark',
+		Ocean: () => 'Ocean',
+		Forest: () => 'Forest',
+	});
+
+const cycleTheme = (current: ThemeMode): ThemeMode =>
+	State.$match<ThemeMode>(current, {
+		Light: () => State.Dark({ primary: '#818cf8' }),
+		Dark: () => State.Ocean({ primary: '#06b6d4' }),
+		Ocean: () => State.Forest({ primary: '#22c55e' }),
+		Forest: () => State.Light({ primary: '#6366f1' }),
+	});
 
 interface ThemeCardProps {
 	label: string | undefined;
-	theme: ReadonlySignal<ThemeConfig>;
+	theme: ReadonlySignal<ThemeMode>;
 }
 
 interface ThemeCardExposed {
 	label: string | undefined;
-	theme: ReadonlySignal<ThemeConfig>;
+	theme: ReadonlySignal<ThemeMode>;
 }
 
 const ThemeCard = define<ThemeCardProps, ThemeCardExposed>({
@@ -66,9 +79,9 @@ const ThemeCard = define<ThemeCardProps, ThemeCardExposed>({
 		<article
 			class="context-theme-card"
 			style={() => ({
-				background: theme.value.background,
-				color: theme.value.text,
-				borderColor: theme.value.primary,
+				background: getBackgroundColor(theme.value),
+				color: getTextColor(theme.value),
+				borderColor: getPrimaryColor(theme.value),
 				padding: '1.5rem',
 				borderRadius: '0.75rem',
 				border: '2px solid',
@@ -80,13 +93,13 @@ const ThemeCard = define<ThemeCardProps, ThemeCardExposed>({
 			<h3 style={{ fontWeight: '600', fontSize: '1rem' }}>{label}</h3>
 			<div
 				style={() => ({
-					background: theme.value.primary,
+					background: getPrimaryColor(theme.value),
 					height: '2rem',
 					borderRadius: '0.375rem',
 				})}
 			/>
 			<div style={{ fontSize: '0.875rem', opacity: '0.8' }}>
-				{theme.value.mode}
+				{getThemeLabel(theme.value)}
 			</div>
 		</article>
 	),
@@ -98,11 +111,8 @@ export const ContextPage = define({
 
 		const t = computed(() => i18nStore.translations.value?.examples?.context);
 
-		const currentTheme = signal<ThemeMode>('dark');
-		const nestedTheme = signal<ThemeMode>('ocean');
-
-		const themeConfig = computed(() => themes[currentTheme.value]);
-		const nestedThemeConfig = computed(() => themes[nestedTheme.value]);
+		const currentTheme = signal<ThemeMode>(State.Dark({ primary: '#818cf8' }));
+		const nestedTheme = signal<ThemeMode>(State.Ocean({ primary: '#06b6d4' }));
 
 		effect(() => {
 			useHead({
@@ -113,35 +123,36 @@ export const ContextPage = define({
 
 		onMount(() => undefined);
 
-		const cycleTheme = () => {
-			const modes: ThemeMode[] = ['light', 'dark', 'ocean', 'forest'];
-			const idx = modes.indexOf(currentTheme.value);
-			currentTheme.value = modes[(idx + 1) % modes.length];
+		const cycleCurrentTheme = () => {
+			triggerHaptic('light');
+			currentTheme.value = cycleTheme(currentTheme.value);
 		};
 
 		const cycleNestedTheme = () => {
-			const modes: ThemeMode[] = ['light', 'dark', 'ocean', 'forest'];
-			const idx = modes.indexOf(nestedTheme.value);
-			nestedTheme.value = modes[(idx + 1) % modes.length];
+			triggerHaptic('light');
+			nestedTheme.value = cycleTheme(nestedTheme.value);
+			document
+				.getElementById('nested-provider-section')
+				?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 		};
 
 		return {
 			t,
 			currentTheme,
 			nestedTheme,
-			themeConfig,
-			nestedThemeConfig,
-			cycleTheme,
+			cycleCurrentTheme,
 			cycleNestedTheme,
+			getPrimaryColor,
+			getBackgroundColor,
+			getTextColor,
+			getThemeLabel,
 		};
 	},
 	template: ({
 		t,
 		currentTheme,
 		nestedTheme,
-		themeConfig,
-		nestedThemeConfig,
-		cycleTheme,
+		cycleCurrentTheme,
 		cycleNestedTheme,
 	}) => (
 		<DocsLayout currentPath="/context">
@@ -159,34 +170,19 @@ export const ContextPage = define({
 						{t.value?.themeSwitcherDesc}
 					</p>
 					<div class="flex flex-wrap gap-4" style={{ marginBottom: '1.5rem' }}>
-						<button
-							onClick={() => {
-								triggerHaptic('light');
-								cycleTheme();
-							}}
-							class="btn-premium"
-						>
-							{t.value?.changeTheme}: {currentTheme.value}
+						<button onClick={cycleCurrentTheme} class="btn-premium">
+							{t.value?.changeTheme}: {getThemeLabel(currentTheme.value)}
 						</button>
-						<button
-							onClick={() => {
-								triggerHaptic('light');
-								cycleNestedTheme();
-								document
-									.getElementById('nested-provider-section')
-									?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-							}}
-							class="btn-secondary"
-						>
-							{t.value?.nestedOverride}: {nestedTheme.value}
+						<button onClick={cycleNestedTheme} class="btn-secondary">
+							{t.value?.nestedOverride}: {getThemeLabel(nestedTheme.value)}
 						</button>
 					</div>
 
 					<section class="stat-grid" aria-label="Theme previews">
-						<ThemeCard label={t.value?.card1} theme={themeConfig} />
-						<ThemeCard label={t.value?.card2} theme={themeConfig} />
-						<ThemeCard label={t.value?.card3} theme={themeConfig} />
-						<ThemeCard label={t.value?.card4} theme={themeConfig} />
+						<ThemeCard label={t.value?.card1} theme={currentTheme} />
+						<ThemeCard label={t.value?.card2} theme={currentTheme} />
+						<ThemeCard label={t.value?.card3} theme={currentTheme} />
+						<ThemeCard label={t.value?.card4} theme={currentTheme} />
 					</section>
 				</section>
 
@@ -205,38 +201,38 @@ export const ContextPage = define({
 						class="context-nested-demo"
 						style={() => ({
 							padding: '1rem',
-							background: themeConfig.value.background,
+							background: getBackgroundColor(currentTheme.value),
 							borderRadius: '0.75rem',
-							border: `2px solid ${themeConfig.value.primary}`,
+							border: `2px solid ${getPrimaryColor(currentTheme.value)}`,
 						})}
 					>
 						<div
 							style={() => ({
-								color: themeConfig.value.text,
+								color: getTextColor(currentTheme.value),
 								marginBottom: '1rem',
 							})}
 						>
-							{t.value?.root}: {currentTheme.value}
+							{t.value?.root}: {getThemeLabel(currentTheme.value)}
 						</div>
 						<div
 							style={() => ({
 								padding: '1rem',
-								background: nestedThemeConfig.value.background,
+								background: getBackgroundColor(nestedTheme.value),
 								borderRadius: '0.5rem',
-								border: `2px solid ${nestedThemeConfig.value.primary}`,
+								border: `2px solid ${getPrimaryColor(nestedTheme.value)}`,
 							})}
 						>
 							<div
 								style={() => ({
-									color: nestedThemeConfig.value.text,
+									color: getTextColor(nestedTheme.value),
 									marginBottom: '0.5rem',
 								})}
 							>
-								{t.value?.nested}: {nestedTheme.value}
+								{t.value?.nested}: {getThemeLabel(nestedTheme.value)}
 							</div>
 							<div
 								style={() => ({
-									background: nestedThemeConfig.value.primary,
+									background: getPrimaryColor(nestedTheme.value),
 									width: '100%',
 									height: '2rem',
 									borderRadius: '0.25rem',

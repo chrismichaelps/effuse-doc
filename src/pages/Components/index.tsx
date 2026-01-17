@@ -12,6 +12,7 @@ import {
 import { Ink } from '@effuse/ink';
 import { DocsLayout } from '../../components/docs/DocsLayout';
 import { triggerHaptic } from '../../components/Haptics';
+import { NetworkError } from '../../errors/index.js';
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
 import '../../styles/examples.css';
 
@@ -430,7 +431,13 @@ const AwaitDemo = define({
 		const fetchUser = (id: number): Promise<User> =>
 			fetch(`https://jsonplaceholder.typicode.com/users/${String(id)}`).then(
 				(res) => {
-					if (!res.ok) throw new Error('Network error');
+					if (!res.ok) {
+						throw new NetworkError({
+							message: 'Failed to fetch user',
+							url: `https://jsonplaceholder.typicode.com/users/${id}`,
+							status: res.status,
+						});
+					}
 					return res.json() as Promise<User>;
 				}
 			);

@@ -23,12 +23,17 @@ export const TodosPage = define({
 
 		const t = computed(() => i18nStore.translations.value?.examples?.todos);
 
+		const editInputValue = signal('');
+		const inputValue = signal('');
+
 		effect(() => {
 			useHead({
 				title: `${t.value?.title as string} - Effuse Playground`,
 				description: t.value?.description as string,
 			});
 		});
+
+		const isEditModalOpen = computed(() => todosStore.isEditModalOpen());
 
 		const todosQuery = useInfiniteQuery<Todo[], number>({
 			queryKey: ['todos'],
@@ -70,61 +75,43 @@ export const TodosPage = define({
 			},
 		});
 
-		const {
-			filter,
-			isEditModalOpen,
-			editTitle,
-			todos: storeTodos,
-		} = todosStore;
-
-		const inputValue = signal('');
-		const syncedPageCount = signal(0);
-
-		effect(() => {
-			const pages = todosQuery.allPagesData.value;
-			if (pages && pages.length > syncedPageCount.value) {
-				if (syncedPageCount.value === 0) {
-					todosStore.setTodos(pages.flat());
-				} else {
-					const newPages = pages.slice(syncedPageCount.value);
-					const newTodos = newPages.flat();
-					todosStore.appendTodos(newTodos);
-				}
-				syncedPageCount.value = pages.length;
-			}
-		});
-
 		const filteredTodos = computed(() => {
-			switch (filter.value) {
+			const filterValue = todosStore.filter.value;
+			const todos = todosStore.todos.value;
+			switch (filterValue) {
 				case 'completed':
-					return storeTodos.value.filter((t) => t.completed);
+					return todos.filter((t) => t.completed);
 				case 'pending':
-					return storeTodos.value.filter((t) => !t.completed);
+					return todos.filter((t) => !t.completed);
 				case 'all':
 				default:
-					return storeTodos.value;
+					return todos;
 			}
 		});
-		const totalCount = computed(() => storeTodos.value.length);
+		const totalCount = computed(() => todosStore.todos.value.length);
 		const completedCount = computed(
-			() => storeTodos.value.filter((t) => t.completed).length
+			() => todosStore.todos.value.filter((t) => t.completed).length
 		);
 		const pendingCount = computed(
 			() => totalCount.value - completedCount.value
 		);
 		const isAdding = computed(() => addMutation.isPending.value);
 		const isLoading = computed(
-			() => storeTodos.value.length === 0 && todosQuery.isPending.value
+			() => todosStore.todos.value.length === 0 && todosQuery.isPending.value
 		);
 
 		const setFilter = (f: 'all' | 'completed' | 'pending') =>
 			todosStore.setFilter(f);
 		const toggleTodo = (id: number) => todosStore.toggleTodo(id);
 		const deleteTodo = (id: number) => todosStore.deleteTodo(id);
-		const openEditModal = (todo: Todo) => todosStore.openEditModal(todo);
+		const openEditModal = (todo: Todo) => {
+			editInputValue.value = todo.title;
+			todosStore.openEditModal(todo);
+		};
 		const closeEditModal = () => todosStore.closeEditModal();
-		const setEditTitle = (title: string) => todosStore.setEditTitle(title);
-		const saveEdit = () => todosStore.saveEdit();
+		const saveEdit = () => {
+			todosStore.saveEditWithTitle(editInputValue.value);
+		};
 
 		const handleAddTodo = useCallback(() => {
 			const title = inputValue.value.trim();
@@ -159,6 +146,22 @@ export const TodosPage = define({
 
 		infiniteScroll.onLoadMore(() => loadMore());
 
+		const syncedPageCount = signal(0);
+
+		effect(() => {
+			const pages = todosQuery.allPagesData.value;
+			if (pages && pages.length > syncedPageCount.value) {
+				if (syncedPageCount.value === 0) {
+					todosStore.setTodos(pages.flat());
+				} else {
+					const newPages = pages.slice(syncedPageCount.value);
+					const newTodos = newPages.flat();
+					todosStore.appendTodos(newTodos);
+				}
+				syncedPageCount.value = pages.length;
+			}
+		});
+
 		const codeSnippet = `
 \`\`\`tsx
 const query = useInfiniteQuery({
@@ -178,9 +181,8 @@ const mutation = useMutation({
 			totalCount,
 			completedCount,
 			pendingCount,
-			filter,
 			isEditModalOpen,
-			editTitle,
+			editInputValue,
 			inputValue,
 			handleAddTodo,
 			handleInputChange,
@@ -192,13 +194,13 @@ const mutation = useMutation({
 			deleteTodo,
 			openEditModal,
 			closeEditModal,
-			setEditTitle,
 			saveEdit,
 			loadMore,
 			handleScroll: infiniteScroll.handleScroll,
 			hasNextPage: todosQuery.hasNextPage,
 			isFetchingNextPage: todosQuery.isFetchingNextPage,
 			codeSnippet,
+			filter: todosStore.filter,
 		};
 	},
 	template: ({
@@ -207,9 +209,8 @@ const mutation = useMutation({
 		totalCount,
 		completedCount,
 		pendingCount,
-		filter,
 		isEditModalOpen,
-		editTitle,
+		editInputValue,
 		inputValue,
 		handleAddTodo,
 		handleInputChange,
@@ -221,7 +222,6 @@ const mutation = useMutation({
 		deleteTodo,
 		openEditModal,
 		closeEditModal,
-		setEditTitle,
 		saveEdit,
 		loadMore,
 		handleScroll,
@@ -229,6 +229,7 @@ const mutation = useMutation({
 		isFetchingNextPage,
 		todosQuery,
 		codeSnippet,
+		filter,
 	}) => (
 		<DocsLayout currentPath="/todos">
 			<section class="example-container">
@@ -256,9 +257,11 @@ const mutation = useMutation({
 									</label>
 									<input
 										type="text"
-										value={editTitle}
+										value={editInputValue}
 										onInput={(e: Event) =>
-											setEditTitle((e.target as HTMLInputElement).value)
+											(editInputValue.value = (
+												e.target as HTMLInputElement
+											).value)
 										}
 										onKeyDown={(e: KeyboardEvent) => {
 											if (e.key === 'Enter') saveEdit();
@@ -505,7 +508,7 @@ const mutation = useMutation({
 											</button>
 										</div>
 										<span class="flex-shrink-0 example-badge">
-											ID: {todoSignal.value.userId}
+											ID: {todoSignal.value.id}
 										</span>
 									</li>
 								)}
