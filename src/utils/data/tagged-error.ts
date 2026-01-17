@@ -4,6 +4,10 @@ const plainArgsSymbol = Symbol.for('app/Data/Error/plainArgs');
 
 type ErrorArgs = Record<string, unknown>;
 
+export interface TaggedError<Tag extends string> extends Error {
+	readonly _tag: Tag;
+}
+
 function extractMessage(args: ErrorArgs): string | undefined {
 	const msg = args?.message;
 	return isString(msg) ? msg : undefined;
@@ -48,12 +52,17 @@ export function TaggedError<Tag extends string>(
 	tag: Tag
 ): new <A extends ErrorArgs = Record<string, never>>(
 	args: A
-) => Error & { readonly _tag: Tag } & Readonly<A> {
+) => TaggedError<Tag> & Readonly<A> {
 	return class extends TaggedErrorBase<Tag> {
 		constructor(args: ErrorArgs) {
 			super(tag, args);
 		}
 	} as new <A extends ErrorArgs = Record<string, never>>(
 		args: A
-	) => Error & { readonly _tag: Tag } & Readonly<A>;
+	) => TaggedError<Tag> & Readonly<A>;
 }
+
+export const isTaggedError = (
+	u: unknown
+): u is { readonly _tag: string } & Error =>
+	isRecord(u) && '_tag' in u && isString(u._tag) && u instanceof Error;

@@ -116,3 +116,26 @@ export function dual(
 		return (self: unknown) => body.apply(this, [self, ...args]);
 	};
 }
+
+type TaggedUnionTag<T> = T extends { readonly _tag: infer K }
+	? K extends string
+		? K
+		: never
+	: never;
+
+export function matchTag<T extends { readonly _tag: string }, R>(
+	value: T,
+	cases: { [K in TaggedUnionTag<T>]: (value: Extract<T, { _tag: K }>) => R } & {
+		_: (value: T) => R;
+	}
+): R {
+	const tag = value._tag;
+	const caseKeys = Object.keys(cases) as Array<TaggedUnionTag<T>>;
+	if (caseKeys.includes(tag as TaggedUnionTag<T>)) {
+		const handler = (cases as Record<string, unknown>)[tag];
+		if (typeof handler === 'function') {
+			return (handler as (val: T) => R)(value);
+		}
+	}
+	return cases._(value);
+}
