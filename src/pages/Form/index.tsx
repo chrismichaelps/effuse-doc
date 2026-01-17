@@ -16,6 +16,7 @@ import { DocsLayout } from '../../components/docs/DocsLayout';
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
 import { triggerHaptic } from '../../components/Haptics';
 import { FormSubmissionError } from '../../errors/index.js';
+import { taggedEnum, matchTag } from '../../utils/data/index.js';
 import '../../styles/examples.css';
 
 interface Post {
@@ -30,6 +31,22 @@ interface CreatePostVariables {
 	body: string;
 	userId: number;
 }
+
+type SubmissionStatusNone = { readonly _tag: 'None' };
+type SubmissionStatusSuccess = {
+	readonly _tag: 'Success';
+	readonly postId: number;
+};
+type SubmissionStatusError = {
+	readonly _tag: 'Error';
+	readonly message: string;
+};
+type SubmissionStatus =
+	| SubmissionStatusNone
+	| SubmissionStatusSuccess
+	| SubmissionStatusError;
+
+const SubmissionStatusState = taggedEnum<SubmissionStatus>();
 
 const API_BASE = 'https://jsonplaceholder.typicode.com';
 
@@ -58,7 +75,9 @@ export const FormDemoPage = define({
 		});
 
 		const submittedPosts = signal<Post[]>([]);
-		const submissionStatus = signal('');
+		const submissionStatus = signal<SubmissionStatus>(
+			SubmissionStatusState.None({})
+		);
 		let nextPostId = 1;
 
 		const createPostMutation = useMutation<Post, CreatePostVariables>({
@@ -81,20 +100,23 @@ export const FormDemoPage = define({
 			onSuccess: (newPost: Post) => {
 				const postWithUniqueId = { ...newPost, id: nextPostId++ };
 				submittedPosts.value = [...submittedPosts.value, postWithUniqueId];
-				submissionStatus.value = `Post #${String(postWithUniqueId.id)} created successfully`;
+				const newStatus = SubmissionStatusState.Success({
+					postId: postWithUniqueId.id,
+				});
+				submissionStatus.value = newStatus;
 				setTimeout(() => {
-					submissionStatus.value = '';
+					submissionStatus.value = SubmissionStatusState.None({});
 				}, STATUS_DISPLAY_DURATION_MS);
 				form.reset();
 			},
 			onError: (error: unknown) => {
-				console.log('[onError] Called with:', error);
 				const message = isTaggedError(error)
 					? error.toString()
 					: error instanceof Error
 						? error.message
 						: 'Unknown error';
-				submissionStatus.value = `Error: ${message}`;
+				const newStatus = SubmissionStatusState.Error({ message });
+				submissionStatus.value = newStatus;
 			},
 		});
 
@@ -162,7 +184,7 @@ export const FormDemoPage = define({
 		const resetAll = useCallback(() => {
 			form.reset();
 			submittedPosts.value = [];
-			submissionStatus.value = '';
+			submissionStatus.value = SubmissionStatusState.None({});
 			nextPostId = 1;
 		});
 
@@ -204,6 +226,42 @@ export const FormDemoPage = define({
 		const isDisabled = computed(() => !canSubmit.value);
 		const postsCount = computed(() => submittedPosts.value.length);
 
+		const showSuccessMessage = computed(() =>
+			matchTag(submissionStatus.value, {
+				Success: () => true,
+				None: () => false,
+				Error: () => false,
+				_: () => false,
+			})
+		);
+
+		const successMessage = computed(() =>
+			matchTag(submissionStatus.value, {
+				Success: ({ postId }) => `Post #${String(postId)} created successfully`,
+				None: () => '',
+				Error: () => '',
+				_: () => '',
+			})
+		);
+
+		const showErrorMessage = computed(() =>
+			matchTag(submissionStatus.value, {
+				Error: () => true,
+				Success: () => false,
+				None: () => false,
+				_: () => false,
+			})
+		);
+
+		const errorMessage = computed(() =>
+			matchTag(submissionStatus.value, {
+				Error: ({ message }) => `Error: ${message}`,
+				Success: () => '',
+				None: () => '',
+				_: () => '',
+			})
+		);
+
 		return {
 			t,
 			form,
@@ -215,7 +273,6 @@ export const FormDemoPage = define({
 			bodyCharCount,
 			submitButtonText,
 			submittedPosts,
-			submissionStatus,
 			isValidText,
 			isDirtyText,
 			isSubmittingText,
@@ -223,6 +280,10 @@ export const FormDemoPage = define({
 			postsCount,
 			handleSubmit,
 			resetAll,
+			showSuccessMessage,
+			successMessage,
+			showErrorMessage,
+			errorMessage,
 			codeSnippet: `
 \`\`\`tsx
 const { form } = useForm({
@@ -250,7 +311,6 @@ const mutation = useMutation({
 		bodyCharCount,
 		submitButtonText,
 		submittedPosts,
-		submissionStatus,
 		isValidText,
 		isDirtyText,
 		isSubmittingText,
@@ -258,6 +318,10 @@ const mutation = useMutation({
 		postsCount,
 		handleSubmit,
 		resetAll,
+		showSuccessMessage,
+		successMessage,
+		showErrorMessage,
+		errorMessage,
 		codeSnippet,
 	}) => (
 		<DocsLayout currentPath="/form">
@@ -488,13 +552,22 @@ const mutation = useMutation({
 					</form>
 
 					{computed(() =>
-						submissionStatus.value ? (
+						showSuccessMessage.value ? (
 							<div class="px-6 pb-6">
 								<div
 									class="p-4 bg-mint/10 text-mint rounded-xl font-medium border border-mint/20 text-center animate-water-drop"
 									style="background: rgba(141, 240, 204, 0.1); color: var(--accent-mint); border-color: rgba(141, 240, 204, 0.1);"
 								>
-									{submissionStatus.value}
+									{successMessage.value}
+								</div>
+							</div>
+						) : showErrorMessage.value ? (
+							<div class="px-6 pb-6">
+								<div
+									class="p-4 bg-red-500/10 text-red-400 rounded-xl font-medium border border-red-500/20 text-center animate-water-drop"
+									style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.2);"
+								>
+									{errorMessage.value}
 								</div>
 							</div>
 						) : null
