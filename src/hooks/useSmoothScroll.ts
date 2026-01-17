@@ -1,5 +1,15 @@
-import { defineHook, type Signal } from '@effuse/core';
+import { defineHook, type Signal, type ReadonlySignal } from '@effuse/core';
+import { taggedEnum } from '../utils/data/index.js';
 import Lenis from 'lenis';
+
+type SmoothScrollUninitialized = { readonly _tag: 'Uninitialized' };
+type SmoothScrollActive = {
+	readonly _tag: 'Active';
+	readonly lenis: Lenis;
+};
+type SmoothScrollState = SmoothScrollUninitialized | SmoothScrollActive;
+
+const State = taggedEnum<SmoothScrollState>();
 
 interface SmoothScrollConfig {
 	wrapper?: string;
@@ -8,7 +18,9 @@ interface SmoothScrollConfig {
 }
 
 interface SmoothScrollReturn {
-	lenis: Signal<Lenis | null>;
+	state: Signal<SmoothScrollState>;
+	isActive: ReadonlySignal<boolean>;
+	isUninitialized: ReadonlySignal<boolean>;
 	init: () => void;
 	scrollTo: (target: string | number) => void;
 }
@@ -19,11 +31,39 @@ export const useSmoothScroll = defineHook<
 >({
 	name: 'useSmoothScroll',
 	setup: ({ config, signal, effect }): SmoothScrollReturn => {
-		const lenisRef = signal<Lenis | null>(null);
-		const initialized = signal(false);
+		const state = signal<SmoothScrollState>(State.Uninitialized({}));
+		const isActiveSig = signal(false);
+		const isUninitializedSig = signal(true);
+
+		const isActive: ReadonlySignal<boolean> = isActiveSig;
+		const isUninitialized: ReadonlySignal<boolean> = isUninitializedSig;
+
+		const updateDerivedState = (newState: SmoothScrollState) => {
+			State.$match(newState, {
+				Uninitialized: () => {
+					isActiveSig.value = false;
+					isUninitializedSig.value = true;
+				},
+				Active: () => {
+					isActiveSig.value = true;
+					isUninitializedSig.value = false;
+				},
+			});
+		};
 
 		effect(() => {
-			if (!initialized.value) return undefined;
+			const currentState = state.value;
+			let isInit = false;
+			State.$match(currentState, {
+				Uninitialized: () => {
+					isInit = false;
+				},
+				Active: () => {
+					isInit = true;
+				},
+			});
+
+			if (!isInit) return undefined;
 
 			const wrapper = config.wrapper
 				? document.querySelector(config.wrapper)
@@ -42,7 +82,9 @@ export const useSmoothScroll = defineHook<
 				smoothWheel: true,
 			});
 
-			lenisRef.value = lenis;
+			const activeState = State.Active({ lenis });
+			state.value = activeState;
+			updateDerivedState(activeState);
 
 			let rafId: number;
 			function raf(time: number) {
@@ -54,17 +96,35 @@ export const useSmoothScroll = defineHook<
 			return () => {
 				cancelAnimationFrame(rafId);
 				lenis.destroy();
-				lenisRef.value = null;
+				const inactiveState = State.Uninitialized({});
+				state.value = inactiveState;
+				updateDerivedState(inactiveState);
 			};
 		});
 
 		return {
-			lenis: lenisRef,
+			state,
+			isActive,
+			isUninitialized,
 			init: () => {
-				initialized.value = true;
+				const currentState = state.value;
+				State.$match(currentState, {
+					Uninitialized: () => {
+						const newState = State.Uninitialized({});
+						state.value = newState;
+						updateDerivedState(newState);
+					},
+					Active: () => {},
+				});
 			},
 			scrollTo: (target: string | number) => {
-				lenisRef.value?.scrollTo(target);
+				const currentState = state.value;
+				State.$match(currentState, {
+					Uninitialized: () => {},
+					Active: ({ lenis }) => {
+						lenis.scrollTo(target);
+					},
+				});
 			},
 		};
 	},

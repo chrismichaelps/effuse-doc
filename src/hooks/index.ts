@@ -5,3 +5,4 @@ export { useToggle } from './useToggle.js';
 export { useInfiniteScroll } from './useInfiniteScroll.js';
 export { useSmoothScroll } from './useSmoothScroll.js';
 export { useTranslation } from './useTranslation.js';
+export { useBreakpoint } from './useBreakpoint.js';

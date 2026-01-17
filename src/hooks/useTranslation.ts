@@ -1,5 +1,6 @@
 import { defineHook, signal, type Signal } from '@effuse/core';
 import type { Translations } from '@effuse/i18n';
+import { Option, some, none, getOrElse } from '../utils/data/index.js';
 
 interface I18nProps {
 	locale: Signal<string>;
@@ -13,10 +14,7 @@ interface TranslationReturn {
 	isLoading: Signal<boolean>;
 }
 
-const getNestedValue = (
-	obj: Translations,
-	path: string
-): string | undefined => {
+const getNestedValue = (obj: Translations, path: string): Option<string> => {
 	const result = path
 		.split('.')
 		.reduce<unknown>(
@@ -24,7 +22,7 @@ const getNestedValue = (
 				acc && typeof acc === 'object' ? (acc as Translations)[key] : undefined,
 			obj
 		);
-	return typeof result === 'string' ? result : undefined;
+	return typeof result === 'string' ? some(result) : none();
 };
 
 export const useTranslation = defineHook<undefined, TranslationReturn>({
@@ -39,7 +37,10 @@ export const useTranslation = defineHook<undefined, TranslationReturn>({
 		const t = (key: string, fallback?: string): string => {
 			const translations = i18n.translations.value;
 			if (!translations) return fallback ?? key;
-			return getNestedValue(translations, key) ?? fallback ?? key;
+			return getOrElse(
+				getNestedValue(translations, key),
+				() => fallback ?? key
+			);
 		};
 
 		return { t, locale, isLoading };
