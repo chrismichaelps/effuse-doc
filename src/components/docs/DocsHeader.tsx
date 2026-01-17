@@ -192,10 +192,10 @@ export const DocsHeader = define<DocsHeaderProps, DocsHeaderExposed>({
 		>
 			<div class="flex items-center w-full h-full relative px-2">
 				<div class="w-9 flex-shrink-0">
-					{!(isSidebarOpen as Signal<boolean>).value && (
+					{!isSidebarOpen.value && (
 						<SidebarToggle
 							class="md:hidden"
-							onToggle={docsStore.toggleSidebar}
+							onToggle={docsStore.toggleSidebarMobile}
 						/>
 					)}
 				</div>

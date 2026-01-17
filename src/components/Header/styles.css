@@ -242,7 +242,6 @@
 	z-index: 1001;
 	padding: 1.25rem;
 	transform-origin: top right;
-	animation: modalBounce 0.4s var(--ease-spring) forwards;
 	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
@@ -252,6 +251,7 @@
 
 .header-mobile-menu.open {
 	display: block;
+	animation: modalBounce 0.4s var(--ease-spring) forwards;
 }
 
 @media (min-width: 768px) {
