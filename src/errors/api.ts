@@ -1,4 +1,4 @@
-import { TaggedError } from '@effuse/core';
+import { TaggedError } from '../utils/data/index.js';
 
 export class ApiError extends TaggedError('ApiError')<{
 	readonly message: string;
@@ -10,7 +10,7 @@ export class ApiError extends TaggedError('ApiError')<{
 		return `${this._tag} [${this.statusCode}] ${this.endpoint}: ${this.message}`;
 	}
 
-	override toJSON(): Record<string, unknown> {
+	toJSON(): Record<string, unknown> {
 		return {
 			_tag: this._tag,
 			message: this.message,

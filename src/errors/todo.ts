@@ -1,4 +1,4 @@
-import { TaggedError } from '@effuse/core';
+import { TaggedError } from '../utils/data/index.js';
 
 export class TodoError extends TaggedError('TodoError')<{
 	readonly message: string;
