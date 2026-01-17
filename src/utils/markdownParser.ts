@@ -1,3 +1,5 @@
+import { Option, some, none, getOrElse } from './data/index.js';
+
 export interface DocHeading {
 	text: string;
 	id: string;
@@ -13,21 +15,23 @@ export interface DocEntry {
 	headings: DocHeading[];
 }
 
-const extractTitle = (content: string, fileName: string): string => {
+const extractTitle = (content: string, fileName: string): Option<string> => {
 	const h1Match = content.match(/^#\s+(.+)$/m);
-	if (h1Match) return h1Match[1].trim();
+	if (h1Match) return some(h1Match[1].trim());
 
 	const frontmatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---/m);
 	if (frontmatterMatch) {
 		const frontmatter = frontmatterMatch[1];
 		const titleMatch = frontmatter.match(/^title:\s*(.+)$/m);
-		if (titleMatch) return titleMatch[1].trim();
+		if (titleMatch) return some(titleMatch[1].trim());
 	}
 
-	return fileName
+	const fallback = fileName
 		.replace(/.md$/, '')
 		.replace(/[-_]/g, ' ')
 		.replace(/\b\w/g, (c) => c.toUpperCase());
+
+	return fallback ? some(fallback) : none();
 };
 
 const extractHeadings = (content: string): DocHeading[] => {
@@ -42,7 +46,7 @@ const extractHeadings = (content: string): DocHeading[] => {
 
 		const id = text
 			.toLowerCase()
-			.replace(/[^\w\s-]/g, '') // Remove special chars
+			.replace(/[^\w\s-]/g, '')
 			.replace(/\s+/g, '-')
 			.replace(/^-+|-+$/g, '')
 			.replace(/-{2,}/g, '-');
@@ -87,69 +91,53 @@ const extractCodeContent = (content: string): string => {
 const extractPlainText = (content: string): string => {
 	let cleaned = content;
 
-	// Remove frontmatter
 	cleaned = cleaned.replace(/^---[\s\S]*?---\n?/, '');
-
-	// Remove HTML tags
 	cleaned = cleaned.replace(/<[^>]+>/g, ' ');
-
-	// Remove images ![alt](url)
 	cleaned = cleaned.replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1 ');
-
-	// Remove links, keep text [text](url)
 	cleaned = cleaned.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1 ');
-
-	// Remove code blocks
 	cleaned = cleaned.replace(/```[\s\S]*?```/g, ' ');
 	cleaned = cleaned.replace(/^( {4}|\t)[\s\S]*?(?=\n[^ \t])/gm, ' ');
-
-	// Remove inline code
 	cleaned = cleaned.replace(/`[^`]+`/g, ' ');
-
-	// Remove tables
 	cleaned = cleaned.replace(/^\|.*\|$/gm, ' ');
 	cleaned = cleaned.replace(/^[ -|]+$/gm, ' ');
-
-	// Remove lists prefixes
 	cleaned = cleaned.replace(/^\s*[-*+]\s+/gm, ' ');
 	cleaned = cleaned.replace(/^\s*\d+\.\s+/gm, ' ');
-
-	// Remove blockquotes
 	cleaned = cleaned.replace(/^\s*>+\s?/gm, ' ');
-
-	// Remove emphasis markdown
 	cleaned = cleaned.replace(/[*_~`]+/g, ' ');
-
-	// Remove horizontal rules
 	cleaned = cleaned.replace(/^\s*[-*_]{3,}\s*$/gm, ' ');
-
-	// Normalize whitespace
 	cleaned = cleaned.replace(/\s+/g, ' ').trim();
 
 	return cleaned.slice(0, 3000);
 };
 
+const isValidEntry = (
+	title: string,
+	text: string,
+	codeContent: string,
+	headings: DocHeading[]
+): boolean => !!(title && (text || codeContent || headings.length > 0));
+
 export const parseMarkdownContent = (
 	filePath: string,
 	content: string,
 	lang: string = 'en'
-): DocEntry | null => {
+): Option<DocEntry> => {
 	const fileName = filePath.split('/').pop()?.replace(/\.md$/, '') ?? '';
-	if (!fileName) return null;
+	if (!fileName) return none();
 
-	const title = extractTitle(content, fileName);
+	const title = getOrElse(extractTitle(content, fileName), () => '');
 	const headings = extractHeadings(content);
 	const text = extractPlainText(content);
 	const codeContent = extractCodeContent(content);
 
-	if (!title && !text && !codeContent && headings.length === 0) return null;
+	if (!isValidEntry(title, text, codeContent, headings)) return none();
 
-	return {
+	return some({
 		id: fileName,
 		title,
 		text,
 		codeContent,
 		path: `${lang}/${fileName}.md`,
 		headings,
-	};
+	});
 };

@@ -1,8 +1,17 @@
+import { isString, isNumber, isRecord } from './data/index.js';
+
 export interface Token {
 	term: string;
 	position: number;
 	type: 'word' | 'code' | 'ngram';
 }
+
+export const isValidToken = (value: unknown): value is Token =>
+	isRecord(value) &&
+	isString(value.term) &&
+	isNumber(value.position) &&
+	isString(value.type) &&
+	['word', 'code', 'ngram'].includes(value.type);
 
 const normalize = (str: string): string =>
 	str

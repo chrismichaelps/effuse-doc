@@ -1,5 +1,6 @@
 import type { DocEntry } from './markdownParser.js';
 import { tokenize, tokenizeQuery } from './tokenizer.js';
+import { Option, some, none } from './data/index.js';
 
 export interface IndexEntry {
 	docId: string;
@@ -254,4 +255,7 @@ export const searchIndex = (
 export const getDoc = (
 	index: InvertedIndex,
 	docId: string
-): DocEntry | undefined => index.docs.get(docId);
+): Option<DocEntry> => {
+	const doc = index.docs.get(docId);
+	return doc ? some(doc) : none();
+};

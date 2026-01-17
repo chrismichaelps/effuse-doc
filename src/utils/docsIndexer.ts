@@ -1,4 +1,5 @@
 import { parseMarkdownContent, type DocEntry } from './markdownParser.js';
+import { isSome } from './data/index.js';
 
 const allMarkdownModules = import.meta.glob('../content/docs/*/*.md', {
 	query: '?raw',
@@ -17,8 +18,8 @@ export const loadDocsIndex = async (lang: string): Promise<DocEntry[]> => {
 		try {
 			const content = await loadModule();
 			const entry = parseMarkdownContent(filePath, content, lang);
-			if (entry) {
-				entries.push(entry);
+			if (isSome(entry)) {
+				entries.push(entry.value);
 			}
 		} catch {
 			/* */

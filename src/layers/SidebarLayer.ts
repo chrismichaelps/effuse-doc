@@ -1,4 +1,4 @@
-import { defineLayer, signal } from '@effuse/core';
+import { defineLayer, signal, computed } from '@effuse/core';
 import { Sidebar } from '../components/docs/Sidebar';
 import { SidebarToggle } from '../components/docs/SidebarToggle';
 import { docsStore } from '../store/docsUIStore';
@@ -8,9 +8,9 @@ export const SidebarLayer = defineLayer({
 	dependencies: ['layout', 'i18n'],
 	store: docsStore,
 	deriveProps: (store) => ({
-		isOpen: store.isSidebarOpen,
+		isOpen: computed(() => store.isSidebarVisible()),
 		width: signal(280),
-		isCollapsed: store.isSidebarCollapsed,
+		isCollapsed: computed(() => store.isSidebarCollapsed()),
 	}),
 	components: {
 		Sidebar,
@@ -18,14 +18,5 @@ export const SidebarLayer = defineLayer({
 	},
 	provides: {
 		docsUI: () => docsStore,
-	},
-	onMount: () => {
-		console.log('[SidebarLayer] mounted');
-	},
-	onUnmount: () => {
-		console.log('[SidebarLayer] unmounted');
-	},
-	onError: (err) => {
-		console.error('[SidebarLayer] error:', err.message);
 	},
 });

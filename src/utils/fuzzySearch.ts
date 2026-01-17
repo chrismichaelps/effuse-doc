@@ -1,6 +1,6 @@
 export interface FuzzyMatchResult {
-	score: number;
-	indices?: number[];
+	readonly score: number;
+	readonly indices?: readonly number[];
 }
 
 const levenshteinSimilarity = (str1: string, str2: string): number => {
