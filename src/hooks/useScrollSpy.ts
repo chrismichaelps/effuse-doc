@@ -1,9 +1,24 @@
-import { defineHook, type Signal } from '@effuse/core';
+import { defineHook, type Signal, type ReadonlySignal } from '@effuse/core';
+import { taggedEnum } from '../utils/data/index.js';
 
 interface TocItem {
 	id: string;
 	title: string;
 }
+
+type InitUninitialized = { readonly _tag: 'Uninitialized' };
+type InitInitialized = { readonly _tag: 'Initialized' };
+type InitState = InitUninitialized | InitInitialized;
+
+type LockUnlocked = { readonly _tag: 'Unlocked' };
+type LockLocked = {
+	readonly _tag: 'Locked';
+	readonly timeoutMs: number;
+};
+type LockState = LockUnlocked | LockLocked;
+
+const Init = taggedEnum<InitState>();
+const Lock = taggedEnum<LockState>();
 
 interface ScrollSpyConfig {
 	containerSelector: string;
@@ -11,8 +26,12 @@ interface ScrollSpyConfig {
 }
 
 interface ScrollSpyReturn {
+	initState: Signal<InitState>;
+	lockState: Signal<LockState>;
 	activeId: Signal<string>;
 	items: Signal<TocItem[]>;
+	isInitialized: ReadonlySignal<boolean>;
+	isLocked: ReadonlySignal<boolean>;
 	setItems: (newItems: TocItem[]) => void;
 	setActiveId: (id: string) => void;
 	init: () => void;
@@ -23,19 +42,69 @@ export const useScrollSpy = defineHook<ScrollSpyConfig, ScrollSpyReturn>({
 	setup: ({ config, signal, effect }): ScrollSpyReturn => {
 		const activeId = signal('');
 		const items = signal<TocItem[]>([]);
-		const initialized = signal(false);
+		const initState = signal<InitState>(Init.Uninitialized({}));
+		const lockState = signal<LockState>(Lock.Unlocked({}));
 
-		let scrollLocked = false;
+		const isInitializedSig = signal(false);
+		const isLockedSig = signal(false);
+
+		const isInitialized: ReadonlySignal<boolean> = isInitializedSig;
+		const isLocked: ReadonlySignal<boolean> = isLockedSig;
+
 		let lockTimeout: ReturnType<typeof setTimeout> | null = null;
 
+		const updateInitState = (state: InitState) => {
+			Init.$match(state, {
+				Uninitialized: () => {
+					isInitializedSig.value = false;
+				},
+				Initialized: () => {
+					isInitializedSig.value = true;
+				},
+			});
+		};
+
+		const updateLockState = (state: LockState) => {
+			Lock.$match(state, {
+				Unlocked: () => {
+					isLockedSig.value = false;
+				},
+				Locked: () => {
+					isLockedSig.value = true;
+				},
+			});
+		};
+
 		effect(() => {
-			if (!initialized.value) return undefined;
+			const currentInit = initState.value;
+			let isInit = false;
+			Init.$match(currentInit, {
+				Uninitialized: () => {
+					isInit = false;
+				},
+				Initialized: () => {
+					isInit = true;
+				},
+			});
+
+			if (!isInit) return undefined;
 
 			const container = document.querySelector(config.containerSelector);
 			if (!container) return undefined;
 
 			const handleScroll = () => {
-				if (scrollLocked) return;
+				const currentLock = lockState.value;
+				let locked = false;
+				Lock.$match(currentLock, {
+					Unlocked: () => {
+						locked = false;
+					},
+					Locked: () => {
+						locked = true;
+					},
+				});
+
+				if (locked) return;
 
 				const tocItems = items.value;
 				if (tocItems.length === 0) return;
@@ -84,26 +153,43 @@ export const useScrollSpy = defineHook<ScrollSpyConfig, ScrollSpyReturn>({
 			return () => {
 				container.removeEventListener('scroll', handleScroll);
 				window.removeEventListener('scroll', handleScroll);
-				if (lockTimeout) clearTimeout(lockTimeout);
+				Lock.$match(lockState.value, {
+					Unlocked: () => {},
+					Locked: () => {
+						if (lockTimeout) clearTimeout(lockTimeout);
+					},
+				});
 			};
 		});
 
 		return {
+			initState,
+			lockState,
 			activeId,
 			items,
+			isInitialized,
+			isLocked,
 			setItems: (newItems: TocItem[]) => {
 				items.value = newItems;
 			},
 			setActiveId: (id: string) => {
-				scrollLocked = true;
+				const newLockState = Lock.Locked({ timeoutMs: 1500 });
+				lockState.value = newLockState;
+				updateLockState(newLockState);
+
 				if (lockTimeout) clearTimeout(lockTimeout);
 				lockTimeout = setTimeout(() => {
-					scrollLocked = false;
+					const unlockState = Lock.Unlocked({});
+					lockState.value = unlockState;
+					updateLockState(unlockState);
 				}, 1500);
+
 				activeId.value = id;
 			},
 			init: () => {
-				initialized.value = true;
+				const newState = Init.Initialized({});
+				initState.value = newState;
+				updateInitState(newState);
 			},
 		};
 	},
