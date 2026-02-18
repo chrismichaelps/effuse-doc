@@ -271,7 +271,9 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
 	}) => (
 		<Portal target="body" priority="overlay" key="search-modal">
 			<div
-				class={() => `search-modal-backdrop ${isOpen?.value ? '' : 'hidden'} ${isClosing?.value ? 'closing' : ''}`}
+				class={() =>
+					`search-modal-backdrop ${isOpen?.value ? '' : 'hidden'} ${isClosing?.value ? 'closing' : ''}`
+				}
 				onClick={handleBackdropClick}
 				onAnimationEnd={handleAnimationEnd}
 			>
