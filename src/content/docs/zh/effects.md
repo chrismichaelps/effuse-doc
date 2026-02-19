@@ -14,29 +14,54 @@ Effuse 提供特定函数来处理副作用并监视状态更改。
 import { define, signal, effect } from '@effuse/core';
 
 const DataFetcher = define({
-	script: () => {
-		const userId = signal(1);
-		const userData = signal<any>(null);
+  script: () => {
+    const userId = signal(1);
+    const userData = signal<any>(null);
 
-		// 当 'userId' 更改时自动运行
-		effect(() => {
-			fetch(`/api/users/${userId.value}`)
-				.then((res) => res.json())
-				.then((data) => {
-					userData.value = data;
-				});
-		});
+    // 当 'userId' 更改时自动运行
+    effect(() => {
+      fetch(`/api/users/${userId.value}`)
+        .then((res) => res.json())
+        .then((data) => {
+          userData.value = data;
+        });
+    });
 
-		return { userId, userData };
-	},
-	template: ({ userId, userData }) => (
-		<div>
-			<button onClick={() => userId.value++}>Next User</button>
-			<pre>{JSON.stringify(userData.value, null, 2)}</pre>
-		</div>
-	),
+    return { userId, userData };
+  },
+  template: ({ userId, userData }) => (
+    <div>
+      <button onClick={() => userId.value++}>Next User</button>
+      <pre>{JSON.stringify(userData.value, null, 2)}</pre>
+    </div>
+  ),
 });
 ```
+
+### Effect 选项
+
+`effect` 函数（以及 `watch`）接受一个可选的 `EffectOptions` 对象来控制其行为：
+
+```typescript
+effect(
+  () => {
+    console.log('Running effect');
+  },
+  {
+    debounce: { wait: 300 }, // 防抖执行
+    timeout: 5000, // 异步执行超时
+    retry: { times: 3 }, // 重试策略
+    flush: 'post', // 在 DOM 更新后运行
+  }
+);
+```
+
+| 选项       | 类型                                                                         | 描述                            |
+| :--------- | :--------------------------------------------------------------------------- | :------------------------------ |
+| `debounce` | `{ wait: number, leading?: boolean, trailing?: boolean }`                    | 防抖配置                        |
+| `timeout`  | `number`                                                                     | 允许执行的最大时间              |
+| `retry`    | `{ times?: number, delay?: number, strategy?: 'constant' \| 'exponential' }` | 重试配置                        |
+| `flush`    | `'sync' \| 'post'`                                                           | 是同步运行还是在 DOM 更新后运行 |
 
 ## 2. 使用 Effect 同步数据
 
@@ -88,19 +113,19 @@ const TodosPage = define({
 import { define, signal } from '@effuse/core';
 
 const Logger = define({
-	script: ({ watch }) => {
-		const count = signal(0);
+  script: ({ watch }) => {
+    const count = signal(0);
 
-		// 仅当 count 更新时记录日志
-		watch(count, (newVal) => {
-			console.log(`Count changed to: ${newVal}`);
-		});
+    // 仅当 count 更新时记录日志
+    watch(count, (newVal) => {
+      console.log(`Count changed to: ${newVal}`);
+    });
 
-		return { count, increment: () => count.value++ };
-	},
-	template: ({ count, increment }) => (
-		<button onClick={increment}>{count}</button>
-	),
+    return { count, increment: () => count.value++ };
+  },
+  template: ({ count, increment }) => (
+    <button onClick={increment}>{count}</button>
+  ),
 });
 ```
 
@@ -112,19 +137,19 @@ const Logger = define({
 import { define } from '@effuse/core';
 
 const Analytics = define({
-	script: ({ onMount }) => {
-		onMount(() => {
-			console.log('Component mounted');
+  script: ({ onMount }) => {
+    onMount(() => {
+      console.log('Component mounted');
 
-			// 返回清理函数
-			return () => {
-				console.log('Component unmounted');
-			};
-		});
+      // 返回清理函数
+      return () => {
+        console.log('Component unmounted');
+      };
+    });
 
-		return {};
-	},
-	template: () => <div>Tracked Component</div>,
+    return {};
+  },
+  template: () => <div>Tracked Component</div>,
 });
 ```
 

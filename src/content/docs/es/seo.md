@@ -14,19 +14,19 @@ Importa `useHead` de `@effuse/core` y llámalo en el script de tu componente:
 import { define, useHead } from '@effuse/core';
 
 const HomePage = define({
-	script: () => {
-		useHead({
-			title: 'Inicio - Mi App',
-			description: 'Bienvenido a mi aplicación increíble.',
-		});
+  script: () => {
+    useHead({
+      title: 'Inicio - Mi App',
+      description: 'Bienvenido a mi aplicación increíble.',
+    });
 
-		return {};
-	},
-	template: () => (
-		<div>
-			<h1>¡Bienvenido!</h1>
-		</div>
-	),
+    return {};
+  },
+  template: () => (
+    <div>
+      <h1>¡Bienvenido!</h1>
+    </div>
+  ),
 });
 ```
 
@@ -95,39 +95,39 @@ La función `useHead` acepta un objeto `HeadProps` con las siguientes propiedade
 import { define, useHead } from '@effuse/core';
 
 const BlogPost = define({
-	script: ({ props }) => {
-		useHead({
-			title: 'Mi Post de Blog - Effuse Blog',
-			description: 'Aprende cómo construir UIs reactivas con Effuse.',
-			canonical: 'https://effuse.dev/blog/my-post',
-			robots: 'index, follow',
-			themeColor: '#10b981',
+  script: ({ props }) => {
+    useHead({
+      title: 'Mi Post de Blog - Effuse Blog',
+      description: 'Aprende cómo construir UIs reactivas con Effuse.',
+      canonical: 'https://effuse.dev/blog/my-post',
+      robots: 'index, follow',
+      themeColor: '#10b981',
 
-			og: {
-				title: 'Mi Post de Blog',
-				description: 'Aprende cómo construir UIs reactivas.',
-				type: 'article',
-				url: 'https://effuse.dev/blog/my-post',
-				image: 'https://effuse.dev/og-image.png',
-				siteName: 'Effuse',
-			},
+      og: {
+        title: 'Mi Post de Blog',
+        description: 'Aprende cómo construir UIs reactivas.',
+        type: 'article',
+        url: 'https://effuse.dev/blog/my-post',
+        image: 'https://effuse.dev/og-image.png',
+        siteName: 'Effuse',
+      },
 
-			twitter: {
-				card: 'summary_large_image',
-				site: '@effuse',
-				title: 'Mi Post de Blog',
-				description: 'Aprende cómo construir UIs reactivas.',
-				image: 'https://effuse.dev/twitter-card.png',
-			},
-		});
+      twitter: {
+        card: 'summary_large_image',
+        site: '@effuse',
+        title: 'Mi Post de Blog',
+        description: 'Aprende cómo construir UIs reactivas.',
+        image: 'https://effuse.dev/twitter-card.png',
+      },
+    });
 
-		return {};
-	},
-	template: () => (
-		<article>
-			<h1>Mi Post de Blog</h1>
-		</article>
-	),
+    return {};
+  },
+  template: () => (
+    <article>
+      <h1>Mi Post de Blog</h1>
+    </article>
+  ),
 });
 ```
 
@@ -139,17 +139,17 @@ Para títulos dinámicos basados en estado reactivo:
 import { define, signal, computed, useHead } from '@effuse/core';
 
 const DocsPage = define({
-	script: () => {
-		const pageTitle = signal('Primeros Pasos');
+  script: () => {
+    const pageTitle = signal('Primeros Pasos');
 
-		useHead({
-			title: `${pageTitle.value} - Docs de Effuse`,
-			description: `Documentación para ${pageTitle.value}.`,
-		});
+    useHead({
+      title: `${pageTitle.value} - Docs de Effuse`,
+      description: `Documentación para ${pageTitle.value}.`,
+    });
 
-		return { pageTitle };
-	},
-	template: ({ pageTitle }) => <h1>{pageTitle}</h1>,
+    return { pageTitle };
+  },
+  template: ({ pageTitle }) => <h1>{pageTitle}</h1>,
 });
 ```
 

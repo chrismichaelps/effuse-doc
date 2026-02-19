@@ -14,50 +14,50 @@ Usa `createStore` de `@effuse/store` para crear un store reactivo:
 import { createStore, connectDevTools } from '@effuse/store';
 
 interface Todo {
-	id: number;
-	title: string;
-	completed: boolean;
+  id: number;
+  title: string;
+  completed: boolean;
 }
 
 interface TodosState {
-	todos: Todo[];
-	filter: 'all' | 'completed' | 'pending';
+  todos: Todo[];
+  filter: 'all' | 'completed' | 'pending';
 }
 
 export const todosStore = createStore<
-	TodosState & {
-		addTodo: (todo: Todo) => void;
-		toggleTodo: (id: number) => void;
-		deleteTodo: (id: number) => void;
-		setFilter: (filter: 'all' | 'completed' | 'pending') => void;
-	}
+  TodosState & {
+    addTodo: (todo: Todo) => void;
+    toggleTodo: (id: number) => void;
+    deleteTodo: (id: number) => void;
+    setFilter: (filter: 'all' | 'completed' | 'pending') => void;
+  }
 >(
-	'todos', // Nombre del store
-	{
-		// Estado inicial
-		todos: [],
-		filter: 'all',
+  'todos', // Nombre del store
+  {
+    // Estado inicial
+    todos: [],
+    filter: 'all',
 
-		// Acciones - usa 'this' para acceder a las señales de estado
-		addTodo(todo: Todo) {
-			this.todos.value = [todo, ...this.todos.value];
-		},
+    // Acciones - usa 'this' para acceder a las señales de estado
+    addTodo(todo: Todo) {
+      this.todos.value = [todo, ...this.todos.value];
+    },
 
-		toggleTodo(id: number) {
-			this.todos.value = this.todos.value.map((t) =>
-				t.id === id ? { ...t, completed: !t.completed } : t
-			);
-		},
+    toggleTodo(id: number) {
+      this.todos.value = this.todos.value.map((t) =>
+        t.id === id ? { ...t, completed: !t.completed } : t
+      );
+    },
 
-		deleteTodo(id: number) {
-			this.todos.value = this.todos.value.filter((t) => t.id !== id);
-		},
+    deleteTodo(id: number) {
+      this.todos.value = this.todos.value.filter((t) => t.id !== id);
+    },
 
-		setFilter(filter: 'all' | 'completed' | 'pending') {
-			this.filter.value = filter;
-		},
-	},
-	{ devtools: true } // Habilitar Redux DevTools
+    setFilter(filter: 'all' | 'completed' | 'pending') {
+      this.filter.value = filter;
+    },
+  },
+  { devtools: true } // Habilitar Redux DevTools
 );
 
 // Conectar a Redux DevTools
@@ -73,52 +73,52 @@ import { define, computed, For } from '@effuse/core';
 import { todosStore } from '../store/todosStore';
 
 const TodoList = define({
-	script: () => {
-		// Desestructura estado y acciones del store
-		const { todos, filter, toggleTodo, deleteTodo, setFilter } = todosStore;
+  script: () => {
+    // Desestructura estado y acciones del store
+    const { todos, filter, toggleTodo, deleteTodo, setFilter } = todosStore;
 
-		// Crea estado derivado computado
-		const filteredTodos = computed(() => {
-			switch (filter.value) {
-				case 'completed':
-					return todos.value.filter((t) => t.completed);
-				case 'pending':
-					return todos.value.filter((t) => !t.completed);
-				default:
-					return todos.value;
-			}
-		});
+    // Crea estado derivado computado
+    const filteredTodos = computed(() => {
+      switch (filter.value) {
+        case 'completed':
+          return todos.value.filter((t) => t.completed);
+        case 'pending':
+          return todos.value.filter((t) => !t.completed);
+        default:
+          return todos.value;
+      }
+    });
 
-		const totalCount = computed(() => todos.value.length);
+    const totalCount = computed(() => todos.value.length);
 
-		return {
-			filteredTodos,
-			totalCount,
-			filter,
-			toggleTodo,
-			deleteTodo,
-			setFilter,
-		};
-	},
-	template: ({ filteredTodos, totalCount, filter, toggleTodo, setFilter }) => (
-		<div>
-			<p>Total: {totalCount}</p>
+    return {
+      filteredTodos,
+      totalCount,
+      filter,
+      toggleTodo,
+      deleteTodo,
+      setFilter,
+    };
+  },
+  template: ({ filteredTodos, totalCount, filter, toggleTodo, setFilter }) => (
+    <div>
+      <p>Total: {totalCount}</p>
 
-			<div>
-				<button onClick={() => setFilter('all')}>Todos</button>
-				<button onClick={() => setFilter('completed')}>Completados</button>
-				<button onClick={() => setFilter('pending')}>Pendientes</button>
-			</div>
+      <div>
+        <button onClick={() => setFilter('all')}>Todos</button>
+        <button onClick={() => setFilter('completed')}>Completados</button>
+        <button onClick={() => setFilter('pending')}>Pendientes</button>
+      </div>
 
-			<For each={filteredTodos} keyExtractor={(t) => t.id}>
-				{(todoSignal) => (
-					<div onClick={() => toggleTodo(todoSignal.value.id)}>
-						{todoSignal.value.title}
-					</div>
-				)}
-			</For>
-		</div>
-	),
+      <For each={filteredTodos} keyExtractor={(t) => t.id}>
+        {(todoSignal) => (
+          <div onClick={() => toggleTodo(todoSignal.value.id)}>
+            {todoSignal.value.title}
+          </div>
+        )}
+      </For>
+    </div>
+  ),
 });
 ```
 
@@ -135,6 +135,42 @@ todosStore.filter.value = 'completed';
 
 // O usar métodos de acción
 todosStore.setFilter('completed');
+```
+
+## Características Avanzadas del Store
+
+### Slices
+
+Usa `defineSlice` para crear piezas modulares de estado:
+
+```typescript
+import { defineSlice } from '@effuse/store';
+
+const userSlice = defineSlice({
+  name: 'user',
+  initialState: { name: '', email: '' },
+  reducers: {
+    setUser: (state, payload: { name: string; email: string }) => {
+      state.name = payload.name;
+      state.email = payload.email;
+    },
+    clearUser: (state) => {
+      state.name = '';
+      state.email = '';
+    },
+  },
+});
+```
+
+### Selectors
+
+Usa `createSelector` para lógica de selección memoizada:
+
+```typescript
+import { createSelector } from '@effuse/store';
+
+const selectUser = (state) => state.user;
+const selectUserName = createSelector(selectUser, (user) => user.name);
 ```
 
 ## Mejores Prácticas

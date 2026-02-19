@@ -12,39 +12,39 @@ La función `define` es el punto de entrada para crear componentes:
 
 ```tsx
 import {
-	define,
-	signal,
-	computed,
-	type Signal,
-	type ReadonlySignal,
+  define,
+  signal,
+  computed,
+  type Signal,
+  type ReadonlySignal,
 } from '@effuse/core';
 
 interface Props {
-	title: string;
+  title: string;
 }
 
 interface Exposed {
-	count: Signal<number>;
-	doubleCount: ReadonlySignal<number>;
-	increment: () => void;
+  count: Signal<number>;
+  doubleCount: ReadonlySignal<number>;
+  increment: () => void;
 }
 
 export const Counter = define<Props, Exposed>({
-	script: ({ props }) => {
-		const count = signal(0);
-		const doubleCount = computed(() => count.value * 2);
-		const increment = () => count.value++;
+  script: ({ props }) => {
+    const count = signal(0);
+    const doubleCount = computed(() => count.value * 2);
+    const increment = () => count.value++;
 
-		return { count, doubleCount, increment };
-	},
-	template: ({ count, doubleCount, increment }, props) => (
-		<div>
-			<h1>{props.title}</h1>
-			<p>Contador: {count}</p>
-			<p>Doble: {doubleCount}</p>
-			<button onClick={increment}>+</button>
-		</div>
-	),
+    return { count, doubleCount, increment };
+  },
+  template: ({ count, doubleCount, increment }, props) => (
+    <div>
+      <h1>{props.title}</h1>
+      <p>Contador: {count}</p>
+      <p>Doble: {doubleCount}</p>
+      <button onClick={increment}>+</button>
+    </div>
+  ),
 });
 ```
 
@@ -75,12 +75,12 @@ La función `template` retorna la estructura JSX. Recibe los valores expuestos y
 
 ```tsx
 template: ({ count, increment, children }, props) => (
-	<div class="counter">
-		<h1>{props.title}</h1>
-		<p>Contador: {count}</p>
-		<button onClick={increment}>+</button>
-		{children}
-	</div>
+  <div class="counter">
+    <h1>{props.title}</h1>
+    <p>Contador: {count}</p>
+    <button onClick={increment}>+</button>
+    {children}
+  </div>
 );
 ```
 
@@ -90,31 +90,31 @@ Usa `useCallback` del contexto del script para referencias estables de manejador
 
 ```tsx
 const Form = define({
-	script: ({ useCallback }) => {
-		const value = signal('');
+  script: ({ useCallback }) => {
+    const value = signal('');
 
-		const handleChange = useCallback((e: Event) => {
-			value.value = (e.target as HTMLInputElement).value;
-		});
+    const handleChange = useCallback((e: Event) => {
+      value.value = (e.target as HTMLInputElement).value;
+    });
 
-		const handleSubmit = useCallback(() => {
-			console.log('Enviado:', value.value);
-			value.value = '';
-		});
+    const handleSubmit = useCallback(() => {
+      console.log('Enviado:', value.value);
+      value.value = '';
+    });
 
-		return { value, handleChange, handleSubmit };
-	},
-	template: ({ value, handleChange, handleSubmit }) => (
-		<form
-			onSubmit={(e) => {
-				e.preventDefault();
-				handleSubmit();
-			}}
-		>
-			<input value={value} onInput={handleChange} />
-			<button type="submit">Enviar</button>
-		</form>
-	),
+    return { value, handleChange, handleSubmit };
+  },
+  template: ({ value, handleChange, handleSubmit }) => (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit();
+      }}
+    >
+      <input value={value} onInput={handleChange} />
+      <button type="submit">Enviar</button>
+    </form>
+  ),
 });
 ```
 
@@ -122,25 +122,25 @@ const Form = define({
 
 ```tsx
 const Timer = define({
-	script: ({ onMount, onUnmount }) => {
-		const seconds = signal(0);
+  script: ({ onMount, onUnmount }) => {
+    const seconds = signal(0);
 
-		onMount(() => {
-			const interval = setInterval(() => {
-				seconds.value++;
-			}, 1000);
+    onMount(() => {
+      const interval = setInterval(() => {
+        seconds.value++;
+      }, 1000);
 
-			// Retornar función de limpieza
-			return () => clearInterval(interval);
-		});
+      // Retornar función de limpieza
+      return () => clearInterval(interval);
+    });
 
-		onUnmount(() => {
-			console.log('Componente Timer removido');
-		});
+    onUnmount(() => {
+      console.log('Componente Timer removido');
+    });
 
-		return { seconds };
-	},
-	template: ({ seconds }) => <p>Transcurrido: {seconds} segundos</p>,
+    return { seconds };
+  },
+  template: ({ seconds }) => <p>Transcurrido: {seconds} segundos</p>,
 });
 ```
 
@@ -150,7 +150,7 @@ Usa funciones para nombres de clase dinámicos:
 
 ```tsx
 <button class={() => (isActive.value ? 'btn btn-active' : 'btn btn-inactive')}>
-	Alternar
+  Alternar
 </button>
 ```
 
@@ -160,8 +160,8 @@ Usa `computed` para renderizado condicional reactivo:
 
 ```tsx
 {
-	computed(() =>
-		isLoading.value ? <div>Cargando...</div> : <div>Contenido</div>
-	);
+  computed(() =>
+    isLoading.value ? <div>Cargando...</div> : <div>Contenido</div>
+  );
 }
 ```

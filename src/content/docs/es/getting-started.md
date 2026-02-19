@@ -23,14 +23,14 @@ Aquí hay un componente contador simple:
 import { define, signal } from '@effuse/core';
 
 const Counter = define({
-	script: () => {
-		const count = signal(0);
-		const increment = () => count.value++;
-		return { count, increment };
-	},
-	template: ({ count, increment }) => (
-		<button onClick={increment}>Clic {count} veces</button>
-	),
+  script: () => {
+    const count = signal(0);
+    const increment = () => count.value++;
+    return { count, increment };
+  },
+  template: ({ count, increment }) => (
+    <button onClick={increment}>Clic {count} veces</button>
+  ),
 });
 ```
 
@@ -47,13 +47,13 @@ import { AppLayout } from './layers/AppLayout';
 import { SmoothScroll } from './components/SmoothScroll';
 
 export const App = define({
-	script: ({}) => ({}),
-	template: () => (
-		<AppLayout>
-			<SmoothScroll />
-			<RouterView />
-		</AppLayout>
-	),
+  script: ({}) => ({}),
+  template: () => (
+    <AppLayout>
+      <SmoothScroll />
+      <RouterView />
+    </AppLayout>
+  ),
 });
 ```
 
@@ -72,33 +72,33 @@ installRouter(router);
 
 // Crear y montar la aplicación
 createApp(App)
-	.useLayers([InkLayer])
-	.then((app) => app.mount('#app'));
+  .useLayers([InkLayer])
+  .then((app) => app.mount('#app'));
 ```
 
 ### 3. Configuración del Router (src/router/index.ts)
 
 ```typescript
 import {
-	createRouter,
-	createWebHistory,
-	installRouter,
-	type RouteRecord,
+  createRouter,
+  createWebHistory,
+  installRouter,
+  type RouteRecord,
 } from '@effuse/router';
 import { HomePage } from '../pages/Home';
 import { DocsPage } from '../pages/Docs';
 import { ContactPage } from '../pages/Contact';
 
 const routes: RouteRecord[] = [
-	{ path: '/', name: 'home', component: HomePage },
-	{ path: '/docs', name: 'docs', component: DocsPage },
-	{ path: '/docs/:slug', name: 'docs-page', component: DocsPage },
-	{ path: '/contact', name: 'contact', component: ContactPage },
+  { path: '/', name: 'home', component: HomePage },
+  { path: '/docs', name: 'docs', component: DocsPage },
+  { path: '/docs/:slug', name: 'docs-page', component: DocsPage },
+  { path: '/contact', name: 'contact', component: ContactPage },
 ];
 
 export const router = createRouter({
-	history: createWebHistory(),
-	routes,
+  history: createWebHistory(),
+  routes,
 });
 
 export { installRouter };
@@ -129,6 +129,13 @@ La función `script` recibe un objeto `ScriptContext` con utilidades:
 | `watch`           | `(source, cb) => void`       | Observar una señal y ejecutar callback al cambiar.                |
 | `useCallback`     | `(fn, deps?) => fn`          | Memorizar un callback con identidad estable.                      |
 | `useMemo`         | `(fn, deps?) => getter`      | Memorizar un valor computado.                                     |
+| `computed`        | `(getter) => Signal`         | Crear estado derivado reactivo.                                   |
+| `watchMultiple`   | `(sources, cb) => void`      | Observar múltiples señales simultáneamente.                       |
+| `effect`          | `(cb, options?) => Effect`   | Ejecutar efectos secundarios automáticamente.                     |
+| `useLayer`        | `(name) => LayerContext`     | Acceder al contexto de una capa.                                  |
+| `useStore`        | `(key) => Store`             | Acceso tipado a stores globales.                                  |
+| `useService`      | `(key) => Service`           | Acceso a servicios inyectados por capas.                          |
+| `useLayerProps`   | `(name) => Props`            | Acceder a props de una capa.                                      |
 
 ## Próximos Pasos
 

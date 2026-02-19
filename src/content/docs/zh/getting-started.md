@@ -23,14 +23,14 @@ Effuse 是一个基于信号（signal-based）的 UI 框架，它结合了现代
 import { define, signal } from '@effuse/core';
 
 const Counter = define({
-	script: () => {
-		const count = signal(0);
-		const increment = () => count.value++;
-		return { count, increment };
-	},
-	template: ({ count, increment }) => (
-		<button onClick={increment}>Clicked {count} times</button>
-	),
+  script: () => {
+    const count = signal(0);
+    const increment = () => count.value++;
+    return { count, increment };
+  },
+  template: ({ count, increment }) => (
+    <button onClick={increment}>Clicked {count} times</button>
+  ),
 });
 ```
 
@@ -47,13 +47,13 @@ import { AppLayout } from './layers/AppLayout';
 import { SmoothScroll } from './components/SmoothScroll';
 
 export const App = define({
-	script: ({}) => ({}),
-	template: () => (
-		<AppLayout>
-			<SmoothScroll />
-			<RouterView />
-		</AppLayout>
-	),
+  script: ({}) => ({}),
+  template: () => (
+    <AppLayout>
+      <SmoothScroll />
+      <RouterView />
+    </AppLayout>
+  ),
 });
 ```
 
@@ -72,33 +72,33 @@ installRouter(router);
 
 // 创建并挂载应用
 createApp(App)
-	.useLayers([InkLayer])
-	.then((app) => app.mount('#app'));
+  .useLayers([InkLayer])
+  .then((app) => app.mount('#app'));
 ```
 
 ### 3. 路由配置 (src/router/index.ts)
 
 ```typescript
 import {
-	createRouter,
-	createWebHistory,
-	installRouter,
-	type RouteRecord,
+  createRouter,
+  createWebHistory,
+  installRouter,
+  type RouteRecord,
 } from '@effuse/router';
 import { HomePage } from '../pages/Home';
 import { DocsPage } from '../pages/Docs';
 import { ContactPage } from '../pages/Contact';
 
 const routes: RouteRecord[] = [
-	{ path: '/', name: 'home', component: HomePage },
-	{ path: '/docs', name: 'docs', component: DocsPage },
-	{ path: '/docs/:slug', name: 'docs-page', component: DocsPage },
-	{ path: '/contact', name: 'contact', component: ContactPage },
+  { path: '/', name: 'home', component: HomePage },
+  { path: '/docs', name: 'docs', component: DocsPage },
+  { path: '/docs/:slug', name: 'docs-page', component: DocsPage },
+  { path: '/contact', name: 'contact', component: ContactPage },
 ];
 
 export const router = createRouter({
-	history: createWebHistory(),
-	routes,
+  history: createWebHistory(),
+  routes,
 });
 
 export { installRouter };
@@ -129,6 +129,13 @@ export { installRouter };
 | `watch`           | `(source, cb) => void`       | 监视信号并在变化时运行回调。       |
 | `useCallback`     | `(fn, deps?) => fn`          | 使用稳定标识记忆回调。             |
 | `useMemo`         | `(fn, deps?) => getter`      | 记忆计算值。                       |
+| `computed`        | `(getter) => Signal`         | 创建响应式派生状态。               |
+| `watchMultiple`   | `(sources, cb) => void`      | 同时监视多个信号。                 |
+| `effect`          | `(cb, options?) => Effect`   | 自动运行副作用。                   |
+| `useLayer`        | `(name) => LayerContext`     | 访问层上下文。                     |
+| `useStore`        | `(key) => Store`             | 类型安全地访问全局存储。           |
+| `useService`      | `(key) => Service`           | 访问由层注入的服务。               |
+| `useLayerProps`   | `(name) => Props`            | 访问层属性。                       |
 
 ## 下一步
 

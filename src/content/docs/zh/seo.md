@@ -14,19 +14,19 @@ Effuse 提供 `useHead` 钩子用于管理文档 head 元素，如标题、meta 
 import { define, useHead } from '@effuse/core';
 
 const HomePage = define({
-	script: () => {
-		useHead({
-			title: 'Home - My App',
-			description: 'Welcome to my awesome application.',
-		});
+  script: () => {
+    useHead({
+      title: 'Home - My App',
+      description: 'Welcome to my awesome application.',
+    });
 
-		return {};
-	},
-	template: () => (
-		<div>
-			<h1>Welcome!</h1>
-		</div>
-	),
+    return {};
+  },
+  template: () => (
+    <div>
+      <h1>Welcome!</h1>
+    </div>
+  ),
 });
 ```
 
@@ -95,39 +95,39 @@ const HomePage = define({
 import { define, useHead } from '@effuse/core';
 
 const BlogPost = define({
-	script: ({ props }) => {
-		useHead({
-			title: 'My Blog Post - Effuse Blog',
-			description: 'Learn how to build reactive UIs with Effuse.',
-			canonical: 'https://effuse.dev/blog/my-post',
-			robots: 'index, follow',
-			themeColor: '#10b981',
+  script: ({ props }) => {
+    useHead({
+      title: 'My Blog Post - Effuse Blog',
+      description: 'Learn how to build reactive UIs with Effuse.',
+      canonical: 'https://effuse.dev/blog/my-post',
+      robots: 'index, follow',
+      themeColor: '#10b981',
 
-			og: {
-				title: 'My Blog Post',
-				description: 'Learn how to build reactive UIs.',
-				type: 'article',
-				url: 'https://effuse.dev/blog/my-post',
-				image: 'https://effuse.dev/og-image.png',
-				siteName: 'Effuse',
-			},
+      og: {
+        title: 'My Blog Post',
+        description: 'Learn how to build reactive UIs.',
+        type: 'article',
+        url: 'https://effuse.dev/blog/my-post',
+        image: 'https://effuse.dev/og-image.png',
+        siteName: 'Effuse',
+      },
 
-			twitter: {
-				card: 'summary_large_image',
-				site: '@effuse',
-				title: 'My Blog Post',
-				description: 'Learn how to build reactive UIs.',
-				image: 'https://effuse.dev/twitter-card.png',
-			},
-		});
+      twitter: {
+        card: 'summary_large_image',
+        site: '@effuse',
+        title: 'My Blog Post',
+        description: 'Learn how to build reactive UIs.',
+        image: 'https://effuse.dev/twitter-card.png',
+      },
+    });
 
-		return {};
-	},
-	template: () => (
-		<article>
-			<h1>My Blog Post</h1>
-		</article>
-	),
+    return {};
+  },
+  template: () => (
+    <article>
+      <h1>My Blog Post</h1>
+    </article>
+  ),
 });
 ```
 
@@ -139,17 +139,17 @@ const BlogPost = define({
 import { define, signal, computed, useHead } from '@effuse/core';
 
 const DocsPage = define({
-	script: () => {
-		const pageTitle = signal('Getting Started');
+  script: () => {
+    const pageTitle = signal('Getting Started');
 
-		useHead({
-			title: `${pageTitle.value} - Effuse Docs`,
-			description: `Documentation for ${pageTitle.value}.`,
-		});
+    useHead({
+      title: `${pageTitle.value} - Effuse Docs`,
+      description: `Documentation for ${pageTitle.value}.`,
+    });
 
-		return { pageTitle };
-	},
-	template: ({ pageTitle }) => <h1>{pageTitle}</h1>,
+    return { pageTitle };
+  },
+  template: ({ pageTitle }) => <h1>{pageTitle}</h1>,
 });
 ```
 

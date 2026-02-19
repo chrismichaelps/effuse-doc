@@ -14,50 +14,50 @@ Effuse 通过 **@effuse/store** 提供全局状态管理。
 import { createStore, connectDevTools } from '@effuse/store';
 
 interface Todo {
-	id: number;
-	title: string;
-	completed: boolean;
+  id: number;
+  title: string;
+  completed: boolean;
 }
 
 interface TodosState {
-	todos: Todo[];
-	filter: 'all' | 'completed' | 'pending';
+  todos: Todo[];
+  filter: 'all' | 'completed' | 'pending';
 }
 
 export const todosStore = createStore<
-	TodosState & {
-		addTodo: (todo: Todo) => void;
-		toggleTodo: (id: number) => void;
-		deleteTodo: (id: number) => void;
-		setFilter: (filter: 'all' | 'completed' | 'pending') => void;
-	}
+  TodosState & {
+    addTodo: (todo: Todo) => void;
+    toggleTodo: (id: number) => void;
+    deleteTodo: (id: number) => void;
+    setFilter: (filter: 'all' | 'completed' | 'pending') => void;
+  }
 >(
-	'todos', // Store 名称
-	{
-		// 初始状态
-		todos: [],
-		filter: 'all',
+  'todos', // Store 名称
+  {
+    // 初始状态
+    todos: [],
+    filter: 'all',
 
-		// Actions - 使用 'this' 访问状态信号
-		addTodo(todo: Todo) {
-			this.todos.value = [todo, ...this.todos.value];
-		},
+    // Actions - 使用 'this' 访问状态信号
+    addTodo(todo: Todo) {
+      this.todos.value = [todo, ...this.todos.value];
+    },
 
-		toggleTodo(id: number) {
-			this.todos.value = this.todos.value.map((t) =>
-				t.id === id ? { ...t, completed: !t.completed } : t
-			);
-		},
+    toggleTodo(id: number) {
+      this.todos.value = this.todos.value.map((t) =>
+        t.id === id ? { ...t, completed: !t.completed } : t
+      );
+    },
 
-		deleteTodo(id: number) {
-			this.todos.value = this.todos.value.filter((t) => t.id !== id);
-		},
+    deleteTodo(id: number) {
+      this.todos.value = this.todos.value.filter((t) => t.id !== id);
+    },
 
-		setFilter(filter: 'all' | 'completed' | 'pending') {
-			this.filter.value = filter;
-		},
-	},
-	{ devtools: true } // 启用 Redux DevTools
+    setFilter(filter: 'all' | 'completed' | 'pending') {
+      this.filter.value = filter;
+    },
+  },
+  { devtools: true } // 启用 Redux DevTools
 );
 
 // 连接到 Redux DevTools
@@ -73,52 +73,52 @@ import { define, computed, For } from '@effuse/core';
 import { todosStore } from '../store/todosStore';
 
 const TodoList = define({
-	script: () => {
-		// 从 store 解构状态和操作
-		const { todos, filter, toggleTodo, deleteTodo, setFilter } = todosStore;
+  script: () => {
+    // 从 store 解构状态和操作
+    const { todos, filter, toggleTodo, deleteTodo, setFilter } = todosStore;
 
-		// 创建计算派生状态
-		const filteredTodos = computed(() => {
-			switch (filter.value) {
-				case 'completed':
-					return todos.value.filter((t) => t.completed);
-				case 'pending':
-					return todos.value.filter((t) => !t.completed);
-				default:
-					return todos.value;
-			}
-		});
+    // 创建计算派生状态
+    const filteredTodos = computed(() => {
+      switch (filter.value) {
+        case 'completed':
+          return todos.value.filter((t) => t.completed);
+        case 'pending':
+          return todos.value.filter((t) => !t.completed);
+        default:
+          return todos.value;
+      }
+    });
 
-		const totalCount = computed(() => todos.value.length);
+    const totalCount = computed(() => todos.value.length);
 
-		return {
-			filteredTodos,
-			totalCount,
-			filter,
-			toggleTodo,
-			deleteTodo,
-			setFilter,
-		};
-	},
-	template: ({ filteredTodos, totalCount, filter, toggleTodo, setFilter }) => (
-		<div>
-			<p>Total: {totalCount}</p>
+    return {
+      filteredTodos,
+      totalCount,
+      filter,
+      toggleTodo,
+      deleteTodo,
+      setFilter,
+    };
+  },
+  template: ({ filteredTodos, totalCount, filter, toggleTodo, setFilter }) => (
+    <div>
+      <p>Total: {totalCount}</p>
 
-			<div>
-				<button onClick={() => setFilter('all')}>All</button>
-				<button onClick={() => setFilter('completed')}>Completed</button>
-				<button onClick={() => setFilter('pending')}>Pending</button>
-			</div>
+      <div>
+        <button onClick={() => setFilter('all')}>All</button>
+        <button onClick={() => setFilter('completed')}>Completed</button>
+        <button onClick={() => setFilter('pending')}>Pending</button>
+      </div>
 
-			<For each={filteredTodos} keyExtractor={(t) => t.id}>
-				{(todoSignal) => (
-					<div onClick={() => toggleTodo(todoSignal.value.id)}>
-						{todoSignal.value.title}
-					</div>
-				)}
-			</For>
-		</div>
-	),
+      <For each={filteredTodos} keyExtractor={(t) => t.id}>
+        {(todoSignal) => (
+          <div onClick={() => toggleTodo(todoSignal.value.id)}>
+            {todoSignal.value.title}
+          </div>
+        )}
+      </For>
+    </div>
+  ),
 });
 ```
 
@@ -135,6 +135,42 @@ todosStore.filter.value = 'completed';
 
 // 或使用 action 方法
 todosStore.setFilter('completed');
+```
+
+## 高级 Store 功能
+
+### Slices
+
+使用 `defineSlice` 创建模块化状态片段：
+
+```typescript
+import { defineSlice } from '@effuse/store';
+
+const userSlice = defineSlice({
+  name: 'user',
+  initialState: { name: '', email: '' },
+  reducers: {
+    setUser: (state, payload: { name: string; email: string }) => {
+      state.name = payload.name;
+      state.email = payload.email;
+    },
+    clearUser: (state) => {
+      state.name = '';
+      state.email = '';
+    },
+  },
+});
+```
+
+### Selectors
+
+使用 `createSelector` 进行记忆化选择逻辑：
+
+```typescript
+import { createSelector } from '@effuse/store';
+
+const selectUser = (state) => state.user;
+const selectUserName = createSelector(selectUser, (user) => user.name);
 ```
 
 ## 最佳实践

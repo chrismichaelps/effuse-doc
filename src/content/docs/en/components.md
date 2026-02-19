@@ -14,10 +14,10 @@ Every component has a `script` and `template`:
 import { define } from '@effuse/core';
 
 const Greeting = define({
-	script: () => {
-		return { message: 'Hello, World!' };
-	},
-	template: ({ message }) => <h1>{message}</h1>,
+  script: () => {
+    return { message: 'Hello, World!' };
+  },
+  template: ({ message }) => <h1>{message}</h1>,
 });
 ```
 
@@ -29,22 +29,22 @@ Components receive props from their parent. Use generics for type safety:
 import { define, computed, unref, type Signal } from '@effuse/core';
 
 interface ButtonProps {
-	label: string;
-	variant?: 'primary' | 'secondary';
-	onClick?: () => void;
+  label: string;
+  variant?: 'primary' | 'secondary';
+  onClick?: () => void;
 }
 
 const Button = define<ButtonProps>({
-	script: ({ props }) => ({
-		label: props.label,
-		variant: computed(() => unref(props.variant) ?? 'primary'),
-		onClick: props.onClick,
-	}),
-	template: ({ label, variant, onClick }) => (
-		<button class={`btn btn-${variant.value}`} onClick={onClick}>
-			{label}
-		</button>
-	),
+  script: ({ props }) => ({
+    label: props.label,
+    variant: computed(() => unref(props.variant) ?? 'primary'),
+    onClick: props.onClick,
+  }),
+  template: ({ label, variant, onClick }) => (
+    <button class={`btn btn-${variant.value}`} onClick={onClick}>
+      {label}
+    </button>
+  ),
 });
 
 // Usage
@@ -59,21 +59,21 @@ Components have access to lifecycle hooks via the script context:
 import { define, signal } from '@effuse/core';
 
 const Timer = define({
-	script: ({ onMount }) => {
-		const seconds = signal(0);
+  script: ({ onMount }) => {
+    const seconds = signal(0);
 
-		onMount(() => {
-			const interval = setInterval(() => {
-				seconds.value++;
-			}, 1000);
+    onMount(() => {
+      const interval = setInterval(() => {
+        seconds.value++;
+      }, 1000);
 
-			// Return cleanup function
-			return () => clearInterval(interval);
-		});
+      // Return cleanup function
+      return () => clearInterval(interval);
+    });
 
-		return { seconds };
-	},
-	template: ({ seconds }) => <p>Timer: {seconds} seconds</p>,
+    return { seconds };
+  },
+  template: ({ seconds }) => <p>Timer: {seconds} seconds</p>,
 });
 ```
 
@@ -85,27 +85,27 @@ Use `useCallback` from the script context for event handlers that need stable re
 import { define, signal } from '@effuse/core';
 
 const Form = define({
-	script: ({ useCallback }) => {
-		const inputValue = signal('');
+  script: ({ useCallback }) => {
+    const inputValue = signal('');
 
-		// Stable reference for event handler
-		const handleInputChange = useCallback((e: Event) => {
-			inputValue.value = (e.target as HTMLInputElement).value;
-		});
+    // Stable reference for event handler
+    const handleInputChange = useCallback((e: Event) => {
+      inputValue.value = (e.target as HTMLInputElement).value;
+    });
 
-		const handleSubmit = useCallback(() => {
-			console.log('Submitted:', inputValue.value);
-			inputValue.value = '';
-		});
+    const handleSubmit = useCallback(() => {
+      console.log('Submitted:', inputValue.value);
+      inputValue.value = '';
+    });
 
-		return { inputValue, handleInputChange, handleSubmit };
-	},
-	template: ({ inputValue, handleInputChange, handleSubmit }) => (
-		<div>
-			<input value={inputValue} onInput={handleInputChange} />
-			<button onClick={handleSubmit}>Submit</button>
-		</div>
-	),
+    return { inputValue, handleInputChange, handleSubmit };
+  },
+  template: ({ inputValue, handleInputChange, handleSubmit }) => (
+    <div>
+      <input value={inputValue} onInput={handleInputChange} />
+      <button onClick={handleSubmit}>Submit</button>
+    </div>
+  ),
 });
 ```
 
@@ -117,14 +117,14 @@ Pass children to create wrapper components:
 import { define } from '@effuse/core';
 
 const Card = define({
-	script: () => ({}),
-	template: ({ children }) => <div class="card">{children}</div>,
+  script: () => ({}),
+  template: ({ children }) => <div class="card">{children}</div>,
 });
 
 // Usage
 <Card>
-	<h2>Title</h2>
-	<p>Content goes here</p>
+  <h2>Title</h2>
+  <p>Content goes here</p>
 </Card>;
 ```
 
@@ -136,21 +136,21 @@ Use the `For` component for efficient list rendering:
 import { define, signal, For } from '@effuse/core';
 
 const TodoList = define({
-	script: () => {
-		const todos = signal([
-			{ id: 1, text: 'Learn Effuse' },
-			{ id: 2, text: 'Build an app' },
-		]);
+  script: () => {
+    const todos = signal([
+      { id: 1, text: 'Learn Effuse' },
+      { id: 2, text: 'Build an app' },
+    ]);
 
-		return { todos };
-	},
-	template: ({ todos }) => (
-		<ul>
-			<For each={todos} keyExtractor={(t) => t.id}>
-				{(todoSignal) => <li>{todoSignal.value.text}</li>}
-			</For>
-		</ul>
-	),
+    return { todos };
+  },
+  template: ({ todos }) => (
+    <ul>
+      <For each={todos} keyExtractor={(t) => t.id}>
+        {(todoSignal) => <li>{todoSignal.value.text}</li>}
+      </For>
+    </ul>
+  ),
 });
 ```
 
@@ -162,6 +162,46 @@ const TodoList = define({
 | `keyExtractor` | `(item: T, index: number) => string or number` | Function to extract unique keys                |
 | `fallback`     | `JSX.Element`                                  | Optional element to render when array is empty |
 
+## Conditional Rendering with Switch and Match
+
+For multiple conditional branches, use the `Switch` and `Match` components:
+
+```tsx
+import { define, signal, Switch, Match } from '@effuse/core';
+
+const UserRole = define({
+  script: () => {
+    const role = signal<'admin' | 'user' | 'guest'>('guest');
+    return { role };
+  },
+  template: ({ role }) => (
+    <Switch fallback={<p>Unknown role</p>}>
+      <Match when={() => role.value === 'admin'}>
+        <p>Welcome, Administrator</p>
+      </Match>
+      <Match when={() => role.value === 'user'}>
+        <p>Welcome, User</p>
+      </Match>
+      <Match when={() => role.value === 'guest'}>
+        <p>Please sign in</p>
+      </Match>
+    </Switch>
+  ),
+});
+```
+
+### Switch/Match Props
+
+**Switch Props**
+| Prop | Type | Description |
+| ---------- | ------------- | ----------------------------------------------- |
+| `fallback` | `JSX.Element` | Optional element to render if no match is found |
+
+**Match Props**
+| Prop | Type | Description |
+| ------ | ------------------------ | ------------------------------------ |
+| `when` | `Signal<T>` or `() => T` | Condition to evaluate for truthiness |
+
 ## Conditional Rendering with Show
 
 Use the `Show` component for conditional rendering based on signal values:
@@ -170,29 +210,29 @@ Use the `Show` component for conditional rendering based on signal values:
 import { define, signal, Show } from '@effuse/core';
 
 const UserProfile = define({
-	script: () => {
-		const user = signal<{ name: string } | null>(null);
-		const login = () => {
-			user.value = { name: 'John' };
-		};
-		const logout = () => {
-			user.value = null;
-		};
+  script: () => {
+    const user = signal<{ name: string } | null>(null);
+    const login = () => {
+      user.value = { name: 'John' };
+    };
+    const logout = () => {
+      user.value = null;
+    };
 
-		return { user, login, logout };
-	},
-	template: ({ user, login, logout }) => (
-		<div>
-			<Show when={user} fallback={<button onClick={login}>Log in</button>}>
-				{(u) => (
-					<div>
-						<p>Welcome, {u.name}!</p>
-						<button onClick={logout}>Log out</button>
-					</div>
-				)}
-			</Show>
-		</div>
-	),
+    return { user, login, logout };
+  },
+  template: ({ user, login, logout }) => (
+    <div>
+      <Show when={user} fallback={<button onClick={login}>Log in</button>}>
+        {(u) => (
+          <div>
+            <p>Welcome, {u.name}!</p>
+            <button onClick={logout}>Log out</button>
+          </div>
+        )}
+      </Show>
+    </div>
+  ),
 });
 ```
 
@@ -212,42 +252,42 @@ The `Dynamic` component allows you to render different components dynamically ba
 import { define, signal, Dynamic } from '@effuse/core';
 
 const TabPanel = define({
-	script: () => {
-		const tabs = { home: HomeTab, settings: SettingsTab, profile: ProfileTab };
-		const activeTab = signal<keyof typeof tabs>('home');
+  script: () => {
+    const tabs = { home: HomeTab, settings: SettingsTab, profile: ProfileTab };
+    const activeTab = signal<keyof typeof tabs>('home');
 
-		const currentComponent = computed(() => tabs[activeTab.value]);
+    const currentComponent = computed(() => tabs[activeTab.value]);
 
-		return { activeTab, currentComponent };
-	},
-	template: ({ activeTab, currentComponent }) => (
-		<div>
-			<nav>
-				<button
-					onClick={() => {
-						activeTab.value = 'home';
-					}}
-				>
-					Home
-				</button>
-				<button
-					onClick={() => {
-						activeTab.value = 'settings';
-					}}
-				>
-					Settings
-				</button>
-				<button
-					onClick={() => {
-						activeTab.value = 'profile';
-					}}
-				>
-					Profile
-				</button>
-			</nav>
-			<Dynamic component={currentComponent} fallback={<p>Loading...</p>} />
-		</div>
-	),
+    return { activeTab, currentComponent };
+  },
+  template: ({ activeTab, currentComponent }) => (
+    <div>
+      <nav>
+        <button
+          onClick={() => {
+            activeTab.value = 'home';
+          }}
+        >
+          Home
+        </button>
+        <button
+          onClick={() => {
+            activeTab.value = 'settings';
+          }}
+        >
+          Settings
+        </button>
+        <button
+          onClick={() => {
+            activeTab.value = 'profile';
+          }}
+        >
+          Profile
+        </button>
+      </nav>
+      <Dynamic component={currentComponent} fallback={<p>Loading...</p>} />
+    </div>
+  ),
 });
 ```
 
@@ -268,30 +308,30 @@ Use reactive functions for dynamic styles and classes:
 import { define, signal, computed } from '@effuse/core';
 
 const ColorBox = define({
-	script: () => {
-		const colors = ['mint', 'purple', 'cyan'];
-		const index = signal(0);
-		const currentColor = computed(() => colors[index.value]);
-		const nextColor = () => {
-			index.value = (index.value + 1) % colors.length;
-		};
+  script: () => {
+    const colors = ['mint', 'purple', 'cyan'];
+    const index = signal(0);
+    const currentColor = computed(() => colors[index.value]);
+    const nextColor = () => {
+      index.value = (index.value + 1) % colors.length;
+    };
 
-		return { currentColor, nextColor };
-	},
-	template: ({ currentColor, nextColor }) => (
-		<div>
-			<button onClick={nextColor}>Change Color</button>
-			<div
-				style={() => ({
-					backgroundColor: `var(--accent-${currentColor.value})`,
-					padding: '2rem',
-					transition: 'background-color 0.3s ease',
-				})}
-			>
-				Current: {currentColor.value}
-			</div>
-		</div>
-	),
+    return { currentColor, nextColor };
+  },
+  template: ({ currentColor, nextColor }) => (
+    <div>
+      <button onClick={nextColor}>Change Color</button>
+      <div
+        style={() => ({
+          backgroundColor: `var(--accent-${currentColor.value})`,
+          padding: '2rem',
+          transition: 'background-color 0.3s ease',
+        })}
+      >
+        Current: {currentColor.value}
+      </div>
+    </div>
+  ),
 });
 ```
 
@@ -309,26 +349,26 @@ The `Repeat` component renders content a specified number of times, with access 
 import { define, signal, Repeat } from '@effuse/core';
 
 const SkeletonLoader = define({
-	script: () => {
-		const count = signal(3);
-		return { count };
-	},
-	template: ({ count }) => (
-		<div class="skeleton-list">
-			<Repeat times={count} fallback={<p>No items</p>}>
-				{(index) => (
-					<div class="skeleton-item">
-						<div class="skeleton-avatar" />
-						<div class="skeleton-content">
-							<div class="skeleton-title" />
-							<div class="skeleton-text" />
-						</div>
-						<span>Item {index + 1}</span>
-					</div>
-				)}
-			</Repeat>
-		</div>
-	),
+  script: () => {
+    const count = signal(3);
+    return { count };
+  },
+  template: ({ count }) => (
+    <div class="skeleton-list">
+      <Repeat times={count} fallback={<p>No items</p>}>
+        {(index) => (
+          <div class="skeleton-item">
+            <div class="skeleton-avatar" />
+            <div class="skeleton-content">
+              <div class="skeleton-title" />
+              <div class="skeleton-text" />
+            </div>
+            <span>Item {index + 1}</span>
+          </div>
+        )}
+      </Repeat>
+    </div>
+  ),
 });
 ```
 
@@ -348,52 +388,52 @@ The `Await` component handles asynchronous data fetching with built-in pending, 
 import { define, signal, Await } from '@effuse/core';
 
 interface User {
-	id: number;
-	name: string;
-	email: string;
+  id: number;
+  name: string;
+  email: string;
 }
 
 const UserProfile = define({
-	script: () => {
-		const fetchUser = (id: number): Promise<User> =>
-			fetch(`https://api.example.com/users/${id}`).then((res) => res.json());
+  script: () => {
+    const fetchUser = (id: number): Promise<User> =>
+      fetch(`https://api.example.com/users/${id}`).then((res) => res.json());
 
-		const userPromise = signal(fetchUser(1));
+    const userPromise = signal(fetchUser(1));
 
-		const refetch = () => {
-			userPromise.value = fetchUser(Math.floor(Math.random() * 10) + 1);
-		};
+    const refetch = () => {
+      userPromise.value = fetchUser(Math.floor(Math.random() * 10) + 1);
+    };
 
-		return { userPromise, refetch };
-	},
-	template: ({ userPromise, refetch }) => (
-		<div>
-			<button onClick={refetch}>Fetch New User</button>
-			<Await
-				promise={userPromise}
-				pending={
-					<div class="loading">
-						<span class="spinner" />
-						Loading user data...
-					</div>
-				}
-				error={(err) => (
-					<div class="error">
-						<p>Failed to load user</p>
-						<p class="error-detail">{String(err)}</p>
-					</div>
-				)}
-			>
-				{(user) => (
-					<div class="user-card">
-						<h3>{user.name}</h3>
-						<p>{user.email}</p>
-						<span>ID: {user.id}</span>
-					</div>
-				)}
-			</Await>
-		</div>
-	),
+    return { userPromise, refetch };
+  },
+  template: ({ userPromise, refetch }) => (
+    <div>
+      <button onClick={refetch}>Fetch New User</button>
+      <Await
+        promise={userPromise}
+        pending={
+          <div class="loading">
+            <span class="spinner" />
+            Loading user data...
+          </div>
+        }
+        error={(err) => (
+          <div class="error">
+            <p>Failed to load user</p>
+            <p class="error-detail">{String(err)}</p>
+          </div>
+        )}
+      >
+        {(user) => (
+          <div class="user-card">
+            <h3>{user.name}</h3>
+            <p>{user.email}</p>
+            <span>ID: {user.id}</span>
+          </div>
+        )}
+      </Await>
+    </div>
+  ),
 });
 ```
 
@@ -417,3 +457,39 @@ const searchPromise = signal(fetchSearch('react'));
 searchPromise.value = fetchSearch('effect');
 // Await will automatically start loading the new promise
 ```
+
+## Suspense and ErrorBoundary
+
+Handle loading and error states for nested components using `Suspense` and `ErrorBoundary`:
+
+```tsx
+import { define, Suspense, ErrorBoundary } from '@effuse/core';
+import { AsyncProfile } from './AsyncProfile';
+
+const App = define({
+  script: () => ({}),
+  template: () => (
+    <ErrorBoundary
+      fallback={(err) => <div class="error">Fatal error: {String(err)}</div>}
+    >
+      <Suspense fallback={<div class="loading">Loading profile...</div>}>
+        <AsyncProfile id={123} />
+      </Suspense>
+    </ErrorBoundary>
+  ),
+});
+```
+
+### Suspense Props
+
+| Prop       | Type          | Description                                  |
+| ---------- | ------------- | -------------------------------------------- |
+| `fallback` | `JSX.Element` | Element to render while children are loading |
+
+### ErrorBoundary Props
+
+| Prop       | Type                                                              | Description                               |
+| ---------- | ----------------------------------------------------------------- | ----------------------------------------- |
+| `fallback` | `EffuseChild \| ((err: Error, reset: () => void) => EffuseChild)` | Render function that receives the error   |
+| `children` | `EffuseChild`                                                     | The content to monitor for errors         |
+| `onError`  | `(err: Error) => void`                                            | Optional callback when an error is caught |

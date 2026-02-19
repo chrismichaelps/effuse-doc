@@ -14,10 +14,10 @@ Effuse のコンポーネントは、ロジックと UI を型安全な構造で
 import { define } from '@effuse/core';
 
 const Greeting = define({
-	script: () => {
-		return { message: 'Hello, World!' };
-	},
-	template: ({ message }) => <h1>{message}</h1>,
+  script: () => {
+    return { message: 'Hello, World!' };
+  },
+  template: ({ message }) => <h1>{message}</h1>,
 });
 ```
 
@@ -29,22 +29,22 @@ const Greeting = define({
 import { define, computed, unref, type Signal } from '@effuse/core';
 
 interface ButtonProps {
-	label: string;
-	variant?: 'primary' | 'secondary';
-	onClick?: () => void;
+  label: string;
+  variant?: 'primary' | 'secondary';
+  onClick?: () => void;
 }
 
 const Button = define<ButtonProps>({
-	script: ({ props }) => ({
-		label: props.label,
-		variant: computed(() => unref(props.variant) ?? 'primary'),
-		onClick: props.onClick,
-	}),
-	template: ({ label, variant, onClick }) => (
-		<button class={`btn btn-${variant.value}`} onClick={onClick}>
-			{label}
-		</button>
-	),
+  script: ({ props }) => ({
+    label: props.label,
+    variant: computed(() => unref(props.variant) ?? 'primary'),
+    onClick: props.onClick,
+  }),
+  template: ({ label, variant, onClick }) => (
+    <button class={`btn btn-${variant.value}`} onClick={onClick}>
+      {label}
+    </button>
+  ),
 });
 
 // 使用方法
@@ -59,21 +59,21 @@ const Button = define<ButtonProps>({
 import { define, signal } from '@effuse/core';
 
 const Timer = define({
-	script: ({ onMount }) => {
-		const seconds = signal(0);
+  script: ({ onMount }) => {
+    const seconds = signal(0);
 
-		onMount(() => {
-			const interval = setInterval(() => {
-				seconds.value++;
-			}, 1000);
+    onMount(() => {
+      const interval = setInterval(() => {
+        seconds.value++;
+      }, 1000);
 
-			// クリーンアップ関数を返す
-			return () => clearInterval(interval);
-		});
+      // クリーンアップ関数を返す
+      return () => clearInterval(interval);
+    });
 
-		return { seconds };
-	},
-	template: ({ seconds }) => <p>Timer: {seconds} seconds</p>,
+    return { seconds };
+  },
+  template: ({ seconds }) => <p>Timer: {seconds} seconds</p>,
 });
 ```
 
@@ -85,27 +85,27 @@ const Timer = define({
 import { define, signal } from '@effuse/core';
 
 const Form = define({
-	script: ({ useCallback }) => {
-		const inputValue = signal('');
+  script: ({ useCallback }) => {
+    const inputValue = signal('');
 
-		// イベントハンドラの安定した参照
-		const handleInputChange = useCallback((e: Event) => {
-			inputValue.value = (e.target as HTMLInputElement).value;
-		});
+    // イベントハンドラの安定した参照
+    const handleInputChange = useCallback((e: Event) => {
+      inputValue.value = (e.target as HTMLInputElement).value;
+    });
 
-		const handleSubmit = useCallback(() => {
-			console.log('Submitted:', inputValue.value);
-			inputValue.value = '';
-		});
+    const handleSubmit = useCallback(() => {
+      console.log('Submitted:', inputValue.value);
+      inputValue.value = '';
+    });
 
-		return { inputValue, handleInputChange, handleSubmit };
-	},
-	template: ({ inputValue, handleInputChange, handleSubmit }) => (
-		<div>
-			<input value={inputValue} onInput={handleInputChange} />
-			<button onClick={handleSubmit}>Submit</button>
-		</div>
-	),
+    return { inputValue, handleInputChange, handleSubmit };
+  },
+  template: ({ inputValue, handleInputChange, handleSubmit }) => (
+    <div>
+      <input value={inputValue} onInput={handleInputChange} />
+      <button onClick={handleSubmit}>Submit</button>
+    </div>
+  ),
 });
 ```
 
@@ -117,14 +117,14 @@ const Form = define({
 import { define } from '@effuse/core';
 
 const Card = define({
-	script: () => ({}),
-	template: ({ children }) => <div class="card">{children}</div>,
+  script: () => ({}),
+  template: ({ children }) => <div class="card">{children}</div>,
 });
 
 // 使用方法
 <Card>
-	<h2>Title</h2>
-	<p>Content goes here</p>
+  <h2>Title</h2>
+  <p>Content goes here</p>
 </Card>;
 ```
 
@@ -136,21 +136,21 @@ const Card = define({
 import { define, signal, For } from '@effuse/core';
 
 const TodoList = define({
-	script: () => {
-		const todos = signal([
-			{ id: 1, text: 'Learn Effuse' },
-			{ id: 2, text: 'Build an app' },
-		]);
+  script: () => {
+    const todos = signal([
+      { id: 1, text: 'Learn Effuse' },
+      { id: 2, text: 'Build an app' },
+    ]);
 
-		return { todos };
-	},
-	template: ({ todos }) => (
-		<ul>
-			<For each={todos} keyExtractor={(t) => t.id}>
-				{(todoSignal) => <li>{todoSignal.value.text}</li>}
-			</For>
-		</ul>
-	),
+    return { todos };
+  },
+  template: ({ todos }) => (
+    <ul>
+      <For each={todos} keyExtractor={(t) => t.id}>
+        {(todoSignal) => <li>{todoSignal.value.text}</li>}
+      </For>
+    </ul>
+  ),
 });
 ```
 
@@ -170,29 +170,29 @@ const TodoList = define({
 import { define, signal, Show } from '@effuse/core';
 
 const UserProfile = define({
-	script: () => {
-		const user = signal<{ name: string } | null>(null);
-		const login = () => {
-			user.value = { name: '太郎' };
-		};
-		const logout = () => {
-			user.value = null;
-		};
+  script: () => {
+    const user = signal<{ name: string } | null>(null);
+    const login = () => {
+      user.value = { name: '太郎' };
+    };
+    const logout = () => {
+      user.value = null;
+    };
 
-		return { user, login, logout };
-	},
-	template: ({ user, login, logout }) => (
-		<div>
-			<Show when={user} fallback={<button onClick={login}>ログイン</button>}>
-				{(u) => (
-					<div>
-						<p>ようこそ、{u.name}さん！</p>
-						<button onClick={logout}>ログアウト</button>
-					</div>
-				)}
-			</Show>
-		</div>
-	),
+    return { user, login, logout };
+  },
+  template: ({ user, login, logout }) => (
+    <div>
+      <Show when={user} fallback={<button onClick={login}>ログイン</button>}>
+        {(u) => (
+          <div>
+            <p>ようこそ、{u.name}さん！</p>
+            <button onClick={logout}>ログアウト</button>
+          </div>
+        )}
+      </Show>
+    </div>
+  ),
 });
 ```
 
@@ -212,42 +212,42 @@ const UserProfile = define({
 import { define, signal, Dynamic } from '@effuse/core';
 
 const TabPanel = define({
-	script: () => {
-		const tabs = { home: HomeTab, settings: SettingsTab, profile: ProfileTab };
-		const activeTab = signal<keyof typeof tabs>('home');
+  script: () => {
+    const tabs = { home: HomeTab, settings: SettingsTab, profile: ProfileTab };
+    const activeTab = signal<keyof typeof tabs>('home');
 
-		const currentComponent = computed(() => tabs[activeTab.value]);
+    const currentComponent = computed(() => tabs[activeTab.value]);
 
-		return { activeTab, currentComponent };
-	},
-	template: ({ activeTab, currentComponent }) => (
-		<div>
-			<nav>
-				<button
-					onClick={() => {
-						activeTab.value = 'home';
-					}}
-				>
-					ホーム
-				</button>
-				<button
-					onClick={() => {
-						activeTab.value = 'settings';
-					}}
-				>
-					設定
-				</button>
-				<button
-					onClick={() => {
-						activeTab.value = 'profile';
-					}}
-				>
-					プロフィール
-				</button>
-			</nav>
-			<Dynamic component={currentComponent} fallback={<p>読み込み中...</p>} />
-		</div>
-	),
+    return { activeTab, currentComponent };
+  },
+  template: ({ activeTab, currentComponent }) => (
+    <div>
+      <nav>
+        <button
+          onClick={() => {
+            activeTab.value = 'home';
+          }}
+        >
+          ホーム
+        </button>
+        <button
+          onClick={() => {
+            activeTab.value = 'settings';
+          }}
+        >
+          設定
+        </button>
+        <button
+          onClick={() => {
+            activeTab.value = 'profile';
+          }}
+        >
+          プロフィール
+        </button>
+      </nav>
+      <Dynamic component={currentComponent} fallback={<p>読み込み中...</p>} />
+    </div>
+  ),
 });
 ```
 
@@ -268,30 +268,30 @@ const TabPanel = define({
 import { define, signal, computed } from '@effuse/core';
 
 const ColorBox = define({
-	script: () => {
-		const colors = ['mint', 'purple', 'cyan'];
-		const index = signal(0);
-		const currentColor = computed(() => colors[index.value]);
-		const nextColor = () => {
-			index.value = (index.value + 1) % colors.length;
-		};
+  script: () => {
+    const colors = ['mint', 'purple', 'cyan'];
+    const index = signal(0);
+    const currentColor = computed(() => colors[index.value]);
+    const nextColor = () => {
+      index.value = (index.value + 1) % colors.length;
+    };
 
-		return { currentColor, nextColor };
-	},
-	template: ({ currentColor, nextColor }) => (
-		<div>
-			<button onClick={nextColor}>色を変更</button>
-			<div
-				style={() => ({
-					backgroundColor: `var(--accent-${currentColor.value})`,
-					padding: '2rem',
-					transition: 'background-color 0.3s ease',
-				})}
-			>
-				現在: {currentColor.value}
-			</div>
-		</div>
-	),
+    return { currentColor, nextColor };
+  },
+  template: ({ currentColor, nextColor }) => (
+    <div>
+      <button onClick={nextColor}>色を変更</button>
+      <div
+        style={() => ({
+          backgroundColor: `var(--accent-${currentColor.value})`,
+          padding: '2rem',
+          transition: 'background-color 0.3s ease',
+        })}
+      >
+        現在: {currentColor.value}
+      </div>
+    </div>
+  ),
 });
 ```
 
@@ -309,26 +309,26 @@ const ColorBox = define({
 import { define, signal, Repeat } from '@effuse/core';
 
 const SkeletonLoader = define({
-	script: () => {
-		const count = signal(3);
-		return { count };
-	},
-	template: ({ count }) => (
-		<div class="skeleton-list">
-			<Repeat times={count} fallback={<p>アイテムがありません</p>}>
-				{(index) => (
-					<div class="skeleton-item">
-						<div class="skeleton-avatar" />
-						<div class="skeleton-content">
-							<div class="skeleton-title" />
-							<div class="skeleton-text" />
-						</div>
-						<span>アイテム {index + 1}</span>
-					</div>
-				)}
-			</Repeat>
-		</div>
-	),
+  script: () => {
+    const count = signal(3);
+    return { count };
+  },
+  template: ({ count }) => (
+    <div class="skeleton-list">
+      <Repeat times={count} fallback={<p>アイテムがありません</p>}>
+        {(index) => (
+          <div class="skeleton-item">
+            <div class="skeleton-avatar" />
+            <div class="skeleton-content">
+              <div class="skeleton-title" />
+              <div class="skeleton-text" />
+            </div>
+            <span>アイテム {index + 1}</span>
+          </div>
+        )}
+      </Repeat>
+    </div>
+  ),
 });
 ```
 
@@ -348,60 +348,95 @@ const SkeletonLoader = define({
 import { define, signal, Await } from '@effuse/core';
 
 interface User {
-	id: number;
-	name: string;
-	email: string;
+  id: number;
+  name: string;
+  email: string;
 }
 
 const UserProfile = define({
-	script: () => {
-		const fetchUser = (id: number): Promise<User> =>
-			fetch(`https://api.example.com/users/${id}`).then((res) => res.json());
+  script: () => {
+    const fetchUser = (id: number): Promise<User> =>
+      fetch(`https://api.example.com/users/${id}`).then((res) => res.json());
 
-		const userPromise = signal(fetchUser(1));
+    const userPromise = signal(fetchUser(1));
 
-		const refetch = () => {
-			userPromise.value = fetchUser(Math.floor(Math.random() * 10) + 1);
-		};
+    const refetch = () => {
+      userPromise.value = fetchUser(Math.floor(Math.random() * 10) + 1);
+    };
 
-		return { userPromise, refetch };
-	},
-	template: ({ userPromise, refetch }) => (
-		<div>
-			<button onClick={refetch}>新しいユーザーを取得</button>
-			<Await
-				promise={userPromise}
-				pending={
-					<div class="loading">
-						<span class="spinner" />
-						ユーザーデータを読み込み中...
-					</div>
-				}
-				error={(err) => (
-					<div class="error">
-						<p>ユーザーの読み込みに失敗しました</p>
-						<p class="error-detail">{String(err)}</p>
-					</div>
-				)}
-			>
-				{(user) => (
-					<div class="user-card">
-						<h3>{user.name}</h3>
-						<p>{user.email}</p>
-						<span>ID: {user.id}</span>
-					</div>
-				)}
-			</Await>
-		</div>
-	),
+    return { userPromise, refetch };
+  },
+  template: ({ userPromise, refetch }) => (
+    <div>
+      <button onClick={refetch}>新しいユーザーを取得</button>
+      <Await
+        promise={userPromise}
+        pending={
+          <div class="loading">
+            <span class="spinner" />
+            ユーザーデータを読み込み中...
+          </div>
+        }
+        error={(err) => (
+          <div class="error">
+            <p>ユーザーの読み込みに失敗しました</p>
+            <p class="error-detail">{String(err)}</p>
+          </div>
+        )}
+      >
+        {(user) => (
+          <div class="user-card">
+            <h3>{user.name}</h3>
+            <p>{user.email}</p>
+            <span>ID: {user.id}</span>
+          </div>
+        )}
+      </Await>
+    </div>
+  ),
 });
 ```
 
 ### Await Props
 
-| Prop       | 型                                                                 | 説明                                          |
-| ---------- | ------------------------------------------------------------------ | --------------------------------------------- |
-| `promise`  | `Promise<T>` または `() => Promise<T>` または `Signal<Promise<T>>` | 待機するPromise                               |
-| `pending`  | `JSX.Element` または `() => JSX.Element`                           | Promiseが保留中の間にレンダリングする要素     |
-| `error`    | `JSX.Element` または `(err: unknown) => JSX.Element`               | Promiseが拒否された場合にレンダリングする要素 |
-| `children` | `(data: T) => JSX.Element`                                         | 成功時のレンダリング関数                      |
+| Prop      | 型                                                                 | 説明                                          |
+| --------- | ------------------------------------------------------------------ | --------------------------------------------- |
+| `promise` | `Promise<T>` または `() => Promise<T>` または `Signal<Promise<T>>` | 待機するPromise                               |
+| `pending` | `JSX.Element` または `() => JSX.Element`                           | Promiseが保留中の間にレンダリングする要素     |
+| `error`   | `JSX.Element` または `(err: unknown) => JSX.Element`               | Promiseが拒否された場合にレンダリングする要素 |
+
+## Suspense と ErrorBoundary
+
+`Suspense` と `ErrorBoundary` を使用して、ネストされたコンポーネントのロディングとエラ状態を処理します：
+
+```tsx
+import { define, Suspense, ErrorBoundary } from '@effuse/core';
+import { AsyncProfile } from './AsyncProfile';
+
+const App = define({
+  script: () => ({}),
+  template: () => (
+    <ErrorBoundary
+      fallback={(err) => <div class="error">Fatal error: {String(err)}</div>}
+    >
+      <Suspense fallback={<div class="loading">Loading profile...</div>}>
+        <AsyncProfile id={123} />
+      </Suspense>
+    </ErrorBoundary>
+  ),
+});
+```
+
+### Suspense の Props
+
+| Prop       | 型            | 説明                                     |
+| ---------- | ------------- | ---------------------------------------- |
+| `fallback` | `JSX.Element` | 子要素が読み込まれている間に表示する要素 |
+
+### ErrorBoundary の Props
+
+| Prop       | 型                                                                | 説明                                   |
+| ---------- | ----------------------------------------------------------------- | -------------------------------------- |
+| `fallback` | `EffuseChild \| ((err: Error, reset: () => void) => EffuseChild)` | エラーを受け取るレンダリング関数       |
+| `children` | `EffuseChild`                                                     | エラーを監視するコンテンツ             |
+| `onError`  | `(err: Error) => void`                                            | エラーがキャッチされた時のコールバック |

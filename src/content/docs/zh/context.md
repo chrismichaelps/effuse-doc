@@ -14,17 +14,17 @@ Effuse 的上下文 API 提供了一种强大的方式在组件之间共享状�
 import { createContext } from '@effuse/core';
 
 interface ThemeConfig {
-	mode: 'light' | 'dark';
-	primaryColor: string;
+  mode: 'light' | 'dark';
+  primaryColor: string;
 }
 
 const ThemeContext = createContext<ThemeConfig>({
-	id: 'theme',
-	defaultValue: {
-		mode: 'dark',
-		primaryColor: '#6366f1',
-	},
-	displayName: 'Theme',
+  id: 'theme',
+  defaultValue: {
+    mode: 'dark',
+    primaryColor: '#6366f1',
+  },
+  displayName: 'Theme',
 });
 ```
 
@@ -45,21 +45,21 @@ import { define, useContext } from '@effuse/core';
 import { ThemeContext } from './contexts';
 
 const ThemedButton = define({
-	script: () => {
-		const theme = useContext(ThemeContext);
+  script: () => {
+    const theme = useContext(ThemeContext);
 
-		return { theme };
-	},
-	template: ({ theme }) => (
-		<button
-			style={{
-				backgroundColor: theme.primaryColor,
-				color: theme.mode === 'dark' ? '#fff' : '#000',
-			}}
-		>
-			主题按钮
-		</button>
-	),
+    return { theme };
+  },
+  template: ({ theme }) => (
+    <button
+      style={{
+        backgroundColor: theme.primaryColor,
+        color: theme.mode === 'dark' ? '#fff' : '#000',
+      }}
+    >
+      主题按钮
+    </button>
+  ),
 });
 ```
 
@@ -72,20 +72,20 @@ import { define } from '@effuse/core';
 import { ThemeContext } from './contexts';
 
 const App = define({
-	script: () => {
-		const customTheme = {
-			mode: 'light' as const,
-			primaryColor: '#22c55e',
-		};
+  script: () => {
+    const customTheme = {
+      mode: 'light' as const,
+      primaryColor: '#22c55e',
+    };
 
-		return { customTheme };
-	},
-	template: ({ customTheme }) => (
-		<ThemeContext.Provider value={customTheme}>
-			<ThemedButton />
-			<NestedComponent />
-		</ThemeContext.Provider>
-	),
+    return { customTheme };
+  },
+  template: ({ customTheme }) => (
+    <ThemeContext.Provider value={customTheme}>
+      <ThemedButton />
+      <NestedComponent />
+    </ThemeContext.Provider>
+  ),
 });
 ```
 
@@ -95,17 +95,17 @@ const App = define({
 
 ```tsx
 const NestedExample = define({
-	template: () => (
-		<ThemeContext.Provider value={{ mode: 'dark', primaryColor: '#6366f1' }}>
-			{/* 此组件看到深色主题 */}
-			<ThemedButton />
+  template: () => (
+    <ThemeContext.Provider value={{ mode: 'dark', primaryColor: '#6366f1' }}>
+      {/* 此组件看到深色主题 */}
+      <ThemedButton />
 
-			<ThemeContext.Provider value={{ mode: 'light', primaryColor: '#22c55e' }}>
-				{/* 此组件看到浅色主题 */}
-				<ThemedButton />
-			</ThemeContext.Provider>
-		</ThemeContext.Provider>
-	),
+      <ThemeContext.Provider value={{ mode: 'light', primaryColor: '#22c55e' }}>
+        {/* 此组件看到浅色主题 */}
+        <ThemedButton />
+      </ThemeContext.Provider>
+    </ThemeContext.Provider>
+  ),
 });
 ```
 
@@ -117,8 +117,8 @@ const NestedExample = define({
 import { hasContextValue } from '@effuse/core';
 
 if (hasContextValue(ThemeContext)) {
-	const theme = useContext(ThemeContext);
-	// ...
+  const theme = useContext(ThemeContext);
+  // ...
 }
 ```
 
@@ -130,9 +130,9 @@ if (hasContextValue(ThemeContext)) {
 import { isEffuseContext } from '@effuse/core';
 
 function processContext(maybeContext: unknown) {
-	if (isEffuseContext(maybeContext)) {
-		console.log('有效的上下文:', maybeContext.id);
-	}
+  if (isEffuseContext(maybeContext)) {
+    console.log('有效的上下文:', maybeContext.id);
+  }
 }
 ```
 
@@ -144,12 +144,26 @@ function processContext(maybeContext: unknown) {
 import { useContext, ContextNotFoundError } from '@effuse/core';
 
 try {
-	const auth = useContext(AuthContext);
+  const auth = useContext(AuthContext);
 } catch (error) {
-	if (error instanceof ContextNotFoundError) {
-		console.error(`上下文 "${error.contextId}" 未找到`);
-	}
+  if (error instanceof ContextNotFoundError) {
+    console.error(`上下文 "${error.contextId}" 未找到`);
+  }
 }
+```
+
+## 工厂默认值
+
+默认值可以是用于动态初始化的工厂函数：
+
+```typescript
+const TimestampContext = createContext({
+  id: 'timestamp',
+  defaultValue: () => ({
+    createdAt: Date.now(),
+    version: '1.0.0',
+  }),
+});
 ```
 
 ## 最佳实践

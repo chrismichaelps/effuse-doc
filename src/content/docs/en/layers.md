@@ -26,74 +26,74 @@ import { createStore } from '@effuse/store';
 
 // Create a store with reactive state
 const themeStore = createStore('theme', {
-	mode: 'dark' as 'light' | 'dark',
-	accentColor: '#8df0cc',
+  mode: 'dark' as 'light' | 'dark',
+  accentColor: '#8df0cc',
 
-	setMode(mode: 'light' | 'dark') {
-		this.mode.value = mode;
-	},
+  setMode(mode: 'light' | 'dark') {
+    this.mode.value = mode;
+  },
 
-	toggleMode() {
-		this.mode.value = this.mode.value === 'dark' ? 'light' : 'dark';
-	},
+  toggleMode() {
+    this.mode.value = this.mode.value === 'dark' ? 'light' : 'dark';
+  },
 });
 
 export const ThemeLayer = defineLayer({
-	name: 'theme',
+  name: 'theme',
 
-	// Dependencies on other layers (loaded first)
-	dependencies: ['layout'],
+  // Dependencies on other layers (loaded first)
+  dependencies: ['layout'],
 
-	// The store instance for this layer
-	store: themeStore,
+  // The store instance for this layer
+  store: themeStore,
 
-	// Extract reactive props from store for components
-	deriveProps: (store) => ({
-		mode: store.mode,
-		accentColor: store.accentColor,
-	}),
+  // Extract reactive props from store for components
+  deriveProps: (store) => ({
+    mode: store.mode,
+    accentColor: store.accentColor,
+  }),
 
-	// Services exposed via dependency injection
-	provides: {
-		theme: () => themeStore,
-	},
+  // Services exposed via dependency injection
+  provides: {
+    theme: () => themeStore,
+  },
 
-	// Lifecycle hooks
-	onMount: (ctx) => {
-		// ctx.store, ctx.deps, ctx.getService available
-		const savedTheme = localStorage.getItem('theme');
-		if (savedTheme) ctx.store.mode.value = savedTheme as 'light' | 'dark';
-	},
+  // Lifecycle hooks
+  onMount: (ctx) => {
+    // ctx.store, ctx.deps, ctx.getService available
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) ctx.store.mode.value = savedTheme as 'light' | 'dark';
+  },
 
-	onUnmount: (ctx) => {
-		// Persist state before unmount
-		localStorage.setItem('theme', ctx.store.mode.value);
-	},
+  onUnmount: (ctx) => {
+    // Persist state before unmount
+    localStorage.setItem('theme', ctx.store.mode.value);
+  },
 
-	onError: (error, ctx) => {
-		// Intelligent recovery with context access
-		console.error('[ThemeLayer] error:', error.message);
-		ctx.store.mode.value = 'dark'; // fallback
-	},
+  onError: (error, ctx) => {
+    // Intelligent recovery with context access
+    console.error('[ThemeLayer] error:', error.message);
+    ctx.store.mode.value = 'dark'; // fallback
+  },
 
-	onReady: (ctx, allLayers) => {
-		// Called after ALL layers are initialized
-		console.log(`[ThemeLayer] ready with ${allLayers.length} layers`);
-	},
+  onReady: (ctx, allLayers) => {
+    // Called after ALL layers are initialized
+    console.log(`[ThemeLayer] ready with ${allLayers.length} layers`);
+  },
 
-	// Setup function with access to store and dependencies
-	setup: (ctx) => {
-		// ctx.store is the themeStore with full type safety
-		const savedTheme = localStorage.getItem('theme');
-		if (savedTheme === 'light' || savedTheme === 'dark') {
-			ctx.store.mode.value = savedTheme;
-		}
+  // Setup function with access to store and dependencies
+  setup: (ctx) => {
+    // ctx.store is the themeStore with full type safety
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      ctx.store.mode.value = savedTheme;
+    }
 
-		// Return cleanup function (optional)
-		return () => {
-			console.log('[ThemeLayer] cleanup');
-		};
-	},
+    // Return cleanup function (optional)
+    return () => {
+      console.log('[ThemeLayer] cleanup');
+    };
+  },
 });
 ```
 
@@ -103,28 +103,28 @@ The complete `defineLayer` options:
 
 ```typescript
 interface EffuseLayer<P, D, S> {
-	// Required
-	name: string; // Unique identifier
+  // Required
+  name: string; // Unique identifier
 
-	// State management
-	store?: S; // Store instance (createStore)
-	deriveProps?: (store: S) => P; // Extract props from store
+  // State management
+  store?: S; // Store instance (createStore)
+  deriveProps?: (store: S) => P; // Extract props from store
 
-	// Dependency injection
-	dependencies?: D; // Array of layer names to load first
-	provides?: Record<string, () => unknown>; // Service factories
+  // Dependency injection
+  dependencies?: D; // Array of layer names to load first
+  provides?: Record<string, () => unknown>; // Service factories
 
-	// Lifecycle
-	setup?: (ctx: SetupContext<P, D, S>) => CleanupFn | void;
-	onMount?: (ctx: SetupContext<P, D, S>) => void;
-	onUnmount?: (ctx: SetupContext<P, D, S>) => void;
-	onError?: (error: Error, ctx: SetupContext<P, D, S>) => void;
-	onReady?: (ctx: SetupContext<P, D, S>, allLayers: ResolvedLayer[]) => void;
+  // Lifecycle
+  setup?: (ctx: SetupContext<P, D, S>) => CleanupFn | void;
+  onMount?: (ctx: SetupContext<P, D, S>) => void;
+  onUnmount?: (ctx: SetupContext<P, D, S>) => void;
+  onError?: (error: Error, ctx: SetupContext<P, D, S>) => void;
+  onReady?: (ctx: SetupContext<P, D, S>, allLayers: ResolvedLayer[]) => void;
 
-	// Advanced
-	components?: Record<string, Component>; // Scoped components
-	routes?: RouteConfig[]; // Layer-specific routes
-	plugins?: PluginFn[]; // Layer plugins
+  // Advanced
+  components?: Record<string, Component>; // Scoped components
+  routes?: RouteConfig[]; // Layer-specific routes
+  plugins?: PluginFn[]; // Layer plugins
 }
 ```
 
@@ -143,22 +143,22 @@ The **store** is the layer's internal reactive state, created via `@effuse/store
 
 ```typescript
 const i18nStore = createStore('i18n', {
-	locale: 'en',
-	translations: null as Record<string, string> | null,
+  locale: 'en',
+  translations: null as Record<string, string> | null,
 
-	setLocale(loc: string) {
-		this.locale.value = loc;
-		// Load translations...
-	},
+  setLocale(loc: string) {
+    this.locale.value = loc;
+    // Load translations...
+  },
 });
 
 defineLayer({
-	name: 'i18n',
-	store: i18nStore,
-	deriveProps: (store) => ({
-		locale: store.locale,
-		translations: store.translations,
-	}),
+  name: 'i18n',
+  store: i18nStore,
+  deriveProps: (store) => ({
+    locale: store.locale,
+    translations: store.translations,
+  }),
 });
 ```
 
@@ -168,15 +168,15 @@ defineLayer({
 
 ```typescript
 defineLayer({
-	name: 'router',
-	provides: {
-		router: () => routerInstance, // Factory function
-	},
+  name: 'router',
+  provides: {
+    router: () => routerInstance, // Factory function
+  },
 });
 
 // In a component:
 script: ({ useStore }) => {
-	const router = useStore('router'); // Gets the router
+  const router = useStore('router'); // Gets the router
 };
 ```
 
@@ -188,26 +188,26 @@ Access layer data and services in component scripts:
 import { define, computed } from '@effuse/core';
 
 const ThemeToggle = define({
-	script: ({ useLayerProps, useStore }) => {
-		// Get reactive props from deriveProps
-		const themeProps = useLayerProps('theme');
+  script: ({ useLayerProps, useStore }) => {
+    // Get reactive props from deriveProps
+    const themeProps = useLayerProps('theme');
 
-		// Get service from provides
-		const themeStore = useStore('theme');
+    // Get service from provides
+    const themeStore = useStore('theme');
 
-		const buttonText = computed(() =>
-			themeProps?.mode.value === 'dark' ? 'Light' : 'Dark'
-		);
+    const buttonText = computed(() =>
+      themeProps?.mode.value === 'dark' ? 'Light' : 'Dark'
+    );
 
-		const toggle = () => {
-			themeStore?.toggleMode();
-		};
+    const toggle = () => {
+      themeStore?.toggleMode();
+    };
 
-		return { buttonText, toggle };
-	},
-	template: ({ buttonText, toggle }) => (
-		<button onClick={toggle}>{buttonText}</button>
-	),
+    return { buttonText, toggle };
+  },
+  template: ({ buttonText, toggle }) => (
+    <button onClick={toggle}>{buttonText}</button>
+  ),
 });
 ```
 
@@ -219,23 +219,23 @@ Use `defineHook` to create reusable hooks with layer access:
 import { defineHook, signal } from '@effuse/core';
 
 export const useTheme = defineHook<
-	undefined, // No config
-	{ mode: Signal<string>; toggle: () => void }
+  undefined, // No config
+  { mode: Signal<string>; toggle: () => void }
 >({
-	name: 'useTheme',
-	deps: ['theme'] as const,
-	setup: ({ layer }) => {
-		// layer() returns deriveProps result
-		const themeProps = layer('theme');
+  name: 'useTheme',
+  deps: ['theme'] as const,
+  setup: ({ layer }) => {
+    // layer() returns deriveProps result
+    const themeProps = layer('theme');
 
-		return {
-			mode: themeProps.mode,
-			toggle: () => {
-				themeProps.mode.value =
-					themeProps.mode.value === 'dark' ? 'light' : 'dark';
-			},
-		};
-	},
+    return {
+      mode: themeProps.mode,
+      toggle: () => {
+        themeProps.mode.value =
+          themeProps.mode.value === 'dark' ? 'light' : 'dark';
+      },
+    };
+  },
 });
 ```
 
@@ -245,13 +245,13 @@ Layers declare their dependencies explicitly:
 
 ```typescript
 defineLayer({
-	name: 'todos',
-	dependencies: ['i18n', 'router'], // ← Must be loaded first
-	setup: (ctx) => {
-		// Access dependency layers
-		const i18n = ctx.deps.i18n;
-		const router = ctx.deps.router;
-	},
+  name: 'todos',
+  dependencies: ['i18n', 'router'], // ← Must be loaded first
+  setup: (ctx) => {
+    // Access dependency layers
+    const i18n = ctx.deps.i18n;
+    const router = ctx.deps.router;
+  },
 });
 ```
 
@@ -266,22 +266,22 @@ For full type safety, extend `EffuseLayerRegistry` via module augmentation:
 import type { Signal } from '@effuse/core';
 
 declare module '@effuse/core' {
-	interface EffuseLayerRegistry {
-		theme: {
-			props: {
-				mode: Signal<'light' | 'dark'>;
-				accentColor: Signal<string>;
-			};
-			provides: { theme: typeof themeStore };
-		};
-		i18n: {
-			props: {
-				locale: Signal<string>;
-				translations: Signal<Record<string, string> | null>;
-			};
-			provides: { i18n: typeof i18nStore };
-		};
-	}
+  interface EffuseLayerRegistry {
+    theme: {
+      props: {
+        mode: Signal<'light' | 'dark'>;
+        accentColor: Signal<string>;
+      };
+      provides: { theme: typeof themeStore };
+    };
+    i18n: {
+      props: {
+        locale: Signal<string>;
+        translations: Signal<Record<string, string> | null>;
+      };
+      provides: { i18n: typeof i18nStore };
+    };
+  }
 }
 
 export {};
@@ -301,41 +301,41 @@ import { defineLayer } from '@effuse/core';
 import { i18nStore } from '../store/appI18n';
 
 export const I18nLayer = defineLayer({
-	name: 'i18n',
-	dependencies: ['router'],
+  name: 'i18n',
+  dependencies: ['router'],
 
-	store: i18nStore,
+  store: i18nStore,
 
-	deriveProps: (store) => ({
-		locale: store.locale,
-		isLoading: store.isLoading,
-		translations: store.translations,
-	}),
+  deriveProps: (store) => ({
+    locale: store.locale,
+    isLoading: store.isLoading,
+    translations: store.translations,
+  }),
 
-	provides: {
-		i18n: () => i18nStore,
-	},
+  provides: {
+    i18n: () => i18nStore,
+  },
 
-	onMount: (ctx) => {
-		const saved = localStorage.getItem('effuse:locale');
-		if (saved) ctx.store.setLocale(saved);
-	},
+  onMount: (ctx) => {
+    const saved = localStorage.getItem('effuse:locale');
+    if (saved) ctx.store.setLocale(saved);
+  },
 
-	onUnmount: (ctx) => {
-		localStorage.setItem('effuse:locale', ctx.store.locale.value);
-	},
+  onUnmount: (ctx) => {
+    localStorage.setItem('effuse:locale', ctx.store.locale.value);
+  },
 
-	onError: (_, ctx) => {
-		ctx.store.setLocale('en'); // fallback
-	},
+  onError: (_, ctx) => {
+    ctx.store.setLocale('en'); // fallback
+  },
 
-	onReady: (ctx, allLayers) => {
-		console.log(`[I18nLayer] Ready with ${allLayers.length} layers`);
-	},
+  onReady: (ctx, allLayers) => {
+    console.log(`[I18nLayer] Ready with ${allLayers.length} layers`);
+  },
 
-	setup: (ctx) => {
-		ctx.store.init(); // Load initial translations ASAP
-	},
+  setup: (ctx) => {
+    ctx.store.init(); // Load initial translations ASAP
+  },
 });
 ```
 

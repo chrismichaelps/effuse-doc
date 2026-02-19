@@ -14,29 +14,54 @@ La función `effect` se ejecuta inmediatamente y se vuelve a ejecutar cada vez q
 import { define, signal, effect } from '@effuse/core';
 
 const DataFetcher = define({
-	script: () => {
-		const userId = signal(1);
-		const userData = signal<any>(null);
+  script: () => {
+    const userId = signal(1);
+    const userData = signal<any>(null);
 
-		// Se ejecuta automáticamente cuando 'userId' cambia
-		effect(() => {
-			fetch(`/api/users/${userId.value}`)
-				.then((res) => res.json())
-				.then((data) => {
-					userData.value = data;
-				});
-		});
+    // Se ejecuta automáticamente cuando 'userId' cambia
+    effect(() => {
+      fetch(`/api/users/${userId.value}`)
+        .then((res) => res.json())
+        .then((data) => {
+          userData.value = data;
+        });
+    });
 
-		return { userId, userData };
-	},
-	template: ({ userId, userData }) => (
-		<div>
-			<button onClick={() => userId.value++}>Siguiente Usuario</button>
-			<pre>{JSON.stringify(userData.value, null, 2)}</pre>
-		</div>
-	),
+    return { userId, userData };
+  },
+  template: ({ userId, userData }) => (
+    <div>
+      <button onClick={() => userId.value++}>Siguiente Usuario</button>
+      <pre>{JSON.stringify(userData.value, null, 2)}</pre>
+    </div>
+  ),
 });
 ```
+
+### Opciones de Effect
+
+La función `effect` (y `watch`) acepta un objeto opcional `EffectOptions` para controlar su comportamiento:
+
+```typescript
+effect(
+  () => {
+    console.log('Ejecutando efecto');
+  },
+  {
+    debounce: { wait: 300 }, // Ejecución con debounce
+    timeout: 5000, // Timeout para ejecución asíncrona
+    retry: { times: 3 }, // Estrategia de reintento
+    flush: 'post', // Ejecutar después de actualizaciones del DOM
+  }
+);
+```
+
+| Opción     | Tipo                                                                         | Descripción                                            |
+| :--------- | :--------------------------------------------------------------------------- | :----------------------------------------------------- |
+| `debounce` | `{ wait: number, leading?: boolean, trailing?: boolean }`                    | Configuración de debounce                              |
+| `timeout`  | `number`                                                                     | Tiempo máximo permitido para ejecución                 |
+| `retry`    | `{ times?: number, delay?: number, strategy?: 'constant' \| 'exponential' }` | Configuración de reintento                             |
+| `flush`    | `'sync' \| 'post'`                                                           | Si ejecutar síncronamente o después de actualizaciones |
 
 ## 2. Sincronizando Datos con Efectos
 
@@ -88,19 +113,19 @@ La función `watch` del contexto del script observa una señal específica y dis
 import { define, signal } from '@effuse/core';
 
 const Logger = define({
-	script: ({ watch }) => {
-		const count = signal(0);
+  script: ({ watch }) => {
+    const count = signal(0);
 
-		// Solo registra cuando count se actualiza
-		watch(count, (newVal) => {
-			console.log(`Contador cambió a: ${newVal}`);
-		});
+    // Solo registra cuando count se actualiza
+    watch(count, (newVal) => {
+      console.log(`Contador cambió a: ${newVal}`);
+    });
 
-		return { count, increment: () => count.value++ };
-	},
-	template: ({ count, increment }) => (
-		<button onClick={increment}>{count}</button>
-	),
+    return { count, increment: () => count.value++ };
+  },
+  template: ({ count, increment }) => (
+    <button onClick={increment}>{count}</button>
+  ),
 });
 ```
 
@@ -112,19 +137,19 @@ Usa `onMount` para efectos que deben ejecutarse una vez cuando el componente se 
 import { define } from '@effuse/core';
 
 const Analytics = define({
-	script: ({ onMount }) => {
-		onMount(() => {
-			console.log('Componente montado');
+  script: ({ onMount }) => {
+    onMount(() => {
+      console.log('Componente montado');
 
-			// Retornar función de limpieza
-			return () => {
-				console.log('Componente desmontado');
-			};
-		});
+      // Retornar función de limpieza
+      return () => {
+        console.log('Componente desmontado');
+      };
+    });
 
-		return {};
-	},
-	template: () => <div>Componente Rastreado</div>,
+    return {};
+  },
+  template: () => <div>Componente Rastreado</div>,
 });
 ```
 

@@ -17,25 +17,25 @@ Props 是从父组件向子组件传递数据的方式。在 Effuse 中，props 
 import { define, signal, type Signal } from '@effuse/core';
 
 interface UserCardProps {
-	name: string;
-	age: number;
+  name: string;
+  age: number;
 }
 
 interface UserCardExposed {
-	capitalizedName: Signal<string>;
+  capitalizedName: Signal<string>;
 }
 
 const UserCard = define<UserCardProps, UserCardExposed>({
-	script: ({ props }) => {
-		const capitalizedName = signal(props.name.toUpperCase());
-		return { capitalizedName };
-	},
-	template: ({ capitalizedName }, props) => (
-		<div class="user-card">
-			<h2>{capitalizedName}</h2>
-			<p>Age: {props.age}</p>
-		</div>
-	),
+  script: ({ props }) => {
+    const capitalizedName = signal(props.name.toUpperCase());
+    return { capitalizedName };
+  },
+  template: ({ capitalizedName }, props) => (
+    <div class="user-card">
+      <h2>{capitalizedName}</h2>
+      <p>Age: {props.age}</p>
+    </div>
+  ),
 });
 ```
 
@@ -47,17 +47,17 @@ const UserCard = define<UserCardProps, UserCardExposed>({
 import { define, computed, unref } from '@effuse/core';
 
 interface CounterProps {
-	count: number; // 可以作为数字或 Signal<number> 传递
+  count: number; // 可以作为数字或 Signal<number> 传递
 }
 
 const DoubleCounter = define<CounterProps>({
-	script: ({ props }) => {
-		// 当父组件的 'count' 信号更改时，此 computed 将更新
-		const double = computed(() => unref(props.count) * 2);
+  script: ({ props }) => {
+    // 当父组件的 'count' 信号更改时，此 computed 将更新
+    const double = computed(() => unref(props.count) * 2);
 
-		return { double };
-	},
-	template: ({ double }) => <div>Double count: {double}</div>,
+    return { double };
+  },
+  template: ({ double }) => <div>Double count: {double}</div>,
 });
 ```
 
@@ -69,19 +69,19 @@ const DoubleCounter = define<CounterProps>({
 import { define, computed, unref } from '@effuse/core';
 
 interface ButtonProps {
-	variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary';
 }
 
 const Button = define<ButtonProps>({
-	script: ({ props }) => {
-		// 响应式默认值
-		const safeVariant = computed(() => unref(props.variant) ?? 'primary');
+  script: ({ props }) => {
+    // 响应式默认值
+    const safeVariant = computed(() => unref(props.variant) ?? 'primary');
 
-		return { safeVariant };
-	},
-	template: ({ safeVariant, children }) => (
-		<button class={`btn btn-${safeVariant.value}`}>{children}</button>
-	),
+    return { safeVariant };
+  },
+  template: ({ safeVariant, children }) => (
+    <button class={`btn btn-${safeVariant.value}`}>{children}</button>
+  ),
 });
 ```
 
@@ -106,12 +106,12 @@ const age = signal(25);
 
 ```tsx
 const Container = define({
-	script: () => ({}),
-	template: ({ children }) => <div class="container">{children}</div>,
+  script: () => ({}),
+  template: ({ children }) => <div class="container">{children}</div>,
 });
 
 // 用法
 <Container>
-	<h1>Hello</h1>
+  <h1>Hello</h1>
 </Container>;
 ```

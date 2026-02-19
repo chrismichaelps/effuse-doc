@@ -16,9 +16,9 @@ A `TaggedError` is a special class that includes a `_tag` property. This allows 
 import { TaggedError } from '@effuse/core';
 
 export class NetworkError extends TaggedError('NetworkError')<{
-	readonly url: string;
-	readonly status: number;
-	readonly message: string;
+  readonly url: string;
+  readonly status: number;
+  readonly message: string;
 }> {}
 ```
 
@@ -30,15 +30,15 @@ When an error is thrown, you can catch it and use Type Guards to narrow down the
 import { isTaggedError, hasTag } from '@effuse/core';
 
 try {
-	// ... code that might throw
+  // ... code that might throw
 } catch (error) {
-	if (hasTag(error, 'NetworkError')) {
-		// TypeScript knows error is NetworkError
-		console.error(`Status ${error.status}: ${error.message}`);
-	} else if (isTaggedError(error)) {
-		// Any other tagged error
-		console.error(`Tagged error: ${error._tag}`);
-	}
+  if (hasTag(error, 'NetworkError')) {
+    // TypeScript knows error is NetworkError
+    console.error(`Status ${error.status}: ${error.message}`);
+  } else if (isTaggedError(error)) {
+    // Any other tagged error
+    console.error(`Tagged error: ${error._tag}`);
+  }
 }
 ```
 

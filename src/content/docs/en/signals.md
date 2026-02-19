@@ -14,28 +14,28 @@ Import `signal` from `@effuse/core` to create reactive state:
 import { define, signal, computed } from '@effuse/core';
 
 export const Counter = define({
-	script: () => {
-		// Create a signal with initial value
-		const count = signal(0);
+  script: () => {
+    // Create a signal with initial value
+    const count = signal(0);
 
-		// Create computed derived state
-		const doubleCount = computed(() => count.value * 2);
+    // Create computed derived state
+    const doubleCount = computed(() => count.value * 2);
 
-		// Define operations that mutate the signal
-		const increment = () => count.value++;
-		const decrement = () => count.value--;
+    // Define operations that mutate the signal
+    const increment = () => count.value++;
+    const decrement = () => count.value--;
 
-		// Return signals and operations to template
-		return { count, doubleCount, increment, decrement };
-	},
-	template: ({ count, doubleCount, increment, decrement }) => (
-		<div>
-			<p>Count: {count}</p>
-			<p>Double: {doubleCount}</p>
-			<button onClick={decrement}>-</button>
-			<button onClick={increment}>+</button>
-		</div>
-	),
+    // Return signals and operations to template
+    return { count, doubleCount, increment, decrement };
+  },
+  template: ({ count, doubleCount, increment, decrement }) => (
+    <div>
+      <p>Count: {count}</p>
+      <p>Double: {doubleCount}</p>
+      <button onClick={decrement}>-</button>
+      <button onClick={increment}>+</button>
+    </div>
+  ),
 });
 ```
 
@@ -49,21 +49,21 @@ The basic `signal()` creates a writable reference. Access and mutate via the `.v
 import { define, signal } from '@effuse/core';
 
 const ColorPicker = define({
-	script: () => {
-		// Primitives
-		const color = signal('blue');
-		// Objects/Arrays
-		const palette = signal(['red', 'blue', 'green']);
+  script: () => {
+    // Primitives
+    const color = signal('blue');
+    // Objects/Arrays
+    const palette = signal(['red', 'blue', 'green']);
 
-		const updateColor = (newColor: string) => {
-			color.value = newColor; // Triggers updates
-		};
+    const updateColor = (newColor: string) => {
+      color.value = newColor; // Triggers updates
+    };
 
-		return { color, palette, updateColor };
-	},
-	template: ({ color, updateColor }) => (
-		<button onClick={() => updateColor('red')}>Current: {color}</button>
-	),
+    return { color, palette, updateColor };
+  },
+  template: ({ color, updateColor }) => (
+    <button onClick={() => updateColor('red')}>Current: {color}</button>
+  ),
 });
 ```
 
@@ -75,20 +75,20 @@ Computed signals derive their value from other signals. They update automaticall
 import { define, signal, computed } from '@effuse/core';
 
 const GradientBox = define({
-	script: () => {
-		const startColor = signal('red');
-		const endColor = signal('blue');
+  script: () => {
+    const startColor = signal('red');
+    const endColor = signal('blue');
 
-		// Automatically tracks dependencies
-		const gradient = computed(
-			() => `linear-gradient(${startColor.value}, ${endColor.value})`
-		);
+    // Automatically tracks dependencies
+    const gradient = computed(
+      () => `linear-gradient(${startColor.value}, ${endColor.value})`
+    );
 
-		return { gradient };
-	},
-	template: ({ gradient }) => (
-		<div style={`background: ${gradient.value}`}>Gradient</div>
-	),
+    return { gradient };
+  },
+  template: ({ gradient }) => (
+    <div style={`background: ${gradient.value}`}>Gradient</div>
+  ),
 });
 ```
 
@@ -100,19 +100,83 @@ Use the `watch` helper from the script context to perform side effects when a si
 import { define, signal } from '@effuse/core';
 
 const Logger = define({
-	script: ({ watch }) => {
-		const count = signal(0);
+  script: ({ watch }) => {
+    const count = signal(0);
 
-		// Runs whenever count changes
-		watch(count, (value) => {
-			console.log(`Count changed to: ${value}`);
-		});
+    // Runs whenever count changes
+    watch(count, (value) => {
+      console.log(`Count changed to: ${value}`);
+    });
 
-		return { count, increment: () => count.value++ };
-	},
-	template: ({ count, increment }) => (
-		<button onClick={increment}>{count}</button>
-	),
+    return { count, increment: () => count.value++ };
+  },
+  template: ({ count, increment }) => (
+    <button onClick={increment}>{count}</button>
+  ),
+});
+```
+
+### Advanced Watch Options
+
+The `watch` function accepts an optional `EffectOptions` object:
+
+```typescript
+watch(
+  count,
+  (value) => {
+    console.log('Count changed');
+  },
+  {
+    debounce: { wait: 300 },
+    timeout: 5000,
+    retry: {
+      times: 3,
+      delay: 1000,
+    },
+    flush: 'post',
+  }
+);
+```
+
+### Watching Multiple Signals
+
+Use `watchMultiple` to react to changes in any of the provided signals:
+
+```tsx
+import { watchMultiple } from '@effuse/core';
+
+watchMultiple([signalA, signalB], ([valA, valB]) => {
+  console.log('Either A or B changed', valA, valB);
+});
+```
+
+## Specialized Signals
+
+### Readonly Signals
+
+Create a readonly view of a signal to prevent external mutations:
+
+```typescript
+import { signal, readonlySignal } from '@effuse/core';
+
+const count = signal(0);
+const readonlyCount = readonlySignal(count);
+
+// readonlyCount.value++ -> Error in development
+```
+
+### Writable Computed
+
+Computed signals are naturally readonly, but you can create writable computed signals by providing a setter:
+
+```typescript
+const fullName = computed({
+  get: () => `${firstName.value} ${lastName.value}`,
+  set: (newValue) => {
+    const [first, last] = newValue.split(' ');
+    firstName.value = first;
+    lastName.value = last;
+  },
 });
 ```
 
@@ -151,9 +215,9 @@ When you use expressions in templates, the compiler automatically wraps them in 
 ```tsx
 // The compiler handles this automatically
 template: ({ firstName, lastName }) => (
-	<p>
-		Full Name: {firstName} {lastName}
-	</p>
+  <p>
+    Full Name: {firstName} {lastName}
+  </p>
 );
 
 // No need for explicit computed() in simple cases
@@ -170,17 +234,17 @@ Use explicit `computed()` when:
 
 ```tsx
 script: () => {
-	const items = signal<Item[]>([]);
-	const filter = signal('all');
+  const items = signal<Item[]>([]);
+  const filter = signal('all');
 
-	// Explicit computed for complex logic returned to template
-	const filteredItems = computed(() => {
-		const f = filter.value;
-		return items.value.filter((item) =>
-			f === 'all' ? true : item.status === f
-		);
-	});
+  // Explicit computed for complex logic returned to template
+  const filteredItems = computed(() => {
+    const f = filter.value;
+    return items.value.filter((item) =>
+      f === 'all' ? true : item.status === f
+    );
+  });
 
-	return { filteredItems, filter };
+  return { filteredItems, filter };
 };
 ```

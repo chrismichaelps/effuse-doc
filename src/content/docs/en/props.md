@@ -17,25 +17,25 @@ To define props, you pass a TypeScript interface as the first generic argument t
 import { define, signal, type Signal } from '@effuse/core';
 
 interface UserCardProps {
-	name: string;
-	age: number;
+  name: string;
+  age: number;
 }
 
 interface UserCardExposed {
-	capitalizedName: Signal<string>;
+  capitalizedName: Signal<string>;
 }
 
 const UserCard = define<UserCardProps, UserCardExposed>({
-	script: ({ props }) => {
-		const capitalizedName = signal(props.name.toUpperCase());
-		return { capitalizedName };
-	},
-	template: ({ capitalizedName }, props) => (
-		<div class="user-card">
-			<h2>{capitalizedName}</h2>
-			<p>Age: {props.age}</p>
-		</div>
-	),
+  script: ({ props }) => {
+    const capitalizedName = signal(props.name.toUpperCase());
+    return { capitalizedName };
+  },
+  template: ({ capitalizedName }, props) => (
+    <div class="user-card">
+      <h2>{capitalizedName}</h2>
+      <p>Age: {props.age}</p>
+    </div>
+  ),
 });
 ```
 
@@ -47,17 +47,17 @@ In the `script` function, `props` is a reactive object. If a parent passes a sig
 import { define, computed, unref } from '@effuse/core';
 
 interface CounterProps {
-	count: number; // Can be passed as a number or a Signal<number>
+  count: number; // Can be passed as a number or a Signal<number>
 }
 
 const DoubleCounter = define<CounterProps>({
-	script: ({ props }) => {
-		// This computed will update whenever the parent's 'count' signal changes
-		const double = computed(() => unref(props.count) * 2);
+  script: ({ props }) => {
+    // This computed will update whenever the parent's 'count' signal changes
+    const double = computed(() => unref(props.count) * 2);
 
-		return { double };
-	},
-	template: ({ double }) => <div>Double count: {double}</div>,
+    return { double };
+  },
+  template: ({ double }) => <div>Double count: {double}</div>,
 });
 ```
 
@@ -69,19 +69,19 @@ You can handle default values using standard JavaScript patterns or `computed` f
 import { define, computed, unref } from '@effuse/core';
 
 interface ButtonProps {
-	variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary';
 }
 
 const Button = define<ButtonProps>({
-	script: ({ props }) => {
-		// Reactive default value
-		const safeVariant = computed(() => unref(props.variant) ?? 'primary');
+  script: ({ props }) => {
+    // Reactive default value
+    const safeVariant = computed(() => unref(props.variant) ?? 'primary');
 
-		return { safeVariant };
-	},
-	template: ({ safeVariant, children }) => (
-		<button class={`btn btn-${safeVariant.value}`}>{children}</button>
-	),
+    return { safeVariant };
+  },
+  template: ({ safeVariant, children }) => (
+    <button class={`btn btn-${safeVariant.value}`}>{children}</button>
+  ),
 });
 ```
 
@@ -106,12 +106,12 @@ The `children` prop is special. It contains the content passed inside the compon
 
 ```tsx
 const Container = define({
-	script: () => ({}),
-	template: ({ children }) => <div class="container">{children}</div>,
+  script: () => ({}),
+  template: ({ children }) => <div class="container">{children}</div>,
 });
 
 // Usage
 <Container>
-	<h1>Hello</h1>
+  <h1>Hello</h1>
 </Container>;
 ```
