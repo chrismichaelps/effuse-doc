@@ -1,12 +1,12 @@
 import {
-	define,
-	signal,
-	computed,
-	useHead,
-	unref,
-	effect,
-	type Signal,
-	type ReadonlySignal,
+  define,
+  signal,
+  computed,
+  useHead,
+  unref,
+  effect,
+  type Signal,
+  type ReadonlySignal,
 } from '@effuse/core';
 import { Ink } from '@effuse/ink';
 import { DocsLayout } from '../../components/docs/DocsLayout';
@@ -15,123 +15,123 @@ import { triggerHaptic } from '../../components/Haptics';
 import '../../styles/examples.css';
 
 interface DisplayProps {
-	label: string | ReadonlySignal<string>;
-	value:
-		| string
-		| number
-		| Signal<string | number>
-		| ReadonlySignal<string | number>;
-	color?: string | Signal<string>;
-	onAction?: () => void;
+  label: string | ReadonlySignal<string>;
+  value:
+    | string
+    | number
+    | Signal<string | number>
+    | ReadonlySignal<string | number>;
+  color?: string | Signal<string>;
+  onAction?: () => void;
 }
 
 interface StatDisplayExposed {
-	label: ReadonlySignal<string>;
-	value: ReadonlySignal<string | number>;
-	color: ReadonlySignal<string>;
-	onAction?: () => void;
-	triggerUpdateText: ReadonlySignal<string | undefined>;
+  label: ReadonlySignal<string>;
+  value: ReadonlySignal<string | number>;
+  color: ReadonlySignal<string>;
+  onAction?: () => void;
+  triggerUpdateText: ReadonlySignal<string | undefined>;
 }
 
 const StatDisplay = define<DisplayProps, StatDisplayExposed>({
-	script: ({ props, useStore }) => {
-		const i18nStore = useStore('i18n') as typeof I18nStoreType;
+  script: ({ props, useStore }) => {
+    const i18nStore = useStore('i18n') as typeof I18nStoreType;
 
-		const colorSig = computed(() => unref(props.color) || 'mint');
-		const labelSig = computed(() => unref(props.label));
-		const valueSig = computed(() => unref(props.value) as string | number);
-		const triggerUpdateText = computed(
-			() => i18nStore.translations.value?.examples?.props?.triggerUpdate
-		);
+    const colorSig = computed(() => unref(props.color) || 'mint');
+    const labelSig = computed(() => unref(props.label));
+    const valueSig = computed(() => unref(props.value) as string | number);
+    const triggerUpdateText = computed(
+      () => i18nStore.translations.value?.examples?.props?.triggerUpdate
+    );
 
-		return {
-			label: labelSig,
-			value: valueSig,
-			color: colorSig,
-			onAction: props.onAction,
-			triggerUpdateText,
-		};
-	},
-	template: ({
-		label,
-		value,
-		color,
-		onAction,
-		triggerUpdateText,
-	}: StatDisplayExposed) => (
-		<article
-			class="stat-card"
-			style={() => ({
-				borderColor:
-					color.value === 'mint' ? '' : `var(--accent-${color.value})`,
-				background:
-					color.value === 'mint' ? '' : `var(--accent-${color.value}-alpha-05)`,
-			})}
-		>
-			<div class="stat-label">{label.value}</div>
-			<div
-				class="stat-value"
-				style={() => ({
-					color: color.value === 'mint' ? '' : `var(--accent-${color.value})`,
-				})}
-			>
-				{value.value}
-			</div>
-			{onAction && (
-				<button
-					onClick={() => onAction()}
-					class="btn-secondary"
-					style={{
-						marginTop: '1rem',
-						padding: '0.4rem 0.8rem',
-						fontSize: '0.75rem',
-					}}
-				>
-					{triggerUpdateText.value}
-				</button>
-			)}
-		</article>
-	),
+    return {
+      label: labelSig,
+      value: valueSig,
+      color: colorSig,
+      onAction: props.onAction,
+      triggerUpdateText,
+    };
+  },
+  template: ({
+    label,
+    value,
+    color,
+    onAction,
+    triggerUpdateText,
+  }: StatDisplayExposed) => (
+    <article
+      class="stat-card"
+      style={() => ({
+        borderColor:
+          color.value === 'mint' ? '' : `var(--accent-${color.value})`,
+        background:
+          color.value === 'mint' ? '' : `var(--accent-${color.value}-alpha-05)`,
+      })}
+    >
+      <div class="stat-label">{label.value}</div>
+      <div
+        class="stat-value"
+        style={() => ({
+          color: color.value === 'mint' ? '' : `var(--accent-${color.value})`,
+        })}
+      >
+        {value.value}
+      </div>
+      {onAction && (
+        <button
+          onClick={() => onAction()}
+          class="btn-secondary"
+          style={{
+            marginTop: '1rem',
+            padding: '0.4rem 0.8rem',
+            fontSize: '0.75rem',
+          }}
+        >
+          {triggerUpdateText.value}
+        </button>
+      )}
+    </article>
+  ),
 });
 
 export const PropsPage = define({
-	script: ({ useStore }) => {
-		const i18nStore = useStore('i18n') as typeof I18nStoreType;
+  script: ({ useStore }) => {
+    const i18nStore = useStore('i18n') as typeof I18nStoreType;
 
-		const t = computed(() => i18nStore.translations.value?.examples?.props);
+    const t = computed(() => i18nStore.translations.value?.examples?.props);
 
-		effect(() => {
-			useHead({
-				title: `${t.value?.title as string} - Effuse Playground`,
-				description: t.value?.description as string,
-			});
-		});
+    effect(() => {
+      useHead({
+        title: `${t.value?.title as string} - Effuse Playground`,
+        description: t.value?.description as string,
+      });
+    });
 
-		const count = signal(0);
-		const currentColor = signal('mint');
-		const isActive = signal(false);
+    const count = signal(0);
+    const currentColor = signal('mint');
+    const isActive = signal(false);
 
-		const doubleCount = computed(() => count.value * 2);
+    const doubleCount = computed(() => count.value * 2);
 
-		const increment = () => {
-			count.value++;
-		};
-		const toggleActive = () => {
-			isActive.value = !isActive.value;
-		};
-		const changeColor = () => {
-			const colors = ['mint', 'purple', 'lilac', 'cyan'];
-			const currentIdx = colors.indexOf(currentColor.value);
-			currentColor.value = colors[(currentIdx + 1) % colors.length];
-		};
+    const increment = () => {
+      count.value++;
+    };
+    const toggleActive = () => {
+      isActive.value = !isActive.value;
+    };
+    const changeColor = () => {
+      const colors = ['mint', 'purple', 'lilac', 'cyan'];
+      const currentIdx = colors.indexOf(currentColor.value);
+      currentColor.value = colors[(currentIdx + 1) % colors.length];
+    };
 
-		const reset = () => {
-			count.value = 0;
-			currentColor.value = 'mint';
-			isActive.value = false;
-		};
+    const reset = () => {
+      count.value = 0;
+      currentColor.value = 'mint';
+      isActive.value = false;
+    };
 
-		const codeSnippet = `
+    const codeSnippet = `
 \`\`\`tsx
 <StatDisplay 
   value={count} 
@@ -141,134 +141,134 @@ export const PropsPage = define({
 \`\`\`
 `.trim();
 
-		return {
-			t,
-			count,
-			currentColor,
-			isActive,
-			doubleCount,
-			increment,
-			toggleActive,
-			changeColor,
-			reset,
-			codeSnippet,
-		};
-	},
-	template: ({
-		t,
-		count,
-		currentColor,
-		isActive,
-		doubleCount,
-		increment,
-		toggleActive,
-		changeColor,
-		reset,
-		codeSnippet,
-	}) => (
-		<DocsLayout currentPath="/props">
-			<section
-				class="example-container animate-water-drop"
-				aria-label="Props example"
-			>
-				<header class="example-header">
-					<h1 class="example-title">{t.value?.title}</h1>
-					<p class="example-description">{t.value?.description}</p>
-				</header>
+    return {
+      t,
+      count,
+      currentColor,
+      isActive,
+      doubleCount,
+      increment,
+      toggleActive,
+      changeColor,
+      reset,
+      codeSnippet,
+    };
+  },
+  template: ({
+    t,
+    count,
+    currentColor,
+    isActive,
+    doubleCount,
+    increment,
+    toggleActive,
+    changeColor,
+    reset,
+    codeSnippet,
+  }) => (
+    <DocsLayout currentPath="/props">
+      <section
+        class="example-container animate-water-drop"
+        aria-label="Props example"
+      >
+        <header class="example-header">
+          <h1 class="example-title">{t.value?.title}</h1>
+          <p class="example-description">{t.value?.description}</p>
+        </header>
 
-				<section class="example-card" aria-labelledby="parent-controls-title">
-					<h2 id="parent-controls-title" class="example-card-title">
-						{t.value?.parentControls}
-					</h2>
-					<div class="flex flex-wrap gap-4">
-						<button
-							onClick={() => {
-								triggerHaptic('light');
-								increment();
-							}}
-							class="btn-premium"
-						>
-							{t.value?.incrementCount}
-						</button>
-						<button
-							onClick={() => {
-								triggerHaptic('light');
-								changeColor();
-							}}
-							class="btn-secondary"
-						>
-							{t.value?.changeColor}
-						</button>
-						<button
-							onClick={() => {
-								triggerHaptic('light');
-								toggleActive();
-							}}
-							class="btn-secondary"
-							style={() => ({
-								borderColor: isActive.value ? 'var(--accent-mint)' : '',
-								color: isActive.value ? 'var(--accent-mint)' : '',
-							})}
-						>
-							{t.value?.toggleStatus}
-						</button>
-						<button
-							onClick={() => {
-								triggerHaptic('light');
-								reset();
-							}}
-							class="btn-secondary"
-							style={{ marginLeft: 'auto' }}
-						>
-							{t.value?.reset}
-						</button>
-					</div>
-				</section>
+        <section class="example-card" aria-labelledby="parent-controls-title">
+          <h2 id="parent-controls-title" class="example-card-title">
+            {t.value?.parentControls}
+          </h2>
+          <div class="flex flex-wrap gap-4">
+            <button
+              onClick={() => {
+                triggerHaptic('light');
+                increment();
+              }}
+              class="btn-premium"
+            >
+              {t.value?.incrementCount}
+            </button>
+            <button
+              onClick={() => {
+                triggerHaptic('light');
+                changeColor();
+              }}
+              class="btn-secondary"
+            >
+              {t.value?.changeColor}
+            </button>
+            <button
+              onClick={() => {
+                triggerHaptic('light');
+                toggleActive();
+              }}
+              class="btn-secondary"
+              style={() => ({
+                borderColor: isActive.value ? 'var(--accent-mint)' : '',
+                color: isActive.value ? 'var(--accent-mint)' : '',
+              })}
+            >
+              {t.value?.toggleStatus}
+            </button>
+            <button
+              onClick={() => {
+                triggerHaptic('light');
+                reset();
+              }}
+              class="btn-secondary"
+              style={{ marginLeft: 'auto' }}
+            >
+              {t.value?.reset}
+            </button>
+          </div>
+        </section>
 
-				<section class="stat-grid" aria-label="Statistics">
-					<StatDisplay
-						label={t.value?.currentCount ?? ''}
-						value={count}
-						color="mint"
-						onAction={increment}
-					/>
-					<StatDisplay
-						label={t.value?.derivedValue ?? ''}
-						value={doubleCount}
-						color="lilac"
-					/>
-					<StatDisplay
-						label={t.value?.currentColor ?? ''}
-						value={currentColor}
-						color={currentColor}
-						onAction={changeColor}
-					/>
-					<StatDisplay
-						label={t.value?.activeStatus ?? ''}
-						value={
-							isActive.value
-								? (t.value?.active as string)
-								: (t.value?.inactive as string)
-						}
-						color={isActive.value ? 'mint' : 'cyan'}
-						onAction={toggleActive}
-					/>
-				</section>
+        <section class="stat-grid" aria-label="Statistics">
+          <StatDisplay
+            label={t.value?.currentCount ?? ''}
+            value={count}
+            color="mint"
+            onAction={increment}
+          />
+          <StatDisplay
+            label={t.value?.derivedValue ?? ''}
+            value={doubleCount}
+            color="lilac"
+          />
+          <StatDisplay
+            label={t.value?.currentColor ?? ''}
+            value={currentColor}
+            color={currentColor}
+            onAction={changeColor}
+          />
+          <StatDisplay
+            label={t.value?.activeStatus ?? ''}
+            value={
+              isActive.value
+                ? (t.value?.active as string)
+                : (t.value?.inactive as string)
+            }
+            color={isActive.value ? 'mint' : 'cyan'}
+            onAction={toggleActive}
+          />
+        </section>
 
-				<details class="example-card" style={{ padding: '1.5rem' }}>
-					<summary
-						class="stat-label"
-						style={{ marginBottom: '1rem', cursor: 'pointer', outline: 'none' }}
-					>
-						{t.value?.howItWorks}
-					</summary>
-					<div style={{ marginTop: '1rem' }}>
-						<figure>
-							<Ink content={codeSnippet} />
-						</figure>
-					</div>
-				</details>
-			</section>
-		</DocsLayout>
-	),
+        <details class="example-card" style={{ padding: '1.5rem' }}>
+          <summary
+            class="stat-label"
+            style={{ marginBottom: '1rem', cursor: 'pointer', outline: 'none' }}
+          >
+            {t.value?.howItWorks}
+          </summary>
+          <div style={{ marginTop: '1rem' }}>
+            <figure>
+              <Ink content={codeSnippet} />
+            </figure>
+          </div>
+        </details>
+      </section>
+    </DocsLayout>
+  ),
 });

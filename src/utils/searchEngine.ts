@@ -1,172 +1,172 @@
 import type { DocEntry } from './markdownParser.js';
 import {
-	buildIndex,
-	searchIndex,
-	getDoc,
-	type InvertedIndex,
-	type SearchMatch,
+  buildIndex,
+  searchIndex,
+  getDoc,
+  type InvertedIndex,
+  type SearchMatch,
 } from './invertedIndex.js';
 import { isSome } from './data/index.js';
 
 export interface SearchResultItem {
-	id: string;
-	documentId: string;
-	text: string;
-	score: number;
-	heading?: string;
-	filePath?: string;
-	anchor?: string;
-	matchedIn?: 'title' | 'content' | 'code' | 'heading';
+  id: string;
+  documentId: string;
+  text: string;
+  score: number;
+  heading?: string;
+  filePath?: string;
+  anchor?: string;
+  matchedIn?: 'title' | 'content' | 'code' | 'heading';
 }
 
 interface SearchEngineConfig {
-	maxResults: number;
-	snippetLength: number;
-	snippetContext: number;
+  maxResults: number;
+  snippetLength: number;
+  snippetContext: number;
 }
 
 const DEFAULT_CONFIG: SearchEngineConfig = {
-	maxResults: 10,
-	snippetLength: 150,
-	snippetContext: 60,
+  maxResults: 10,
+  snippetLength: 150,
+  snippetContext: 60,
 };
 
 const createSnippet = (
-	text: string,
-	matchedTerms: string[],
-	config: SearchEngineConfig
+  text: string,
+  matchedTerms: string[],
+  config: SearchEngineConfig
 ): string => {
-	if (!text) return '';
+  if (!text) return '';
 
-	const lower = text.toLowerCase();
-	let bestIndex = -1;
+  const lower = text.toLowerCase();
+  let bestIndex = -1;
 
-	for (const term of matchedTerms) {
-		const idx = lower.indexOf(term.toLowerCase());
-		if (idx !== -1 && (bestIndex === -1 || idx < bestIndex)) {
-			bestIndex = idx;
-		}
-	}
+  for (const term of matchedTerms) {
+    const idx = lower.indexOf(term.toLowerCase());
+    if (idx !== -1 && (bestIndex === -1 || idx < bestIndex)) {
+      bestIndex = idx;
+    }
+  }
 
-	if (bestIndex === -1) {
-		return (
-			text.slice(0, config.snippetLength) +
-			(text.length > config.snippetLength ? '...' : '')
-		);
-	}
+  if (bestIndex === -1) {
+    return (
+      text.slice(0, config.snippetLength) +
+      (text.length > config.snippetLength ? '...' : '')
+    );
+  }
 
-	const start = Math.max(0, bestIndex - config.snippetContext);
-	const end = Math.min(text.length, bestIndex + config.snippetLength);
+  const start = Math.max(0, bestIndex - config.snippetContext);
+  const end = Math.min(text.length, bestIndex + config.snippetLength);
 
-	return (
-		(start > 0 ? '...' : '') +
-		text.slice(start, end) +
-		(end < text.length ? '...' : '')
-	);
+  return (
+    (start > 0 ? '...' : '') +
+    text.slice(start, end) +
+    (end < text.length ? '...' : '')
+  );
 };
 
 const getTextForField = (doc: DocEntry, field: string): string => {
-	switch (field) {
-		case 'title':
-			return doc.title;
-		case 'code':
-			return doc.codeContent;
-		case 'heading':
-			return doc.headings.map((h) => h.text).join(' ');
-		default:
-			return doc.text;
-	}
+  switch (field) {
+    case 'title':
+      return doc.title;
+    case 'code':
+      return doc.codeContent;
+    case 'heading':
+      return doc.headings.map((h) => h.text).join(' ');
+    default:
+      return doc.text;
+  }
 };
 
 const getAnchorForDoc = (
-	doc: DocEntry,
-	matchedTerms: string[]
+  doc: DocEntry,
+  matchedTerms: string[]
 ): string | undefined => {
-	const lower = matchedTerms.map((t) => t.toLowerCase());
+  const lower = matchedTerms.map((t) => t.toLowerCase());
 
-	for (const heading of doc.headings) {
-		const headingLower = heading.text.toLowerCase();
-		if (lower.some((term) => headingLower.includes(term))) {
-			return heading.id;
-		}
-	}
+  for (const heading of doc.headings) {
+    const headingLower = heading.text.toLowerCase();
+    if (lower.some((term) => headingLower.includes(term))) {
+      return heading.id;
+    }
+  }
 
-	return doc.headings[0]?.id;
+  return doc.headings[0]?.id;
 };
 
 const convertMatch = (
-	match: SearchMatch,
-	doc: DocEntry,
-	config: SearchEngineConfig
+  match: SearchMatch,
+  doc: DocEntry,
+  config: SearchEngineConfig
 ): SearchResultItem => {
-	const fieldText = getTextForField(doc, match.bestField);
-	const matchedIn =
-		match.bestField === 'heading'
-			? 'heading'
-			: match.bestField === 'code'
-				? 'code'
-				: match.bestField === 'title'
-					? 'title'
-					: 'content';
+  const fieldText = getTextForField(doc, match.bestField);
+  const matchedIn =
+    match.bestField === 'heading'
+      ? 'heading'
+      : match.bestField === 'code'
+        ? 'code'
+        : match.bestField === 'title'
+          ? 'title'
+          : 'content';
 
-	return {
-		id: `${doc.id}-${matchedIn}`,
-		documentId: doc.id,
-		text: createSnippet(fieldText, match.matchedTerms, config),
-		score: Math.min(1, match.score / 10),
-		heading: doc.title,
-		filePath: doc.path,
-		anchor: getAnchorForDoc(doc, match.matchedTerms),
-		matchedIn,
-	};
+  return {
+    id: `${doc.id}-${matchedIn}`,
+    documentId: doc.id,
+    text: createSnippet(fieldText, match.matchedTerms, config),
+    score: Math.min(1, match.score / 10),
+    heading: doc.title,
+    filePath: doc.path,
+    anchor: getAnchorForDoc(doc, match.matchedTerms),
+    matchedIn,
+  };
 };
 
 export interface SearchEngine {
-	index: InvertedIndex;
-	search: (query: string) => SearchResultItem[];
-	reindex: (docs: readonly DocEntry[]) => void;
+  index: InvertedIndex;
+  search: (query: string) => SearchResultItem[];
+  reindex: (docs: readonly DocEntry[]) => void;
 }
 
 export const createSearchEngine = (
-	initialDocs: readonly DocEntry[] = [],
-	customConfig?: Partial<SearchEngineConfig>
+  initialDocs: readonly DocEntry[] = [],
+  customConfig?: Partial<SearchEngineConfig>
 ): SearchEngine => {
-	const config = { ...DEFAULT_CONFIG, ...customConfig };
-	let index = buildIndex(initialDocs);
+  const config = { ...DEFAULT_CONFIG, ...customConfig };
+  let index = buildIndex(initialDocs);
 
-	return {
-		get index() {
-			return index;
-		},
+  return {
+    get index() {
+      return index;
+    },
 
-		search(query: string): SearchResultItem[] {
-			if (!query || query.trim().length < 2) return [];
+    search(query: string): SearchResultItem[] {
+      if (!query || query.trim().length < 2) return [];
 
-			const matches = searchIndex(index, query.trim(), config.maxResults);
+      const matches = searchIndex(index, query.trim(), config.maxResults);
 
-			return matches
-				.map((match) => {
-					const doc = getDoc(index, match.docId);
-					if (!isSome(doc)) return null;
-					return convertMatch(match, doc.value, config);
-				})
-				.filter((r): r is SearchResultItem => r !== null);
-		},
+      return matches
+        .map((match) => {
+          const doc = getDoc(index, match.docId);
+          if (!isSome(doc)) return null;
+          return convertMatch(match, doc.value, config);
+        })
+        .filter((r): r is SearchResultItem => r !== null);
+    },
 
-		reindex(docs: readonly DocEntry[]): void {
-			index = buildIndex(docs);
-		},
-	};
+    reindex(docs: readonly DocEntry[]): void {
+      index = buildIndex(docs);
+    },
+  };
 };
 
 let defaultEngine: SearchEngine | null = null;
 
 export const searchDocs = (
-	docs: readonly DocEntry[],
-	query: string
+  docs: readonly DocEntry[],
+  query: string
 ): SearchResultItem[] => {
-	if (!defaultEngine || defaultEngine.index.docCount !== docs.length) {
-		defaultEngine = createSearchEngine(docs);
-	}
-	return defaultEngine.search(query);
+  if (!defaultEngine || defaultEngine.index.docCount !== docs.length) {
+    defaultEngine = createSearchEngine(docs);
+  }
+  return defaultEngine.search(query);
 };
