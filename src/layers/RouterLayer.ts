@@ -20,6 +20,7 @@ import { AboutPage } from '../pages/About';
 import { EmitDemoPage } from '../pages/Emit';
 import { ContextPage } from '../pages/Context';
 import { ComponentsPage } from '../pages/Components';
+import { ReleasesPage } from '../pages/Releases';
 import { RefsPage } from '../pages/Refs';
 
 const routes = defineRoutes([
@@ -38,6 +39,7 @@ const routes = defineRoutes([
   { path: '/emit', name: 'emit-demo', component: EmitDemoPage },
   { path: '/context', name: 'context-demo', component: ContextPage },
   { path: '/components', name: 'components-demo', component: ComponentsPage },
+  { path: '/releases', name: 'releases', component: ReleasesPage },
   { path: '/refs', name: 'refs', component: RefsPage },
   { path: '*', name: 'not-found', component: NotFoundPage },
 ]);

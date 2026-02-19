@@ -51,6 +51,7 @@ interface AppTranslations {
     repeat: string;
     await: string;
     refs: string;
+    releases: string;
     ecosystem: string;
   };
   toc: {
