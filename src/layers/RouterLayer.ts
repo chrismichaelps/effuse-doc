@@ -2,8 +2,8 @@ import { defineLayer, isTaggedError } from '@effuse/core';
 import {
   createRouter,
   createWebHistory,
+  defineRoutes,
   installRouter,
-  type RouteRecord,
 } from '@effuse/router';
 import { HomePage } from '../pages/Home';
 import { FormDemoPage } from '../pages/Form';
@@ -22,7 +22,7 @@ import { ContextPage } from '../pages/Context';
 import { ComponentsPage } from '../pages/Components';
 import { RefsPage } from '../pages/Refs';
 
-const routes: RouteRecord[] = [
+const routes = defineRoutes([
   { path: '/', name: 'home', component: HomePage },
   { path: '/terms', name: 'terms', component: TermsPage },
   { path: '/privacy', name: 'privacy', component: PrivacyPage },
@@ -40,7 +40,7 @@ const routes: RouteRecord[] = [
   { path: '/components', name: 'components-demo', component: ComponentsPage },
   { path: '/refs', name: 'refs', component: RefsPage },
   { path: '*', name: 'not-found', component: NotFoundPage },
-];
+]);
 
 export const router = createRouter({
   history: createWebHistory(),
