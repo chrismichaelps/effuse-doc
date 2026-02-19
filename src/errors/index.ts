@@ -13,10 +13,10 @@ import type { SearchUIError, SearchIndexError } from './search.js';
 import type { I18nError } from './i18n.js';
 
 export type AppError =
-	| NetworkError
-	| ApiError
-	| TodoError
-	| FormSubmissionError
-	| SearchUIError
-	| SearchIndexError
-	| I18nError;
+  | NetworkError
+  | ApiError
+  | TodoError
+  | FormSubmissionError
+  | SearchUIError
+  | SearchIndexError
+  | I18nError;
