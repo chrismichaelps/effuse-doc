@@ -62,6 +62,7 @@ const sectionsConfig: NavSection[] = [
       { labelKey: 'introduction', href: '/docs/getting-started' },
       { labelKey: 'installation', href: '/docs/installation' },
       { labelKey: 'quickStart', href: '/docs/quick-start' },
+      { labelKey: 'releases', href: '/releases' },
     ],
     isOpen: true,
   },
@@ -171,6 +172,7 @@ const createStableSectionStates = (): SectionState[] => {
         repeat: sidebar?.repeat,
         await: sidebar?.await,
         refs: sidebar?.refs,
+        releases: sidebar?.releases,
       };
       return section.items.map((item) => ({
         label: labelMapping[item.labelKey] ?? item.labelKey,

@@ -21,6 +21,7 @@ const footerSections: FooterSection[] = [
     links: [
       { label: 'Docs', href: '/docs' },
       { label: 'About', href: '/about' },
+      { label: 'Releases', href: '/releases' },
     ],
   },
   {
@@ -106,7 +107,7 @@ export const Footer = define({
           <div class="footer-version">
             <img src="/logo/logo-white.svg" alt="Effuse" class="footer-logo" />
             <span class="footer-version-label">Latest version:</span>
-            <Link to="/docs/changelog" class="footer-version-badge">
+            <Link to="/releases" class="footer-version-badge">
               {version}
             </Link>
           </div>
