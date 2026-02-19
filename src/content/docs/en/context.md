@@ -14,17 +14,17 @@ Use `createContext` to define a new context with an optional default value:
 import { createContext } from '@effuse/core';
 
 interface ThemeConfig {
-	mode: 'light' | 'dark';
-	primaryColor: string;
+  mode: 'light' | 'dark';
+  primaryColor: string;
 }
 
 const ThemeContext = createContext<ThemeConfig>({
-	id: 'theme',
-	defaultValue: {
-		mode: 'dark',
-		primaryColor: '#6366f1',
-	},
-	displayName: 'Theme',
+  id: 'theme',
+  defaultValue: {
+    mode: 'dark',
+    primaryColor: '#6366f1',
+  },
+  displayName: 'Theme',
 });
 ```
 
@@ -45,21 +45,21 @@ import { define, useContext } from '@effuse/core';
 import { ThemeContext } from './contexts';
 
 const ThemedButton = define({
-	script: () => {
-		const theme = useContext(ThemeContext);
+  script: () => {
+    const theme = useContext(ThemeContext);
 
-		return { theme };
-	},
-	template: ({ theme }) => (
-		<button
-			style={{
-				backgroundColor: theme.primaryColor,
-				color: theme.mode === 'dark' ? '#fff' : '#000',
-			}}
-		>
-			Themed Button
-		</button>
-	),
+    return { theme };
+  },
+  template: ({ theme }) => (
+    <button
+      style={{
+        backgroundColor: theme.primaryColor,
+        color: theme.mode === 'dark' ? '#fff' : '#000',
+      }}
+    >
+      Themed Button
+    </button>
+  ),
 });
 ```
 
@@ -72,20 +72,20 @@ import { define } from '@effuse/core';
 import { ThemeContext } from './contexts';
 
 const App = define({
-	script: () => {
-		const customTheme = {
-			mode: 'light' as const,
-			primaryColor: '#22c55e',
-		};
+  script: () => {
+    const customTheme = {
+      mode: 'light' as const,
+      primaryColor: '#22c55e',
+    };
 
-		return { customTheme };
-	},
-	template: ({ customTheme }) => (
-		<ThemeContext.Provider value={customTheme}>
-			<ThemedButton />
-			<NestedComponent />
-		</ThemeContext.Provider>
-	),
+    return { customTheme };
+  },
+  template: ({ customTheme }) => (
+    <ThemeContext.Provider value={customTheme}>
+      <ThemedButton />
+      <NestedComponent />
+    </ThemeContext.Provider>
+  ),
 });
 ```
 
@@ -95,17 +95,17 @@ Context values stack properly. Inner providers override outer ones:
 
 ```tsx
 const NestedExample = define({
-	template: () => (
-		<ThemeContext.Provider value={{ mode: 'dark', primaryColor: '#6366f1' }}>
-			{/* This component sees dark theme */}
-			<ThemedButton />
+  template: () => (
+    <ThemeContext.Provider value={{ mode: 'dark', primaryColor: '#6366f1' }}>
+      {/* This component sees dark theme */}
+      <ThemedButton />
 
-			<ThemeContext.Provider value={{ mode: 'light', primaryColor: '#22c55e' }}>
-				{/* This component sees light theme */}
-				<ThemedButton />
-			</ThemeContext.Provider>
-		</ThemeContext.Provider>
-	),
+      <ThemeContext.Provider value={{ mode: 'light', primaryColor: '#22c55e' }}>
+        {/* This component sees light theme */}
+        <ThemedButton />
+      </ThemeContext.Provider>
+    </ThemeContext.Provider>
+  ),
 });
 ```
 
@@ -117,8 +117,8 @@ Use `hasContextValue` to check if a context value exists:
 import { hasContextValue } from '@effuse/core';
 
 if (hasContextValue(ThemeContext)) {
-	const theme = useContext(ThemeContext);
-	// ...
+  const theme = useContext(ThemeContext);
+  // ...
 }
 ```
 
@@ -130,9 +130,9 @@ Use `isEffuseContext` to verify if a value is an Effuse context:
 import { isEffuseContext } from '@effuse/core';
 
 function processContext(maybeContext: unknown) {
-	if (isEffuseContext(maybeContext)) {
-		console.log('Valid context:', maybeContext.id);
-	}
+  if (isEffuseContext(maybeContext)) {
+    console.log('Valid context:', maybeContext.id);
+  }
 }
 ```
 
@@ -144,11 +144,11 @@ When a context is not found and has no default value, `useContext` throws a `Con
 import { useContext, ContextNotFoundError } from '@effuse/core';
 
 try {
-	const auth = useContext(AuthContext);
+  const auth = useContext(AuthContext);
 } catch (error) {
-	if (error instanceof ContextNotFoundError) {
-		console.error(`Context "${error.contextId}" not found`);
-	}
+  if (error instanceof ContextNotFoundError) {
+    console.error(`Context "${error.contextId}" not found`);
+  }
 }
 ```
 
@@ -165,11 +165,11 @@ Default values can be factory functions for dynamic initialization:
 
 ```typescript
 const TimestampContext = createContext({
-	id: 'timestamp',
-	defaultValue: () => ({
-		createdAt: Date.now(),
-		version: '1.0.0',
-	}),
+  id: 'timestamp',
+  defaultValue: () => ({
+    createdAt: Date.now(),
+    version: '1.0.0',
+  }),
 });
 ```
 

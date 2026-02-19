@@ -26,74 +26,74 @@ import { createStore } from '@effuse/store';
 
 // 创建具有响应式状态的 store
 const themeStore = createStore('theme', {
-	mode: 'dark' as 'light' | 'dark',
-	accentColor: '#8df0cc',
+  mode: 'dark' as 'light' | 'dark',
+  accentColor: '#8df0cc',
 
-	setMode(mode: 'light' | 'dark') {
-		this.mode.value = mode;
-	},
+  setMode(mode: 'light' | 'dark') {
+    this.mode.value = mode;
+  },
 
-	toggleMode() {
-		this.mode.value = this.mode.value === 'dark' ? 'light' : 'dark';
-	},
+  toggleMode() {
+    this.mode.value = this.mode.value === 'dark' ? 'light' : 'dark';
+  },
 });
 
 export const ThemeLayer = defineLayer({
-	name: 'theme',
+  name: 'theme',
 
-	// 对其他层的依赖（先加载）
-	dependencies: ['layout'],
+  // 对其他层的依赖（先加载）
+  dependencies: ['layout'],
 
-	// 该层的 store 实例
-	store: themeStore,
+  // 该层的 store 实例
+  store: themeStore,
 
-	// 从 store 中提取响应式 props 供组件使用
-	deriveProps: (store) => ({
-		mode: store.mode,
-		accentColor: store.accentColor,
-	}),
+  // 从 store 中提取响应式 props 供组件使用
+  deriveProps: (store) => ({
+    mode: store.mode,
+    accentColor: store.accentColor,
+  }),
 
-	// 通过依赖注入暴露的服务
-	provides: {
-		theme: () => themeStore,
-	},
+  // 通过依赖注入暴露的服务
+  provides: {
+    theme: () => themeStore,
+  },
 
-	// 生命周期钩子
-	onMount: (ctx) => {
-		// ctx.store, ctx.deps, ctx.getService 可用
-		const savedTheme = localStorage.getItem('theme');
-		if (savedTheme) ctx.store.mode.value = savedTheme as 'light' | 'dark';
-	},
+  // 生命周期钩子
+  onMount: (ctx) => {
+    // ctx.store, ctx.deps, ctx.getService 可用
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) ctx.store.mode.value = savedTheme as 'light' | 'dark';
+  },
 
-	onUnmount: (ctx) => {
-		// 卸载前持久化状态
-		localStorage.setItem('theme', ctx.store.mode.value);
-	},
+  onUnmount: (ctx) => {
+    // 卸载前持久化状态
+    localStorage.setItem('theme', ctx.store.mode.value);
+  },
 
-	onError: (error, ctx) => {
-		// 具有上下文访问权限的智能恢复
-		console.error('[ThemeLayer] 错误:', error.message);
-		ctx.store.mode.value = 'dark'; // 回退
-	},
+  onError: (error, ctx) => {
+    // 具有上下文访问权限的智能恢复
+    console.error('[ThemeLayer] 错误:', error.message);
+    ctx.store.mode.value = 'dark'; // 回退
+  },
 
-	onReady: (ctx, allLayers) => {
-		// 在所有层初始化后调用
-		console.log(`[ThemeLayer] 准备就绪，包含 ${allLayers.length} 个层`);
-	},
+  onReady: (ctx, allLayers) => {
+    // 在所有层初始化后调用
+    console.log(`[ThemeLayer] 准备就绪，包含 ${allLayers.length} 个层`);
+  },
 
-	// 可访问 store 和依赖项的 setup 函数
-	setup: (ctx) => {
-		// ctx.store 是具有完整类型安全性的 themeStore
-		const savedTheme = localStorage.getItem('theme');
-		if (savedTheme === 'light' || savedTheme === 'dark') {
-			ctx.store.mode.value = savedTheme;
-		}
+  // 可访问 store 和依赖项的 setup 函数
+  setup: (ctx) => {
+    // ctx.store 是具有完整类型安全性的 themeStore
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      ctx.store.mode.value = savedTheme;
+    }
 
-		// 返回清理函数（可选）
-		return () => {
-			console.log('[ThemeLayer] 清理');
-		};
-	},
+    // 返回清理函数（可选）
+    return () => {
+      console.log('[ThemeLayer] 清理');
+    };
+  },
 });
 ```
 
@@ -103,28 +103,28 @@ export const ThemeLayer = defineLayer({
 
 ```typescript
 interface EffuseLayer<P, D, S> {
-	// 必需
-	name: string; // 唯一标识符
+  // 必需
+  name: string; // 唯一标识符
 
-	// 状态管理
-	store?: S; // Store 实例（createStore）
-	deriveProps?: (store: S) => P; // 从 store 提取 props
+  // 状态管理
+  store?: S; // Store 实例（createStore）
+  deriveProps?: (store: S) => P; // 从 store 提取 props
 
-	// 依赖注入
-	dependencies?: D; // 需要先加载的层名称数组
-	provides?: Record<string, () => unknown>; // 服务工厂
+  // 依赖注入
+  dependencies?: D; // 需要先加载的层名称数组
+  provides?: Record<string, () => unknown>; // 服务工厂
 
-	// 生命周期
-	setup?: (ctx: SetupContext<P, D, S>) => CleanupFn | void;
-	onMount?: (ctx: SetupContext<P, D, S>) => void;
-	onUnmount?: (ctx: SetupContext<P, D, S>) => void;
-	onError?: (error: Error, ctx: SetupContext<P, D, S>) => void;
-	onReady?: (ctx: SetupContext<P, D, S>, allLayers: ResolvedLayer[]) => void;
+  // 生命周期
+  setup?: (ctx: SetupContext<P, D, S>) => CleanupFn | void;
+  onMount?: (ctx: SetupContext<P, D, S>) => void;
+  onUnmount?: (ctx: SetupContext<P, D, S>) => void;
+  onError?: (error: Error, ctx: SetupContext<P, D, S>) => void;
+  onReady?: (ctx: SetupContext<P, D, S>, allLayers: ResolvedLayer[]) => void;
 
-	// 高级
-	components?: Record<string, Component>; // 作用域组件
-	routes?: RouteConfig[]; // 层专属路由
-	plugins?: PluginFn[]; // 层插件
+  // 高级
+  components?: Record<string, Component>; // 作用域组件
+  routes?: RouteConfig[]; // 层专属路由
+  plugins?: PluginFn[]; // 层插件
 }
 ```
 
@@ -143,22 +143,22 @@ interface EffuseLayer<P, D, S> {
 
 ```typescript
 const i18nStore = createStore('i18n', {
-	locale: 'en',
-	translations: null as Record<string, string> | null,
+  locale: 'en',
+  translations: null as Record<string, string> | null,
 
-	setLocale(loc: string) {
-		this.locale.value = loc;
-		// 加载翻译...
-	},
+  setLocale(loc: string) {
+    this.locale.value = loc;
+    // 加载翻译...
+  },
 });
 
 defineLayer({
-	name: 'i18n',
-	store: i18nStore,
-	deriveProps: (store) => ({
-		locale: store.locale,
-		translations: store.translations,
-	}),
+  name: 'i18n',
+  store: i18nStore,
+  deriveProps: (store) => ({
+    locale: store.locale,
+    translations: store.translations,
+  }),
 });
 ```
 
@@ -168,15 +168,15 @@ defineLayer({
 
 ```typescript
 defineLayer({
-	name: 'router',
-	provides: {
-		router: () => routerInstance, // 工厂函数
-	},
+  name: 'router',
+  provides: {
+    router: () => routerInstance, // 工厂函数
+  },
 });
 
 // 在组件中:
 script: ({ useStore }) => {
-	const router = useStore('router'); // 获取 router
+  const router = useStore('router'); // 获取 router
 };
 ```
 
@@ -188,26 +188,26 @@ script: ({ useStore }) => {
 import { define, computed } from '@effuse/core';
 
 const ThemeToggle = define({
-	script: ({ useLayerProps, useStore }) => {
-		// 从 deriveProps 获取响应式 props
-		const themeProps = useLayerProps('theme');
+  script: ({ useLayerProps, useStore }) => {
+    // 从 deriveProps 获取响应式 props
+    const themeProps = useLayerProps('theme');
 
-		// 从 provides 获取服务
-		const themeStore = useStore('theme');
+    // 从 provides 获取服务
+    const themeStore = useStore('theme');
 
-		const buttonText = computed(() =>
-			themeProps?.mode.value === 'dark' ? '浅色' : '深色'
-		);
+    const buttonText = computed(() =>
+      themeProps?.mode.value === 'dark' ? '浅色' : '深色'
+    );
 
-		const toggle = () => {
-			themeStore?.toggleMode();
-		};
+    const toggle = () => {
+      themeStore?.toggleMode();
+    };
 
-		return { buttonText, toggle };
-	},
-	template: ({ buttonText, toggle }) => (
-		<button onClick={toggle}>{buttonText}</button>
-	),
+    return { buttonText, toggle };
+  },
+  template: ({ buttonText, toggle }) => (
+    <button onClick={toggle}>{buttonText}</button>
+  ),
 });
 ```
 
@@ -219,23 +219,23 @@ const ThemeToggle = define({
 import { defineHook, signal } from '@effuse/core';
 
 export const useTheme = defineHook<
-	undefined, // No config
-	{ mode: Signal<string>; toggle: () => void }
+  undefined, // No config
+  { mode: Signal<string>; toggle: () => void }
 >({
-	name: 'useTheme',
-	deps: ['theme'] as const,
-	setup: ({ layer }) => {
-		// layer() 返回 deriveProps 的结果
-		const themeProps = layer('theme');
+  name: 'useTheme',
+  deps: ['theme'] as const,
+  setup: ({ layer }) => {
+    // layer() 返回 deriveProps 的结果
+    const themeProps = layer('theme');
 
-		return {
-			mode: themeProps.mode,
-			toggle: () => {
-				themeProps.mode.value =
-					themeProps.mode.value === 'dark' ? 'light' : 'dark';
-			},
-		};
-	},
+    return {
+      mode: themeProps.mode,
+      toggle: () => {
+        themeProps.mode.value =
+          themeProps.mode.value === 'dark' ? 'light' : 'dark';
+      },
+    };
+  },
 });
 ```
 
@@ -245,13 +245,13 @@ export const useTheme = defineHook<
 
 ```typescript
 defineLayer({
-	name: 'todos',
-	dependencies: ['i18n', 'router'], // ← 必须先加载
-	setup: (ctx) => {
-		// 访问依赖层
-		const i18n = ctx.deps.i18n;
-		const router = ctx.deps.router;
-	},
+  name: 'todos',
+  dependencies: ['i18n', 'router'], // ← 必须先加载
+  setup: (ctx) => {
+    // 访问依赖层
+    const i18n = ctx.deps.i18n;
+    const router = ctx.deps.router;
+  },
 });
 ```
 
@@ -266,22 +266,22 @@ defineLayer({
 import type { Signal } from '@effuse/core';
 
 declare module '@effuse/core' {
-	interface EffuseLayerRegistry {
-		theme: {
-			props: {
-				mode: Signal<'light' | 'dark'>;
-				accentColor: Signal<string>;
-			};
-			provides: { theme: typeof themeStore };
-		};
-		i18n: {
-			props: {
-				locale: Signal<string>;
-				translations: Signal<Record<string, string> | null>;
-			};
-			provides: { i18n: typeof i18nStore };
-		};
-	}
+  interface EffuseLayerRegistry {
+    theme: {
+      props: {
+        mode: Signal<'light' | 'dark'>;
+        accentColor: Signal<string>;
+      };
+      provides: { theme: typeof themeStore };
+    };
+    i18n: {
+      props: {
+        locale: Signal<string>;
+        translations: Signal<Record<string, string> | null>;
+      };
+      provides: { i18n: typeof i18nStore };
+    };
+  }
 }
 
 export {};
@@ -301,41 +301,41 @@ import { defineLayer } from '@effuse/core';
 import { i18nStore } from '../store/appI18n';
 
 export const I18nLayer = defineLayer({
-	name: 'i18n',
-	dependencies: ['router'],
+  name: 'i18n',
+  dependencies: ['router'],
 
-	store: i18nStore,
+  store: i18nStore,
 
-	deriveProps: (store) => ({
-		locale: store.locale,
-		isLoading: store.isLoading,
-		translations: store.translations,
-	}),
+  deriveProps: (store) => ({
+    locale: store.locale,
+    isLoading: store.isLoading,
+    translations: store.translations,
+  }),
 
-	provides: {
-		i18n: () => i18nStore,
-	},
+  provides: {
+    i18n: () => i18nStore,
+  },
 
-	onMount: (ctx) => {
-		const saved = localStorage.getItem('effuse:locale');
-		if (saved) ctx.store.setLocale(saved);
-	},
+  onMount: (ctx) => {
+    const saved = localStorage.getItem('effuse:locale');
+    if (saved) ctx.store.setLocale(saved);
+  },
 
-	onUnmount: (ctx) => {
-		localStorage.setItem('effuse:locale', ctx.store.locale.value);
-	},
+  onUnmount: (ctx) => {
+    localStorage.setItem('effuse:locale', ctx.store.locale.value);
+  },
 
-	onError: (_, ctx) => {
-		ctx.store.setLocale('en'); // 回退
-	},
+  onError: (_, ctx) => {
+    ctx.store.setLocale('en'); // 回退
+  },
 
-	onReady: (ctx, allLayers) => {
-		console.log(`[I18nLayer] 准备就绪，包含 ${allLayers.length} 个层`);
-	},
+  onReady: (ctx, allLayers) => {
+    console.log(`[I18nLayer] 准备就绪，包含 ${allLayers.length} 个层`);
+  },
 
-	setup: (ctx) => {
-		ctx.store.init(); // 尽快加载初始翻译
-	},
+  setup: (ctx) => {
+    ctx.store.init(); // 尽快加载初始翻译
+  },
 });
 ```
 

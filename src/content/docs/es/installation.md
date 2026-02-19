@@ -83,12 +83,12 @@ import { define } from '@effuse/core';
 import { RouterView } from '@effuse/router';
 
 export const App = define({
-	script: () => ({}),
-	template: () => (
-		<div>
-			<RouterView />
-		</div>
-	),
+  script: () => ({}),
+  template: () => (
+    <div>
+      <RouterView />
+    </div>
+  ),
 });
 ```
 
@@ -97,20 +97,20 @@ export const App = define({
 ```typescript
 // src/router/index.ts
 import {
-	createRouter,
-	createWebHistory,
-	installRouter,
-	type RouteRecord,
+  createRouter,
+  createWebHistory,
+  installRouter,
+  type RouteRecord,
 } from '@effuse/router';
 import { HomePage } from '../pages/Home';
 
 const routes: RouteRecord[] = [
-	{ path: '/', name: 'home', component: HomePage },
+  { path: '/', name: 'home', component: HomePage },
 ];
 
 export const router = createRouter({
-	history: createWebHistory(),
-	routes,
+  history: createWebHistory(),
+  routes,
 });
 
 export { installRouter };

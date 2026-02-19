@@ -14,28 +14,28 @@ Importa `signal` desde `@effuse/core` para crear estado reactivo:
 import { define, signal, computed } from '@effuse/core';
 
 export const Counter = define({
-	script: () => {
-		// Crear una señal con valor inicial
-		const count = signal(0);
+  script: () => {
+    // Crear una señal con valor inicial
+    const count = signal(0);
 
-		// Crear estado derivado con computed
-		const doubleCount = computed(() => count.value * 2);
+    // Crear estado derivado con computed
+    const doubleCount = computed(() => count.value * 2);
 
-		// Definir operaciones que mutan la señal
-		const increment = () => count.value++;
-		const decrement = () => count.value--;
+    // Definir operaciones que mutan la señal
+    const increment = () => count.value++;
+    const decrement = () => count.value--;
 
-		// Retornar señales y operaciones al template
-		return { count, doubleCount, increment, decrement };
-	},
-	template: ({ count, doubleCount, increment, decrement }) => (
-		<div>
-			<p>Cuenta: {count}</p>
-			<p>Doble: {doubleCount}</p>
-			<button onClick={decrement}>-</button>
-			<button onClick={increment}>+</button>
-		</div>
-	),
+    // Retornar señales y operaciones al template
+    return { count, doubleCount, increment, decrement };
+  },
+  template: ({ count, doubleCount, increment, decrement }) => (
+    <div>
+      <p>Cuenta: {count}</p>
+      <p>Doble: {doubleCount}</p>
+      <button onClick={decrement}>-</button>
+      <button onClick={increment}>+</button>
+    </div>
+  ),
 });
 ```
 
@@ -49,21 +49,21 @@ El `signal()` básico crea una referencia escribible. Accede y muta mediante la 
 import { define, signal } from '@effuse/core';
 
 const ColorPicker = define({
-	script: () => {
-		// Primitivos
-		const color = signal('blue');
-		// Objetos/Arrays
-		const palette = signal(['red', 'blue', 'green']);
+  script: () => {
+    // Primitivos
+    const color = signal('blue');
+    // Objetos/Arrays
+    const palette = signal(['red', 'blue', 'green']);
 
-		const updateColor = (newColor: string) => {
-			color.value = newColor; // Dispara actualizaciones
-		};
+    const updateColor = (newColor: string) => {
+      color.value = newColor; // Dispara actualizaciones
+    };
 
-		return { color, palette, updateColor };
-	},
-	template: ({ color, updateColor }) => (
-		<button onClick={() => updateColor('red')}>Actual: {color}</button>
-	),
+    return { color, palette, updateColor };
+  },
+  template: ({ color, updateColor }) => (
+    <button onClick={() => updateColor('red')}>Actual: {color}</button>
+  ),
 });
 ```
 
@@ -75,20 +75,20 @@ Las señales computed derivan su valor de otras señales. Se actualizan automát
 import { define, signal, computed } from '@effuse/core';
 
 const GradientBox = define({
-	script: () => {
-		const startColor = signal('red');
-		const endColor = signal('blue');
+  script: () => {
+    const startColor = signal('red');
+    const endColor = signal('blue');
 
-		// Rastrea dependencias automáticamente
-		const gradient = computed(
-			() => `linear-gradient(${startColor.value}, ${endColor.value})`
-		);
+    // Rastrea dependencias automáticamente
+    const gradient = computed(
+      () => `linear-gradient(${startColor.value}, ${endColor.value})`
+    );
 
-		return { gradient };
-	},
-	template: ({ gradient }) => (
-		<div style={`background: ${gradient.value}`}>Gradiente</div>
-	),
+    return { gradient };
+  },
+  template: ({ gradient }) => (
+    <div style={`background: ${gradient.value}`}>Gradiente</div>
+  ),
 });
 ```
 
@@ -100,20 +100,60 @@ Usa el helper `watch` del contexto del script para realizar efectos secundarios 
 import { define, signal } from '@effuse/core';
 
 const Logger = define({
-	script: ({ watch }) => {
-		const count = signal(0);
+  script: ({ watch }) => {
+    const count = signal(0);
 
-		// Se ejecuta cuando count cambia
-		watch(count, (value) => {
-			console.log(`Count cambió a: ${value}`);
-		});
+    // Se ejecuta cuando count cambia
+    watch(count, (value) => {
+      console.log(`Count cambió a: ${value}`);
+    });
 
-		return { count, increment: () => count.value++ };
-	},
-	template: ({ count, increment }) => (
-		<button onClick={increment}>{count}</button>
-	),
+    return { count, increment: () => count.value++ };
+  },
+  template: ({ count, increment }) => (
+    <button onClick={increment}>{count}</button>
+  ),
 });
+```
+
+### Opciones de Efectos
+
+La función `effect` (y `watch`) acepta un objeto `EffectOptions` opcional para controlar su comportamiento:
+
+```typescript
+effect(
+  () => {
+    console.log('Ejecutando efecto');
+  },
+  {
+    debounce: 300, // Debounce ejecución
+    timeout: 5000, // Tiempo máximo para ejecución asíncrona
+    retry: 3, // Número de reintentos en error
+    flush: 'post', // Ejecutar después de actualizaciones del DOM
+  }
+);
+```
+
+| Opción     | Tipo                        | Descripción                                       |
+| :--------- | :-------------------------- | :------------------------------------------------ |
+| `debounce` | `number`                    | Deferir ejecución hasta después de un retraso     |
+| `timeout`  | `number`                    | Tiempo máximo permitido para ejecución            |
+| `retry`    | `number \| RetryOptions`    | Estrategia para reintentar efectos fallidos       |
+| `flush`    | `'pre' \| 'post' \| 'sync'` | Cuándo ejecutar el efecto relativo al renderizado |
+
+### Observando Múltiples Señales
+
+Usa `watchMultiple` para observar varias señales simultáneamente:
+
+```tsx
+script: ({ watchMultiple }) => {
+  const width = signal(100);
+  const height = signal(200);
+
+  watchMultiple([width, height], ([w, h], [oldW, oldH]) => {
+    console.log(`Dimensiones cambiaron: ${w}x${h}`);
+  });
+};
 ```
 
 ## Usando Señales en Templates
@@ -151,9 +191,9 @@ Cuando usas expresiones en templates, el compilador automáticamente las envuelv
 ```tsx
 // El compilador maneja esto automáticamente
 template: ({ firstName, lastName }) => (
-	<p>
-		Nombre Completo: {firstName} {lastName}
-	</p>
+  <p>
+    Nombre Completo: {firstName} {lastName}
+  </p>
 );
 
 // No se necesita computed() explícito en casos simples
@@ -170,17 +210,17 @@ Usa `computed()` explícito cuando:
 
 ```tsx
 script: () => {
-	const items = signal<Item[]>([]);
-	const filter = signal('all');
+  const items = signal<Item[]>([]);
+  const filter = signal('all');
 
-	// Computed explícito para lógica compleja retornada al template
-	const filteredItems = computed(() => {
-		const f = filter.value;
-		return items.value.filter((item) =>
-			f === 'all' ? true : item.status === f
-		);
-	});
+  // Computed explícito para lógica compleja retornada al template
+  const filteredItems = computed(() => {
+    const f = filter.value;
+    return items.value.filter((item) =>
+      f === 'all' ? true : item.status === f
+    );
+  });
 
-	return { filteredItems, filter };
+  return { filteredItems, filter };
 };
 ```

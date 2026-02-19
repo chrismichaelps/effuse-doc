@@ -14,34 +14,34 @@ Usa `defineHook` para crear hooks tipados y reutilizables:
 import { defineHook, type Signal } from '@effuse/core';
 
 interface ToggleConfig {
-	initial?: boolean;
+  initial?: boolean;
 }
 
 interface ToggleReturn {
-	isOpen: Signal<boolean>;
-	toggle: () => void;
-	open: () => void;
-	close: () => void;
+  isOpen: Signal<boolean>;
+  toggle: () => void;
+  open: () => void;
+  close: () => void;
 }
 
 export const useToggle = defineHook<ToggleConfig, ToggleReturn>({
-	name: 'useToggle',
-	setup: ({ config, signal }): ToggleReturn => {
-		const isOpen = signal(config.initial ?? false);
+  name: 'useToggle',
+  setup: ({ config, signal }): ToggleReturn => {
+    const isOpen = signal(config.initial ?? false);
 
-		return {
-			isOpen,
-			toggle: () => {
-				isOpen.value = !isOpen.value;
-			},
-			open: () => {
-				isOpen.value = true;
-			},
-			close: () => {
-				isOpen.value = false;
-			},
-		};
-	},
+    return {
+      isOpen,
+      toggle: () => {
+        isOpen.value = !isOpen.value;
+      },
+      open: () => {
+        isOpen.value = true;
+      },
+      close: () => {
+        isOpen.value = false;
+      },
+    };
+  },
 });
 ```
 
@@ -60,6 +60,38 @@ La función `setup` recibe un objeto de contexto con estas utilidades:
 | `layerProvider` | Acceder a servicios de capas                           |
 | `scope`         | Gestionar limpieza y finalizadores                     |
 
+## Hooks Utilitarios Incorporados
+
+Effuse proporciona varios hooks incorporados dentro del contexto del `script` para patrones comunes:
+
+### `useCallback(fn, deps?)`
+
+Memoriza una función para mantener una identidad estable a través de renderizados.
+
+```tsx
+const handleClick = useCallback(() => {
+  console.log('¡Click!', count.value);
+}, [count]);
+```
+
+### `useMemo(fn, deps?)`
+
+Memoriza un valor computado. Útil para cálculos costosos que no necesitan ser señales reactivas en sí mismas pero deben ser cacheados.
+
+```tsx
+const expensiveValue = useMemo(() => {
+  return performHeavyCalculation(props.data);
+}, [props.data]);
+```
+
+### `useStore(name)`
+
+Accede a un store global por nombre.
+
+```tsx
+const todos = useStore('todos');
+```
+
 ## Usando Hooks en Componentes
 
 Llama a los hooks en la función `script` de tu componente:
@@ -69,20 +101,20 @@ import { define } from '@effuse/core';
 import { useToggle } from '../hooks';
 
 const Dropdown = define({
-	script: ({ onMount }) => {
-		const menu = useToggle({ initial: false });
+  script: ({ onMount }) => {
+    const menu = useToggle({ initial: false });
 
-		return {
-			isOpen: menu.isOpen,
-			toggle: menu.toggle,
-		};
-	},
-	template: ({ isOpen, toggle }) => (
-		<div>
-			<button onClick={toggle}>{isOpen.value ? 'Cerrar' : 'Abrir'}</button>
-			{isOpen.value && <div class="menu">Contenido del Menú</div>}
-		</div>
-	),
+    return {
+      isOpen: menu.isOpen,
+      toggle: menu.toggle,
+    };
+  },
+  template: ({ isOpen, toggle }) => (
+    <div>
+      <button onClick={toggle}>{isOpen.value ? 'Cerrar' : 'Abrir'}</button>
+      {isOpen.value && <div class="menu">Contenido del Menú</div>}
+    </div>
+  ),
 });
 ```
 
@@ -94,46 +126,46 @@ Para hooks que necesitan acceso al DOM, usa un patrón de inicialización diferi
 import { defineHook, type Signal } from '@effuse/core';
 
 interface ClickOutsideConfig {
-	selector: string;
+  selector: string;
 }
 
 interface ClickOutsideReturn {
-	onClickOutside: (callback: () => void) => void;
-	init: () => void;
+  onClickOutside: (callback: () => void) => void;
+  init: () => void;
 }
 
 export const useClickOutside = defineHook<
-	ClickOutsideConfig,
-	ClickOutsideReturn
+  ClickOutsideConfig,
+  ClickOutsideReturn
 >({
-	name: 'useClickOutside',
-	setup: ({ config, signal, effect }): ClickOutsideReturn => {
-		const initialized = signal(false);
-		let callback: (() => void) | null = null;
+  name: 'useClickOutside',
+  setup: ({ config, signal, effect }): ClickOutsideReturn => {
+    const initialized = signal(false);
+    let callback: (() => void) | null = null;
 
-		effect(() => {
-			if (!initialized.value) return undefined;
+    effect(() => {
+      if (!initialized.value) return undefined;
 
-			const handleClick = (e: Event) => {
-				const target = e.target as HTMLElement;
-				if (!target.closest(config.selector)) {
-					callback?.();
-				}
-			};
+      const handleClick = (e: Event) => {
+        const target = e.target as HTMLElement;
+        if (!target.closest(config.selector)) {
+          callback?.();
+        }
+      };
 
-			document.addEventListener('click', handleClick);
-			return () => document.removeEventListener('click', handleClick);
-		});
+      document.addEventListener('click', handleClick);
+      return () => document.removeEventListener('click', handleClick);
+    });
 
-		return {
-			onClickOutside: (cb) => {
-				callback = cb;
-			},
-			init: () => {
-				initialized.value = true;
-			},
-		};
-	},
+    return {
+      onClickOutside: (cb) => {
+        callback = cb;
+      },
+      init: () => {
+        initialized.value = true;
+      },
+    };
+  },
 });
 ```
 
@@ -145,19 +177,19 @@ Los hooks pueden acceder al estado y servicios de las capas:
 import { defineHook } from '@effuse/core';
 
 export const useTranslation = defineHook<
-	undefined,
-	{ t: (key: string) => string }
+  undefined,
+  { t: (key: string) => string }
 >({
-	name: 'useTranslation',
-	deps: ['i18n'],
-	setup: ({ layer }) => {
-		const i18n = layer('i18n');
-		const translations = i18n.translations;
+  name: 'useTranslation',
+  deps: ['i18n'],
+  setup: ({ layer }) => {
+    const i18n = layer('i18n');
+    const translations = i18n.translations;
 
-		return {
-			t: (key: string) => translations.value?.[key] ?? key,
-		};
-	},
+    return {
+      t: (key: string) => translations.value?.[key] ?? key,
+    };
+  },
 });
 ```
 
@@ -167,12 +199,12 @@ Los efectos se limpian automáticamente cuando el componente se desmonta. Retorn
 
 ```typescript
 effect(() => {
-	const handler = () => {
-		/* ... */
-	};
-	window.addEventListener('resize', handler);
+  const handler = () => {
+    /* ... */
+  };
+  window.addEventListener('resize', handler);
 
-	// La limpieza se ejecuta cuando el efecto se re-ejecuta o el componente se desmonta
-	return () => window.removeEventListener('resize', handler);
+  // La limpieza se ejecuta cuando el efecto se re-ejecuta o el componente se desmonta
+  return () => window.removeEventListener('resize', handler);
 });
 ```

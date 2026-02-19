@@ -12,39 +12,39 @@ Effuse コンポーネントは `define` 関数を使用して作成され、ロ
 
 ```tsx
 import {
-	define,
-	signal,
-	computed,
-	type Signal,
-	type ReadonlySignal,
+  define,
+  signal,
+  computed,
+  type Signal,
+  type ReadonlySignal,
 } from '@effuse/core';
 
 interface Props {
-	title: string;
+  title: string;
 }
 
 interface Exposed {
-	count: Signal<number>;
-	doubleCount: ReadonlySignal<number>;
-	increment: () => void;
+  count: Signal<number>;
+  doubleCount: ReadonlySignal<number>;
+  increment: () => void;
 }
 
 export const Counter = define<Props, Exposed>({
-	script: ({ props }) => {
-		const count = signal(0);
-		const doubleCount = computed(() => count.value * 2);
-		const increment = () => count.value++;
+  script: ({ props }) => {
+    const count = signal(0);
+    const doubleCount = computed(() => count.value * 2);
+    const increment = () => count.value++;
 
-		return { count, doubleCount, increment };
-	},
-	template: ({ count, doubleCount, increment }, props) => (
-		<div>
-			<h1>{props.title}</h1>
-			<p>Count: {count}</p>
-			<p>Double: {doubleCount}</p>
-			<button onClick={increment}>+</button>
-		</div>
-	),
+    return { count, doubleCount, increment };
+  },
+  template: ({ count, doubleCount, increment }, props) => (
+    <div>
+      <h1>{props.title}</h1>
+      <p>Count: {count}</p>
+      <p>Double: {doubleCount}</p>
+      <button onClick={increment}>+</button>
+    </div>
+  ),
 });
 ```
 
@@ -75,12 +75,12 @@ export const Counter = define<Props, Exposed>({
 
 ```tsx
 template: ({ count, increment, children }, props) => (
-	<div class="counter">
-		<h1>{props.title}</h1>
-		<p>Count: {count}</p>
-		<button onClick={increment}>+</button>
-		{children}
-	</div>
+  <div class="counter">
+    <h1>{props.title}</h1>
+    <p>Count: {count}</p>
+    <button onClick={increment}>+</button>
+    {children}
+  </div>
 );
 ```
 
@@ -90,31 +90,31 @@ template: ({ count, increment, children }, props) => (
 
 ```tsx
 const Form = define({
-	script: ({ useCallback }) => {
-		const value = signal('');
+  script: ({ useCallback }) => {
+    const value = signal('');
 
-		const handleChange = useCallback((e: Event) => {
-			value.value = (e.target as HTMLInputElement).value;
-		});
+    const handleChange = useCallback((e: Event) => {
+      value.value = (e.target as HTMLInputElement).value;
+    });
 
-		const handleSubmit = useCallback(() => {
-			console.log('Submitted:', value.value);
-			value.value = '';
-		});
+    const handleSubmit = useCallback(() => {
+      console.log('Submitted:', value.value);
+      value.value = '';
+    });
 
-		return { value, handleChange, handleSubmit };
-	},
-	template: ({ value, handleChange, handleSubmit }) => (
-		<form
-			onSubmit={(e) => {
-				e.preventDefault();
-				handleSubmit();
-			}}
-		>
-			<input value={value} onInput={handleChange} />
-			<button type="submit">Submit</button>
-		</form>
-	),
+    return { value, handleChange, handleSubmit };
+  },
+  template: ({ value, handleChange, handleSubmit }) => (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit();
+      }}
+    >
+      <input value={value} onInput={handleChange} />
+      <button type="submit">Submit</button>
+    </form>
+  ),
 });
 ```
 
@@ -122,25 +122,25 @@ const Form = define({
 
 ```tsx
 const Timer = define({
-	script: ({ onMount, onUnmount }) => {
-		const seconds = signal(0);
+  script: ({ onMount, onUnmount }) => {
+    const seconds = signal(0);
 
-		onMount(() => {
-			const interval = setInterval(() => {
-				seconds.value++;
-			}, 1000);
+    onMount(() => {
+      const interval = setInterval(() => {
+        seconds.value++;
+      }, 1000);
 
-			// クリーンアップ関数を返す
-			return () => clearInterval(interval);
-		});
+      // クリーンアップ関数を返す
+      return () => clearInterval(interval);
+    });
 
-		onUnmount(() => {
-			console.log('Timer component removed');
-		});
+    onUnmount(() => {
+      console.log('Timer component removed');
+    });
 
-		return { seconds };
-	},
-	template: ({ seconds }) => <p>Elapsed: {seconds} seconds</p>,
+    return { seconds };
+  },
+  template: ({ seconds }) => <p>Elapsed: {seconds} seconds</p>,
 });
 ```
 
@@ -150,7 +150,7 @@ const Timer = define({
 
 ```tsx
 <button class={() => (isActive.value ? 'btn btn-active' : 'btn btn-inactive')}>
-	Toggle
+  Toggle
 </button>
 ```
 
@@ -160,8 +160,8 @@ const Timer = define({
 
 ```tsx
 {
-	computed(() =>
-		isLoading.value ? <div>Loading...</div> : <div>Content</div>
-	);
+  computed(() =>
+    isLoading.value ? <div>Loading...</div> : <div>Content</div>
+  );
 }
 ```

@@ -22,9 +22,9 @@ Comienza definiendo una interfaz que describa tus eventos:
 
 ```typescript
 interface ChatEvents {
-	message: { text: string; author: string; timestamp: number };
-	userJoined: { userId: string; name: string };
-	userLeft: { userId: string };
+  message: { text: string; author: string; timestamp: number };
+  userJoined: { userId: string; name: string };
+  userLeft: { userId: string };
 }
 ```
 
@@ -67,13 +67,13 @@ Crea un emisor de eventos tipado con soporte de suscripción.
 
 ```typescript
 function useEmits<T extends EventMap>(
-	initialHandlers?: Partial<{ [K in keyof T]: EmitHandler<T[K]> }>
+  initialHandlers?: Partial<{ [K in keyof T]: EmitHandler<T[K]> }>
 ): {
-	emit: EmitFn<T>;
-	emitAsync: EmitFnAsync<T>;
-	on: SubscribeFn<T>;
-	off: (event: K, handler: EmitHandler<T[K]>) => void;
-	context: EmitContextData<T>;
+  emit: EmitFn<T>;
+  emitAsync: EmitFnAsync<T>;
+  on: SubscribeFn<T>;
+  off: (event: K, handler: EmitHandler<T[K]>) => void;
+  context: EmitContextData<T>;
 };
 ```
 
@@ -93,9 +93,9 @@ Crea una señal reactiva que se actualiza cada vez que se emite un evento espec�
 
 ```typescript
 function useEventSignal<T extends EventMap, P>(
-	ctx: EmitContextData<T>,
-	event: string,
-	options?: EmitOptions
+  ctx: EmitContextData<T>,
+  event: string,
+  options?: EmitOptions
 ): EventSignal<P>;
 ```
 
@@ -138,7 +138,7 @@ import { createDebounce } from '@effuse/core';
 const debounce = createDebounce<string>(300); // Retraso de 300ms
 
 debounce.apply('término de búsqueda', (value) => {
-	performSearch(value);
+  performSearch(value);
 });
 
 // Cancelar ejecución pendiente
@@ -155,9 +155,9 @@ import { createThrottle } from '@effuse/core';
 const throttle = createThrottle<MouseEvent>(100); // Máximo una vez por 100ms
 
 document.addEventListener('mousemove', (e) => {
-	throttle.apply(e, (event) => {
-		updatePosition(event.clientX, event.clientY);
-	});
+  throttle.apply(e, (event) => {
+    updatePosition(event.clientX, event.clientY);
+  });
 });
 
 // Reiniciar estado del throttle
@@ -174,9 +174,9 @@ import { createOnce } from '@effuse/core';
 const once = createOnce<void>();
 
 button.addEventListener('click', () => {
-	once.apply(undefined, () => {
-		initializeApp();
-	});
+  once.apply(undefined, () => {
+    initializeApp();
+  });
 });
 
 // Verificar si ya se ejecutó
@@ -232,20 +232,20 @@ type EmitHandler<P> = (payload: P) => void;
 
 // Tipo de función de emisión
 type EmitFn<T extends EventMap> = <K extends keyof T & string>(
-	event: K,
-	payload: T[K]
+  event: K,
+  payload: T[K]
 ) => void;
 
 // Tipo de función de emisión asíncrona
 type EmitFnAsync<T extends EventMap> = <K extends keyof T & string>(
-	event: K,
-	payload: T[K]
+  event: K,
+  payload: T[K]
 ) => Promise<void>;
 
 // Tipo de función de suscripción
 type SubscribeFn<T extends EventMap> = <K extends keyof T & string>(
-	event: K,
-	handler: EmitHandler<T[K]>
+  event: K,
+  handler: EmitHandler<T[K]>
 ) => () => void;
 
 // Señal de evento (solo lectura)

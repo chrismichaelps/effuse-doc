@@ -14,29 +14,54 @@ The `effect` function runs immediately and re-runs whenever its tracked signals 
 import { define, signal, effect } from '@effuse/core';
 
 const DataFetcher = define({
-	script: () => {
-		const userId = signal(1);
-		const userData = signal<any>(null);
+  script: () => {
+    const userId = signal(1);
+    const userData = signal<any>(null);
 
-		// Runs automatically when 'userId' changes
-		effect(() => {
-			fetch(`/api/users/${userId.value}`)
-				.then((res) => res.json())
-				.then((data) => {
-					userData.value = data;
-				});
-		});
+    // Runs automatically when 'userId' changes
+    effect(() => {
+      fetch(`/api/users/${userId.value}`)
+        .then((res) => res.json())
+        .then((data) => {
+          userData.value = data;
+        });
+    });
 
-		return { userId, userData };
-	},
-	template: ({ userId, userData }) => (
-		<div>
-			<button onClick={() => userId.value++}>Next User</button>
-			<pre>{JSON.stringify(userData.value, null, 2)}</pre>
-		</div>
-	),
+    return { userId, userData };
+  },
+  template: ({ userId, userData }) => (
+    <div>
+      <button onClick={() => userId.value++}>Next User</button>
+      <pre>{JSON.stringify(userData.value, null, 2)}</pre>
+    </div>
+  ),
 });
 ```
+
+### Effect Options
+
+The `effect` function (and `watch`) accepts an optional `EffectOptions` object to control its behavior:
+
+```typescript
+effect(
+  () => {
+    console.log('Running effect');
+  },
+  {
+    debounce: { wait: 300 }, // Debounce execution
+    timeout: 5000, // Timeout for async execution
+    retry: { times: 3 }, // Retry strategy
+    flush: 'post', // Run after DOM updates
+  }
+);
+```
+
+| Option     | Type                                                                         | Description                                       |
+| :--------- | :--------------------------------------------------------------------------- | :------------------------------------------------ |
+| `debounce` | `{ wait: number, leading?: boolean, trailing?: boolean }`                    | Debounce configuration                            |
+| `timeout`  | `number`                                                                     | Maximum time allowed for execution                |
+| `retry`    | `{ times?: number, delay?: number, strategy?: 'constant' \| 'exponential' }` | Retry configuration                               |
+| `flush`    | `'sync' \| 'post'`                                                           | Whether to run synchronously or after DOM updates |
 
 ## 2. Syncing Data with Effects
 
@@ -88,19 +113,19 @@ The `watch` function from the script context observes a specific signal and trig
 import { define, signal } from '@effuse/core';
 
 const Logger = define({
-	script: ({ watch }) => {
-		const count = signal(0);
+  script: ({ watch }) => {
+    const count = signal(0);
 
-		// Logs only when count updates
-		watch(count, (newVal) => {
-			console.log(`Count changed to: ${newVal}`);
-		});
+    // Logs only when count updates
+    watch(count, (newVal) => {
+      console.log(`Count changed to: ${newVal}`);
+    });
 
-		return { count, increment: () => count.value++ };
-	},
-	template: ({ count, increment }) => (
-		<button onClick={increment}>{count}</button>
-	),
+    return { count, increment: () => count.value++ };
+  },
+  template: ({ count, increment }) => (
+    <button onClick={increment}>{count}</button>
+  ),
 });
 ```
 
@@ -112,19 +137,19 @@ Use `onMount` for effects that should run once when the component mounts:
 import { define } from '@effuse/core';
 
 const Analytics = define({
-	script: ({ onMount }) => {
-		onMount(() => {
-			console.log('Component mounted');
+  script: ({ onMount }) => {
+    onMount(() => {
+      console.log('Component mounted');
 
-			// Return cleanup function
-			return () => {
-				console.log('Component unmounted');
-			};
-		});
+      // Return cleanup function
+      return () => {
+        console.log('Component unmounted');
+      };
+    });
 
-		return {};
-	},
-	template: () => <div>Tracked Component</div>,
+    return {};
+  },
+  template: () => <div>Tracked Component</div>,
 });
 ```
 

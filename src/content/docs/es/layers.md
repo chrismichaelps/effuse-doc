@@ -26,74 +26,74 @@ import { createStore } from '@effuse/store';
 
 // Crear un store con estado reactivo
 const themeStore = createStore('theme', {
-	mode: 'dark' as 'light' | 'dark',
-	accentColor: '#8df0cc',
+  mode: 'dark' as 'light' | 'dark',
+  accentColor: '#8df0cc',
 
-	setMode(mode: 'light' | 'dark') {
-		this.mode.value = mode;
-	},
+  setMode(mode: 'light' | 'dark') {
+    this.mode.value = mode;
+  },
 
-	toggleMode() {
-		this.mode.value = this.mode.value === 'dark' ? 'light' : 'dark';
-	},
+  toggleMode() {
+    this.mode.value = this.mode.value === 'dark' ? 'light' : 'dark';
+  },
 });
 
 export const ThemeLayer = defineLayer({
-	name: 'theme',
+  name: 'theme',
 
-	// Dependencias de otras capas (se cargan primero)
-	dependencies: ['layout'],
+  // Dependencias de otras capas (se cargan primero)
+  dependencies: ['layout'],
 
-	// La instancia del store para esta capa
-	store: themeStore,
+  // La instancia del store para esta capa
+  store: themeStore,
 
-	// Extraer props reactivos del store para componentes
-	deriveProps: (store) => ({
-		mode: store.mode,
-		accentColor: store.accentColor,
-	}),
+  // Extraer props reactivos del store para componentes
+  deriveProps: (store) => ({
+    mode: store.mode,
+    accentColor: store.accentColor,
+  }),
 
-	// Servicios expuestos via inyección de dependencias
-	provides: {
-		theme: () => themeStore,
-	},
+  // Servicios expuestos via inyección de dependencias
+  provides: {
+    theme: () => themeStore,
+  },
 
-	// Hooks de ciclo de vida
-	onMount: (ctx) => {
-		// ctx.store, ctx.deps, ctx.getService disponibles
-		const savedTheme = localStorage.getItem('theme');
-		if (savedTheme) ctx.store.mode.value = savedTheme as 'light' | 'dark';
-	},
+  // Hooks de ciclo de vida
+  onMount: (ctx) => {
+    // ctx.store, ctx.deps, ctx.getService disponibles
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) ctx.store.mode.value = savedTheme as 'light' | 'dark';
+  },
 
-	onUnmount: (ctx) => {
-		// Persistir estado antes de desmontar
-		localStorage.setItem('theme', ctx.store.mode.value);
-	},
+  onUnmount: (ctx) => {
+    // Persistir estado antes de desmontar
+    localStorage.setItem('theme', ctx.store.mode.value);
+  },
 
-	onError: (error, ctx) => {
-		// Recuperación inteligente con acceso al contexto
-		console.error('[ThemeLayer] error:', error.message);
-		ctx.store.mode.value = 'dark'; // fallback
-	},
+  onError: (error, ctx) => {
+    // Recuperación inteligente con acceso al contexto
+    console.error('[ThemeLayer] error:', error.message);
+    ctx.store.mode.value = 'dark'; // fallback
+  },
 
-	onReady: (ctx, allLayers) => {
-		// Llamado después de que TODAS las capas estén inicializadas
-		console.log(`[ThemeLayer] listo con ${allLayers.length} capas`);
-	},
+  onReady: (ctx, allLayers) => {
+    // Llamado después de que TODAS las capas estén inicializadas
+    console.log(`[ThemeLayer] listo con ${allLayers.length} capas`);
+  },
 
-	// Función setup con acceso al store y dependencias
-	setup: (ctx) => {
-		// ctx.store es el themeStore con seguridad de tipos completa
-		const savedTheme = localStorage.getItem('theme');
-		if (savedTheme === 'light' || savedTheme === 'dark') {
-			ctx.store.mode.value = savedTheme;
-		}
+  // Función setup con acceso al store y dependencias
+  setup: (ctx) => {
+    // ctx.store es el themeStore con seguridad de tipos completa
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      ctx.store.mode.value = savedTheme;
+    }
 
-		// Retornar función de limpieza (opcional)
-		return () => {
-			console.log('[ThemeLayer] limpieza');
-		};
-	},
+    // Retornar función de limpieza (opcional)
+    return () => {
+      console.log('[ThemeLayer] limpieza');
+    };
+  },
 });
 ```
 
@@ -103,28 +103,28 @@ Las opciones completas de `defineLayer`:
 
 ```typescript
 interface EffuseLayer<P, D, S> {
-	// Requerido
-	name: string; // Identificador único
+  // Requerido
+  name: string; // Identificador único
 
-	// Gestión de estado
-	store?: S; // Instancia de store (createStore)
-	deriveProps?: (store: S) => P; // Extraer props del store
+  // Gestión de estado
+  store?: S; // Instancia de store (createStore)
+  deriveProps?: (store: S) => P; // Extraer props del store
 
-	// Inyección de dependencias
-	dependencies?: D; // Array de nombres de capas a cargar primero
-	provides?: Record<string, () => unknown>; // Factories de servicios
+  // Inyección de dependencias
+  dependencies?: D; // Array de nombres de capas a cargar primero
+  provides?: Record<string, () => unknown>; // Factories de servicios
 
-	// Ciclo de vida
-	setup?: (ctx: SetupContext<P, D, S>) => CleanupFn | void;
-	onMount?: (ctx: SetupContext<P, D, S>) => void;
-	onUnmount?: (ctx: SetupContext<P, D, S>) => void;
-	onError?: (error: Error, ctx: SetupContext<P, D, S>) => void;
-	onReady?: (ctx: SetupContext<P, D, S>, allLayers: ResolvedLayer[]) => void;
+  // Ciclo de vida
+  setup?: (ctx: SetupContext<P, D, S>) => CleanupFn | void;
+  onMount?: (ctx: SetupContext<P, D, S>) => void;
+  onUnmount?: (ctx: SetupContext<P, D, S>) => void;
+  onError?: (error: Error, ctx: SetupContext<P, D, S>) => void;
+  onReady?: (ctx: SetupContext<P, D, S>, allLayers: ResolvedLayer[]) => void;
 
-	// Avanzado
-	components?: Record<string, Component>; // Componentes con scope
-	routes?: RouteConfig[]; // Rutas específicas de la capa
-	plugins?: PluginFn[]; // Plugins de la capa
+  // Avanzado
+  components?: Record<string, Component>; // Componentes con scope
+  routes?: RouteConfig[]; // Rutas específicas de la capa
+  plugins?: PluginFn[]; // Plugins de la capa
 }
 ```
 
@@ -143,22 +143,22 @@ El **store** es el estado reactivo interno de la capa, creado via `@effuse/store
 
 ```typescript
 const i18nStore = createStore('i18n', {
-	locale: 'en',
-	translations: null as Record<string, string> | null,
+  locale: 'en',
+  translations: null as Record<string, string> | null,
 
-	setLocale(loc: string) {
-		this.locale.value = loc;
-		// Cargar traducciones...
-	},
+  setLocale(loc: string) {
+    this.locale.value = loc;
+    // Cargar traducciones...
+  },
 });
 
 defineLayer({
-	name: 'i18n',
-	store: i18nStore,
-	deriveProps: (store) => ({
-		locale: store.locale,
-		translations: store.translations,
-	}),
+  name: 'i18n',
+  store: i18nStore,
+  deriveProps: (store) => ({
+    locale: store.locale,
+    translations: store.translations,
+  }),
 });
 ```
 
@@ -168,15 +168,15 @@ defineLayer({
 
 ```typescript
 defineLayer({
-	name: 'router',
-	provides: {
-		router: () => routerInstance, // Función factory
-	},
+  name: 'router',
+  provides: {
+    router: () => routerInstance, // Función factory
+  },
 });
 
 // En un componente:
 script: ({ useStore }) => {
-	const router = useStore('router'); // Obtiene el router
+  const router = useStore('router'); // Obtiene el router
 };
 ```
 
@@ -188,26 +188,26 @@ Accede a los datos y servicios de capas en scripts de componentes:
 import { define, computed } from '@effuse/core';
 
 const ThemeToggle = define({
-	script: ({ useLayerProps, useStore }) => {
-		// Obtener props reactivos de deriveProps
-		const themeProps = useLayerProps('theme');
+  script: ({ useLayerProps, useStore }) => {
+    // Obtener props reactivos de deriveProps
+    const themeProps = useLayerProps('theme');
 
-		// Obtener servicio de provides
-		const themeStore = useStore('theme');
+    // Obtener servicio de provides
+    const themeStore = useStore('theme');
 
-		const buttonText = computed(() =>
-			themeProps?.mode.value === 'dark' ? 'Claro' : 'Oscuro'
-		);
+    const buttonText = computed(() =>
+      themeProps?.mode.value === 'dark' ? 'Claro' : 'Oscuro'
+    );
 
-		const toggle = () => {
-			themeStore?.toggleMode();
-		};
+    const toggle = () => {
+      themeStore?.toggleMode();
+    };
 
-		return { buttonText, toggle };
-	},
-	template: ({ buttonText, toggle }) => (
-		<button onClick={toggle}>{buttonText}</button>
-	),
+    return { buttonText, toggle };
+  },
+  template: ({ buttonText, toggle }) => (
+    <button onClick={toggle}>{buttonText}</button>
+  ),
 });
 ```
 
@@ -219,23 +219,23 @@ Usa `defineHook` para crear hooks reutilizables con acceso a capas:
 import { defineHook, signal } from '@effuse/core';
 
 export const useTheme = defineHook<
-	undefined, // Sin config
-	{ mode: Signal<string>; toggle: () => void }
+  undefined, // Sin config
+  { mode: Signal<string>; toggle: () => void }
 >({
-	name: 'useTheme',
-	deps: ['theme'] as const,
-	setup: ({ layer }) => {
-		// layer() retorna el resultado de deriveProps
-		const themeProps = layer('theme');
+  name: 'useTheme',
+  deps: ['theme'] as const,
+  setup: ({ layer }) => {
+    // layer() retorna el resultado de deriveProps
+    const themeProps = layer('theme');
 
-		return {
-			mode: themeProps.mode,
-			toggle: () => {
-				themeProps.mode.value =
-					themeProps.mode.value === 'dark' ? 'light' : 'dark';
-			},
-		};
-	},
+    return {
+      mode: themeProps.mode,
+      toggle: () => {
+        themeProps.mode.value =
+          themeProps.mode.value === 'dark' ? 'light' : 'dark';
+      },
+    };
+  },
 });
 ```
 
@@ -245,13 +245,13 @@ Las capas declaran sus dependencias explícitamente:
 
 ```typescript
 defineLayer({
-	name: 'todos',
-	dependencies: ['i18n', 'router'], // ← Deben cargarse primero
-	setup: (ctx) => {
-		// Acceder a capas de dependencia
-		const i18n = ctx.deps.i18n;
-		const router = ctx.deps.router;
-	},
+  name: 'todos',
+  dependencies: ['i18n', 'router'], // ← Deben cargarse primero
+  setup: (ctx) => {
+    // Acceder a capas de dependencia
+    const i18n = ctx.deps.i18n;
+    const router = ctx.deps.router;
+  },
 });
 ```
 
@@ -266,22 +266,22 @@ Para seguridad de tipos completa, extiende `EffuseLayerRegistry` via module augm
 import type { Signal } from '@effuse/core';
 
 declare module '@effuse/core' {
-	interface EffuseLayerRegistry {
-		theme: {
-			props: {
-				mode: Signal<'light' | 'dark'>;
-				accentColor: Signal<string>;
-			};
-			provides: { theme: typeof themeStore };
-		};
-		i18n: {
-			props: {
-				locale: Signal<string>;
-				translations: Signal<Record<string, string> | null>;
-			};
-			provides: { i18n: typeof i18nStore };
-		};
-	}
+  interface EffuseLayerRegistry {
+    theme: {
+      props: {
+        mode: Signal<'light' | 'dark'>;
+        accentColor: Signal<string>;
+      };
+      provides: { theme: typeof themeStore };
+    };
+    i18n: {
+      props: {
+        locale: Signal<string>;
+        translations: Signal<Record<string, string> | null>;
+      };
+      provides: { i18n: typeof i18nStore };
+    };
+  }
 }
 
 export {};
@@ -301,41 +301,41 @@ import { defineLayer } from '@effuse/core';
 import { i18nStore } from '../store/appI18n';
 
 export const I18nLayer = defineLayer({
-	name: 'i18n',
-	dependencies: ['router'],
+  name: 'i18n',
+  dependencies: ['router'],
 
-	store: i18nStore,
+  store: i18nStore,
 
-	deriveProps: (store) => ({
-		locale: store.locale,
-		isLoading: store.isLoading,
-		translations: store.translations,
-	}),
+  deriveProps: (store) => ({
+    locale: store.locale,
+    isLoading: store.isLoading,
+    translations: store.translations,
+  }),
 
-	provides: {
-		i18n: () => i18nStore,
-	},
+  provides: {
+    i18n: () => i18nStore,
+  },
 
-	onMount: (ctx) => {
-		const saved = localStorage.getItem('effuse:locale');
-		if (saved) ctx.store.setLocale(saved);
-	},
+  onMount: (ctx) => {
+    const saved = localStorage.getItem('effuse:locale');
+    if (saved) ctx.store.setLocale(saved);
+  },
 
-	onUnmount: (ctx) => {
-		localStorage.setItem('effuse:locale', ctx.store.locale.value);
-	},
+  onUnmount: (ctx) => {
+    localStorage.setItem('effuse:locale', ctx.store.locale.value);
+  },
 
-	onError: (_, ctx) => {
-		ctx.store.setLocale('en'); // fallback
-	},
+  onError: (_, ctx) => {
+    ctx.store.setLocale('en'); // fallback
+  },
 
-	onReady: (ctx, allLayers) => {
-		console.log(`[I18nLayer] Listo con ${allLayers.length} capas`);
-	},
+  onReady: (ctx, allLayers) => {
+    console.log(`[I18nLayer] Listo con ${allLayers.length} capas`);
+  },
 
-	setup: (ctx) => {
-		ctx.store.init(); // Cargar traducciones lo antes posible
-	},
+  setup: (ctx) => {
+    ctx.store.init(); // Cargar traducciones lo antes posible
+  },
 });
 ```
 

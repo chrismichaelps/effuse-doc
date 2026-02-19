@@ -23,14 +23,14 @@ Here's a simple counter component:
 import { define, signal } from '@effuse/core';
 
 const Counter = define({
-	script: () => {
-		const count = signal(0);
-		const increment = () => count.value++;
-		return { count, increment };
-	},
-	template: ({ count, increment }) => (
-		<button onClick={increment}>Clicked {count} times</button>
-	),
+  script: () => {
+    const count = signal(0);
+    const increment = () => count.value++;
+    return { count, increment };
+  },
+  template: ({ count, increment }) => (
+    <button onClick={increment}>Clicked {count} times</button>
+  ),
 });
 ```
 
@@ -47,13 +47,13 @@ import { AppLayout } from './layers/AppLayout';
 import { SmoothScroll } from './components/SmoothScroll';
 
 export const App = define({
-	script: ({}) => ({}),
-	template: () => (
-		<AppLayout>
-			<SmoothScroll />
-			<RouterView />
-		</AppLayout>
-	),
+  script: ({}) => ({}),
+  template: () => (
+    <AppLayout>
+      <SmoothScroll />
+      <RouterView />
+    </AppLayout>
+  ),
 });
 ```
 
@@ -72,33 +72,33 @@ installRouter(router);
 
 // Create and mount the application
 createApp(App)
-	.useLayers([InkLayer])
-	.then((app) => app.mount('#app'));
+  .useLayers([InkLayer])
+  .then((app) => app.mount('#app'));
 ```
 
 ### 3. Router Configuration (src/router/index.ts)
 
 ```typescript
 import {
-	createRouter,
-	createWebHistory,
-	installRouter,
-	type RouteRecord,
+  createRouter,
+  createWebHistory,
+  installRouter,
+  type RouteRecord,
 } from '@effuse/router';
 import { HomePage } from '../pages/Home';
 import { DocsPage } from '../pages/Docs';
 import { ContactPage } from '../pages/Contact';
 
 const routes: RouteRecord[] = [
-	{ path: '/', name: 'home', component: HomePage },
-	{ path: '/docs', name: 'docs', component: DocsPage },
-	{ path: '/docs/:slug', name: 'docs-page', component: DocsPage },
-	{ path: '/contact', name: 'contact', component: ContactPage },
+  { path: '/', name: 'home', component: HomePage },
+  { path: '/docs', name: 'docs', component: DocsPage },
+  { path: '/docs/:slug', name: 'docs-page', component: DocsPage },
+  { path: '/contact', name: 'contact', component: ContactPage },
 ];
 
 export const router = createRouter({
-	history: createWebHistory(),
-	routes,
+  history: createWebHistory(),
+  routes,
 });
 
 export { installRouter };
@@ -120,15 +120,22 @@ The `script` function receives a `ScriptContext` object with useful utilities:
 | `props`           | `Readonly<P>`                | Properties passed to the component. Read-only and frozen.     |
 | `expose`          | `(values: object) => void`   | Manually expose values to the template.                       |
 | `signal`          | `<T>(value: T) => Signal<T>` | Create a new reactive signal.                                 |
+| `computed`        | `(fn) => ReadonlySignal<T>`  | Create a derived reactive signal.                             |
 | `store`           | `<T>(name: string) => T`     | Access a global store by name.                                |
 | `router`          | `Router`                     | Access the router instance.                                   |
 | `onMount`         | `(cb) => void`               | Callback after component mounts. Can return cleanup function. |
 | `onUnmount`       | `(cb) => void`               | Callback when component is removed.                           |
 | `onBeforeMount`   | `(cb) => void`               | Callback before component mounts.                             |
 | `onBeforeUnmount` | `(cb) => void`               | Callback before component unmounts.                           |
-| `watch`           | `(source, cb) => void`       | Watch a signal and run callback on change.                    |
+| `watch`           | `(src, cb, opts?) => void`   | Watch a signal with optional debounce/retry.                  |
+| `watchMultiple`   | `(srcs, cb, opts?) => void`  | Watch multiple signals simultaneously.                        |
+| `effect`          | `(fn, opts?) => void`        | Run a side effect with optional settings.                     |
 | `useCallback`     | `(fn, deps?) => fn`          | Memoize a callback with stable identity.                      |
 | `useMemo`         | `(fn, deps?) => getter`      | Memoize a computed value.                                     |
+| `useLayer`        | `(name) => LayerContext`     | Access a dependency injection layer.                          |
+| `useLayerProps`   | `(name) => LayerProps`       | Access reactive props from a layer.                           |
+| `useService`      | `(key) => Service`           | Access a provided service (dependency injection).             |
+| `useStore`        | `(key) => Store`             | Access a global store (typed).                                |
 
 ## Next Steps
 

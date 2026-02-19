@@ -22,9 +22,9 @@ Effuse 通过 `useEmits` 钩子提供了一个强大且类型安全的事件发�
 
 ```typescript
 interface ChatEvents {
-	message: { text: string; author: string; timestamp: number };
-	userJoined: { userId: string; name: string };
-	userLeft: { userId: string };
+  message: { text: string; author: string; timestamp: number };
+  userJoined: { userId: string; name: string };
+  userLeft: { userId: string };
 }
 ```
 
@@ -67,13 +67,13 @@ const ChatRoom = define({
 
 ```typescript
 function useEmits<T extends EventMap>(
-	initialHandlers?: Partial<{ [K in keyof T]: EmitHandler<T[K]> }>
+  initialHandlers?: Partial<{ [K in keyof T]: EmitHandler<T[K]> }>
 ): {
-	emit: EmitFn<T>;
-	emitAsync: EmitFnAsync<T>;
-	on: SubscribeFn<T>;
-	off: (event: K, handler: EmitHandler<T[K]>) => void;
-	context: EmitContextData<T>;
+  emit: EmitFn<T>;
+  emitAsync: EmitFnAsync<T>;
+  on: SubscribeFn<T>;
+  off: (event: K, handler: EmitHandler<T[K]>) => void;
+  context: EmitContextData<T>;
 };
 ```
 
@@ -93,9 +93,9 @@ function useEmits<T extends EventMap>(
 
 ```typescript
 function useEventSignal<T extends EventMap, P>(
-	ctx: EmitContextData<T>,
-	event: string,
-	options?: EmitOptions
+  ctx: EmitContextData<T>,
+  event: string,
+  options?: EmitOptions
 ): EventSignal<P>;
 ```
 
@@ -138,7 +138,7 @@ import { createDebounce } from '@effuse/core';
 const debounce = createDebounce<string>(300); // 300 毫秒延迟
 
 debounce.apply('搜索词', (value) => {
-	performSearch(value);
+  performSearch(value);
 });
 
 // 取消挂起的执行
@@ -155,9 +155,9 @@ import { createThrottle } from '@effuse/core';
 const throttle = createThrottle<MouseEvent>(100); // 每 100 毫秒最多一次
 
 document.addEventListener('mousemove', (e) => {
-	throttle.apply(e, (event) => {
-		updatePosition(event.clientX, event.clientY);
-	});
+  throttle.apply(e, (event) => {
+    updatePosition(event.clientX, event.clientY);
+  });
 });
 
 // 重置限制状态
@@ -174,9 +174,9 @@ import { createOnce } from '@effuse/core';
 const once = createOnce<void>();
 
 button.addEventListener('click', () => {
-	once.apply(undefined, () => {
-		initializeApp();
-	});
+  once.apply(undefined, () => {
+    initializeApp();
+  });
 });
 
 // 检查是否已触发
@@ -232,20 +232,20 @@ type EmitHandler<P> = (payload: P) => void;
 
 // 发送函数类型
 type EmitFn<T extends EventMap> = <K extends keyof T & string>(
-	event: K,
-	payload: T[K]
+  event: K,
+  payload: T[K]
 ) => void;
 
 // 异步发送函数类型
 type EmitFnAsync<T extends EventMap> = <K extends keyof T & string>(
-	event: K,
-	payload: T[K]
+  event: K,
+  payload: T[K]
 ) => Promise<void>;
 
 // 订阅函数类型
 type SubscribeFn<T extends EventMap> = <K extends keyof T & string>(
-	event: K,
-	handler: EmitHandler<T[K]>
+  event: K,
+  handler: EmitHandler<T[K]>
 ) => () => void;
 
 // 事件信号 (只读)

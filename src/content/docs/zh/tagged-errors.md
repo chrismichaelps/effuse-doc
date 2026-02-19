@@ -16,9 +16,9 @@ Effuse 提供了一套强大的错误处理系统。该系统利用 **带有标�
 import { TaggedError } from '@effuse/core';
 
 export class NetworkError extends TaggedError('NetworkError')<{
-	readonly url: string;
-	readonly status: number;
-	readonly message: string;
+  readonly url: string;
+  readonly status: number;
+  readonly message: string;
 }> {}
 ```
 
@@ -30,15 +30,15 @@ export class NetworkError extends TaggedError('NetworkError')<{
 import { isTaggedError, hasTag } from '@effuse/core';
 
 try {
-	// ... 可能抛出错误的代码
+  // ... 可能抛出错误的代码
 } catch (error) {
-	if (hasTag(error, 'NetworkError')) {
-		// TypeScript 知道 error 是 NetworkError 类型
-		console.error(`状态码 ${error.status}: ${error.message}`);
-	} else if (isTaggedError(error)) {
-		// 任何其他带有标签的错误
-		console.error(`带有标签的错误: ${error._tag}`);
-	}
+  if (hasTag(error, 'NetworkError')) {
+    // TypeScript 知道 error 是 NetworkError 类型
+    console.error(`状态码 ${error.status}: ${error.message}`);
+  } else if (isTaggedError(error)) {
+    // 任何其他带有标签的错误
+    console.error(`带有标签的错误: ${error._tag}`);
+  }
 }
 ```
 

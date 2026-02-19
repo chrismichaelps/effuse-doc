@@ -14,54 +14,119 @@ Use `createStore` from `@effuse/store` to create a reactive store:
 import { createStore, connectDevTools } from '@effuse/store';
 
 interface Todo {
-	id: number;
-	title: string;
-	completed: boolean;
+  id: number;
+  title: string;
+  completed: boolean;
 }
 
 interface TodosState {
-	todos: Todo[];
-	filter: 'all' | 'completed' | 'pending';
+  todos: Todo[];
+  filter: 'all' | 'completed' | 'pending';
 }
 
 export const todosStore = createStore<
-	TodosState & {
-		addTodo: (todo: Todo) => void;
-		toggleTodo: (id: number) => void;
-		deleteTodo: (id: number) => void;
-		setFilter: (filter: 'all' | 'completed' | 'pending') => void;
-	}
+  TodosState & {
+    addTodo: (todo: Todo) => void;
+    toggleTodo: (id: number) => void;
+    deleteTodo: (id: number) => void;
+    setFilter: (filter: 'all' | 'completed' | 'pending') => void;
+  }
 >(
-	'todos', // Store name
-	{
-		// Initial state
-		todos: [],
-		filter: 'all',
+  'todos', // Store name
+  {
+    // Initial state
+    todos: [],
+    filter: 'all',
 
-		// Actions - use 'this' to access state signals
-		addTodo(todo: Todo) {
-			this.todos.value = [todo, ...this.todos.value];
-		},
+    // Actions - use 'this' to access state signals
+    addTodo(todo: Todo) {
+      this.todos.value = [todo, ...this.todos.value];
+    },
 
-		toggleTodo(id: number) {
-			this.todos.value = this.todos.value.map((t) =>
-				t.id === id ? { ...t, completed: !t.completed } : t
-			);
-		},
+    toggleTodo(id: number) {
+      this.todos.value = this.todos.value.map((t) =>
+        t.id === id ? { ...t, completed: !t.completed } : t
+      );
+    },
 
-		deleteTodo(id: number) {
-			this.todos.value = this.todos.value.filter((t) => t.id !== id);
-		},
+    deleteTodo(id: number) {
+      this.todos.value = this.todos.value.filter((t) => t.id !== id);
+    },
 
-		setFilter(filter: 'all' | 'completed' | 'pending') {
-			this.filter.value = filter;
-		},
-	},
-	{ devtools: true } // Enable Redux DevTools
+    setFilter(filter: 'all' | 'completed' | 'pending') {
+      this.filter.value = filter;
+    },
+  },
+  { devtools: true } // Enable Redux DevTools
 );
 
 // Connect to Redux DevTools
 connectDevTools(todosStore);
+```
+
+## Advanced Selectors
+
+Selectors allow you to derive state efficiently. Use `createSelector` for simple derivations and `createSelectorAsync` for asynchronous ones.
+
+```typescript
+import { createSelector, combineSelectors } from '@effuse/store';
+
+// Memoized selector
+const selectCompletedTodos = createSelector(
+  (state) => state.todos,
+  (todos) => todos.filter((t) => t.completed)
+);
+
+// Combined selector
+const selectStats = combineSelectors({
+  total: (state) => state.todos.length,
+  completed: selectCompletedTodos,
+});
+```
+
+## Slices and Composition
+
+For large applications, you can split your store into slices and compose them.
+
+```typescript
+import { defineSlice, composeStores } from '@effuse/store';
+
+const userSlice = defineSlice('user', {
+  name: 'John Doe',
+  email: 'john@example.com',
+});
+
+const settingsSlice = defineSlice('settings', {
+  theme: 'dark',
+});
+
+export const rootStore = composeStores('root', {
+  user: userSlice,
+  settings: settingsSlice,
+});
+```
+
+## Cancellable and Async Actions
+
+Actions can handle complex side effects with built-in concurrency control.
+
+```typescript
+import { createStore, takeLatest, debounceAction } from '@effuse/store';
+
+export const searchStore = createStore('search', {
+  results: [],
+
+  // Use takeLatest to cancel previous pending requests
+  search: takeLatest(async function (query: string) {
+    const data = await api.search(query);
+    this.results.value = data;
+  }),
+
+  // Debounce an action
+  updateQuery: debounceAction(function (query: string) {
+    this.search(query);
+  }, 300),
+});
 ```
 
 ## Using Stores in Components
@@ -73,52 +138,52 @@ import { define, computed, For } from '@effuse/core';
 import { todosStore } from '../store/todosStore';
 
 const TodoList = define({
-	script: () => {
-		// Destructure state and actions from store
-		const { todos, filter, toggleTodo, deleteTodo, setFilter } = todosStore;
+  script: () => {
+    // Destructure state and actions from store
+    const { todos, filter, toggleTodo, deleteTodo, setFilter } = todosStore;
 
-		// Create computed derived state
-		const filteredTodos = computed(() => {
-			switch (filter.value) {
-				case 'completed':
-					return todos.value.filter((t) => t.completed);
-				case 'pending':
-					return todos.value.filter((t) => !t.completed);
-				default:
-					return todos.value;
-			}
-		});
+    // Create computed derived state
+    const filteredTodos = computed(() => {
+      switch (filter.value) {
+        case 'completed':
+          return todos.value.filter((t) => t.completed);
+        case 'pending':
+          return todos.value.filter((t) => !t.completed);
+        default:
+          return todos.value;
+      }
+    });
 
-		const totalCount = computed(() => todos.value.length);
+    const totalCount = computed(() => todos.value.length);
 
-		return {
-			filteredTodos,
-			totalCount,
-			filter,
-			toggleTodo,
-			deleteTodo,
-			setFilter,
-		};
-	},
-	template: ({ filteredTodos, totalCount, filter, toggleTodo, setFilter }) => (
-		<div>
-			<p>Total: {totalCount}</p>
+    return {
+      filteredTodos,
+      totalCount,
+      filter,
+      toggleTodo,
+      deleteTodo,
+      setFilter,
+    };
+  },
+  template: ({ filteredTodos, totalCount, filter, toggleTodo, setFilter }) => (
+    <div>
+      <p>Total: {totalCount}</p>
 
-			<div>
-				<button onClick={() => setFilter('all')}>All</button>
-				<button onClick={() => setFilter('completed')}>Completed</button>
-				<button onClick={() => setFilter('pending')}>Pending</button>
-			</div>
+      <div>
+        <button onClick={() => setFilter('all')}>All</button>
+        <button onClick={() => setFilter('completed')}>Completed</button>
+        <button onClick={() => setFilter('pending')}>Pending</button>
+      </div>
 
-			<For each={filteredTodos} keyExtractor={(t) => t.id}>
-				{(todoSignal) => (
-					<div onClick={() => toggleTodo(todoSignal.value.id)}>
-						{todoSignal.value.title}
-					</div>
-				)}
-			</For>
-		</div>
-	),
+      <For each={filteredTodos} keyExtractor={(t) => t.id}>
+        {(todoSignal) => (
+          <div onClick={() => toggleTodo(todoSignal.value.id)}>
+            {todoSignal.value.title}
+          </div>
+        )}
+      </For>
+    </div>
+  ),
 });
 ```
 
