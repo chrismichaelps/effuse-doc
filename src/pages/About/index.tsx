@@ -1,4 +1,4 @@
-import { define, computed, useHead, For, effect } from '@effuse/core';
+import { define, computed, useHead, For, watchEffect } from '@effuse/core';
 import { useTranslation } from '../../hooks';
 import type { Translations } from '../../store/appI18n';
 import './styles.css';
@@ -12,7 +12,7 @@ export const AboutPage = define({
       () => (i18nProps.translations.value as Translations | null)?.about
     );
 
-    effect(() => {
+    watchEffect(() => {
       useHead({
         title: t('about.meta.title', ''),
         description: t('about.meta.description', ''),

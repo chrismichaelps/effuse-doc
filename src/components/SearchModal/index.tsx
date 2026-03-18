@@ -1,7 +1,7 @@
 import {
   define,
   computed,
-  effect,
+  watchEffect,
   For,
   Portal,
   type Signal,
@@ -123,7 +123,7 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
       };
     });
 
-    effect(() => {
+    watchEffect(() => {
       const isOpen = matchTag(store?.modalState.value, {
         Closed: () => false,
         Opening: () => true,
@@ -140,7 +140,7 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
       }
     });
 
-    effect(() => {
+    watchEffect(() => {
       const idx = store?.selectedIndex.value;
       if (idx !== undefined && idx >= 0) {
         const element = document.querySelector(

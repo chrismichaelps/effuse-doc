@@ -28,7 +28,7 @@ export const useClickOutside = defineHook<
   ClickOutsideReturn
 >({
   name: 'useClickOutside',
-  setup: ({ config, signal, effect }): ClickOutsideReturn => {
+  setup: ({ config, signal, watchEffect }): ClickOutsideReturn => {
     const state = signal<ClickOutsideState>(State.Inactive({}));
     const isActiveSig = signal(false);
     const isInactiveSig = signal(true);
@@ -87,7 +87,7 @@ export const useClickOutside = defineHook<
       });
     };
 
-    effect(() => {
+    watchEffect(() => {
       init();
       return destroy;
     });

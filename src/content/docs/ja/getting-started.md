@@ -132,7 +132,7 @@ export { installRouter };
 | `useMemo`         | `(fn, deps?) => getter`      | 計算値をメモ化する。                                   |
 | `computed`        | `(getter) => Signal`         | リアクティブな派生状態を作成する。                     |
 | `watchMultiple`   | `(sources, cb) => void`      | 複数のシグナルを同時に監視する。                       |
-| `effect`          | `(cb, options?) => Effect`   | 副作用を自動的に実行する。                             |
+| `watchEffect`          | `(cb, options?) => Effect`   | 副作用を自動的に実行する。                             |
 | `useLayer`        | `(name) => LayerContext`     | レイヤーのコンテキストにアクセスする。                 |
 | `useStore`        | `(key) => Store`             | グローバルストアへの型安全なアクセス。                 |
 | `useService`      | `(key) => Service`           | レイヤーによって注入されたサービスへのアクセス。       |

@@ -45,7 +45,7 @@ export const useAnimatedDropdown = defineHook<
   AnimatedDropdownReturn
 >({
   name: 'useAnimatedDropdown',
-  setup: ({ config, signal, effect }): AnimatedDropdownReturn => {
+  setup: ({ config, signal, watchEffect }): AnimatedDropdownReturn => {
     const state = signal<DropdownState>(State.Closed({ initialized: false }));
     const ref = signal<HTMLElement | null>(null);
 
@@ -82,7 +82,7 @@ export const useAnimatedDropdown = defineHook<
       });
     };
 
-    effect(() => {
+    watchEffect(() => {
       const currentState = state.value;
       const el = ref.value;
       if (!el) return undefined;

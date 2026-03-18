@@ -4,7 +4,7 @@ import {
   computed,
   useHead,
   unref,
-  effect,
+  watchEffect,
   type Signal,
   type ReadonlySignal,
 } from '@effuse/core';
@@ -100,7 +100,7 @@ export const PropsPage = define({
 
     const t = computed(() => i18nStore.translations.value?.examples?.props);
 
-    effect(() => {
+    watchEffect(() => {
       useHead({
         title: `${t.value?.title as string} - Effuse Playground`,
         description: t.value?.description as string,
