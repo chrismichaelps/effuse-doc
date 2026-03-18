@@ -3,7 +3,7 @@ import {
   signal,
   computed,
   useHead,
-  effect,
+  watchEffect,
   Show,
   For,
   Repeat,
@@ -530,7 +530,7 @@ export const ComponentsPage = define({
       () => i18nStore.translations.value?.examples.controlFlow
     );
 
-    effect(() => {
+    watchEffect(() => {
       if (!t.value) return;
       useHead({
         title: `${t.value.title} - Effuse Playground`,

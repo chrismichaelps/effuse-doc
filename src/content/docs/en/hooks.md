@@ -54,7 +54,7 @@ The `setup` function receives a context object with these utilities:
 | `config`        | Configuration passed when calling the hook      |
 | `signal`        | Create reactive signals                         |
 | `computed`      | Create derived computed values                  |
-| `effect`        | Run side effects that track dependencies        |
+| `watchEffect`        | Run side effects that track dependencies        |
 | `onMount`       | Register callbacks for when the hook is mounted |
 | `layer`         | Access layer props by name                      |
 | `layerProvider` | Access layer services                           |

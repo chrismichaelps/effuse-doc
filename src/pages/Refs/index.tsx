@@ -3,7 +3,7 @@ import {
   signal,
   computed,
   useHead,
-  effect,
+  watchEffect,
   type RefCallback,
   type Signal,
   type ReadonlySignal,
@@ -134,7 +134,7 @@ export const RefsPage = define<object, RefsExposed>({
 
     const translations = computed(() => getTranslations(i18nStore));
 
-    effect(() => {
+    watchEffect(() => {
       const t = translations.value;
       useHead({
         title: `${t.title} - Effuse Playground`,

@@ -6,7 +6,7 @@ title: 副作用
 
 Effuse 提供特定函数来处理副作用并监视状态更改。
 
-## 1. effect
+## 1. watchEffect
 
 `effect` 函数立即运行，并在其跟踪的信号更改时重新运行。
 

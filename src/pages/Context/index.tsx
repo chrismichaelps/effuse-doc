@@ -3,7 +3,7 @@ import {
   signal,
   computed,
   useHead,
-  effect,
+  watchEffect,
   type ReadonlySignal,
 } from '@effuse/core';
 import { Ink } from '@effuse/ink';
@@ -114,7 +114,7 @@ export const ContextPage = define({
     const currentTheme = signal<ThemeMode>(State.Dark({ primary: '#818cf8' }));
     const nestedTheme = signal<ThemeMode>(State.Ocean({ primary: '#06b6d4' }));
 
-    effect(() => {
+    watchEffect(() => {
       useHead({
         title: `${t.value?.title} - Effuse Playground`,
         description: t.value?.description,

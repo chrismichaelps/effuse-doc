@@ -82,7 +82,7 @@ interface BreakpointReturn {
 
 export const useBreakpoint = defineHook<BreakpointConfig, BreakpointReturn>({
   name: 'useBreakpoint',
-  setup: ({ signal, effect }): BreakpointReturn => {
+  setup: ({ signal, watchEffect }): BreakpointReturn => {
     const state = signal<BreakpointState>(null as unknown as BreakpointState);
     const isMounted = signal(false);
 
@@ -201,7 +201,7 @@ export const useBreakpoint = defineHook<BreakpointConfig, BreakpointReturn>({
       state.value = clearedState;
     };
 
-    effect(() => {
+    watchEffect(() => {
       init();
       return destroy;
     });
