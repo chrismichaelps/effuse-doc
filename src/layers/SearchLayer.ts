@@ -7,12 +7,15 @@ export const SearchLayer = defineLayer({
   name: 'search',
   dependencies: [],
   store: searchStore,
-  deriveProps: (store) => ({
-    modalState: store.modalState,
-    query: store.query,
-    searchStatus: store.searchStatus,
-    selectedIndex: store.selectedIndex,
-  }),
+  deriveProps: (store) => {
+    const s = store as typeof searchStore;
+    return {
+      modalState: s.modalState,
+      query: s.query,
+      searchStatus: s.searchStatus,
+      selectedIndex: s.selectedIndex,
+    };
+  },
   provides: {
     search: () => searchStore,
   },
@@ -26,11 +29,13 @@ export const SearchLayer = defineLayer({
   onUnmount: () => {
     console.log('[SearchLayer] unmounted');
   },
-  onError: (err) => {
-    console.error('[SearchLayer] error:', err.message);
+  onError: (err: unknown) => {
+    const message = (err as Error).message || String(err);
+    console.error('[SearchLayer] error:', message);
   },
   setup: (ctx) => {
-    ctx.store.init();
+    const s = ctx.store as typeof searchStore;
+    s.init();
     return () => {
       console.log('[SearchLayer] cleanup');
     };

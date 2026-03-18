@@ -7,11 +7,14 @@ export const SidebarLayer = defineLayer({
   name: 'sidebar',
   dependencies: ['layout', 'i18n'],
   store: docsStore,
-  deriveProps: (store) => ({
-    isOpen: computed(() => store.isSidebarVisible()),
-    width: signal(280),
-    isCollapsed: computed(() => store.isSidebarCollapsed()),
-  }),
+  deriveProps: (store) => {
+    const s = store as typeof docsStore;
+    return {
+      isOpen: computed(() => s.isSidebarVisible()),
+      width: signal(280),
+      isCollapsed: computed(() => s.isSidebarCollapsed()),
+    };
+  },
   components: {
     Sidebar,
     SidebarToggle,
