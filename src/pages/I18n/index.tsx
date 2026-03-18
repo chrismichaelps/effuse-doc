@@ -3,7 +3,7 @@ import {
   useHead,
   signal,
   computed,
-  effect,
+  watchEffect,
   type ReadonlySignal,
   type Signal,
 } from '@effuse/core';
@@ -30,7 +30,7 @@ export const I18nPage = define<object, I18nPageExposed>({
     const i18nStore = useStore('i18n') as typeof I18nStoreType;
     const t = computed(() => i18nStore.translations.value?.examples?.i18n);
 
-    effect(() => {
+    watchEffect(() => {
       useHead({
         title: `${t.value?.title as string} - Effuse Playground`,
         description: t.value?.description as string,

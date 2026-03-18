@@ -54,7 +54,7 @@ La función `setup` recibe un objeto de contexto con estas utilidades:
 | `config`        | Configuración pasada al llamar al hook                 |
 | `signal`        | Crear señales reactivas                                |
 | `computed`      | Crear valores derivados computados                     |
-| `effect`        | Ejecutar efectos secundarios que rastrean dependencias |
+| `watchEffect`        | Ejecutar efectos secundarios que rastrean dependencias |
 | `onMount`       | Registrar callbacks para cuando el hook se monta       |
 | `layer`         | Acceder a props de capas por nombre                    |
 | `layerProvider` | Acceder a servicios de capas                           |
