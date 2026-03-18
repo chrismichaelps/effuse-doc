@@ -22,7 +22,7 @@ export const DocsLayer = defineLayer({
     console.log('[DocsLayer] unmounted');
   },
   onError: (err) => {
-    console.error('[DocsLayer] error:', err.message);
+    console.error('[DocsLayer] error:', (err as Error).message);
   },
   setup: () => {
     return () => {
