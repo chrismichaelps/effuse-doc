@@ -131,7 +131,7 @@ export { installRouter };
 | `useMemo`         | `(fn, deps?) => getter`      | 记忆计算值。                       |
 | `computed`        | `(getter) => Signal`         | 创建响应式派生状态。               |
 | `watchMultiple`   | `(sources, cb) => void`      | 同时监视多个信号。                 |
-| `effect`          | `(cb, options?) => Effect`   | 自动运行副作用。                   |
+| `watchEffect`          | `(cb, options?) => Effect`   | 自动运行副作用。                   |
 | `useLayer`        | `(name) => LayerContext`     | 访问层上下文。                     |
 | `useStore`        | `(key) => Store`             | 类型安全地访问全局存储。           |
 | `useService`      | `(key) => Service`           | 访问由层注入的服务。               |

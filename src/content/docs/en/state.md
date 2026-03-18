@@ -108,24 +108,35 @@ export const rootStore = composeStores('root', {
 
 ## Cancellable and Async Actions
 
-Actions can handle complex side effects with built-in concurrency control.
+Effuse separates state mutation from async side-effects. For complex async logic with built-in concurrency control (like debouncing or throttling), use the `useConcurrency` hook provided by `@effuse/store`.
 
 ```typescript
-import { createStore, takeLatest, debounceAction } from '@effuse/store';
+import { createStore, useConcurrency } from '@effuse/store';
 
 export const searchStore = createStore('search', {
   results: [],
-
-  // Use takeLatest to cancel previous pending requests
-  search: takeLatest(async function (query: string) {
-    const data = await api.search(query);
+  setResults(data: any[]) {
     this.results.value = data;
-  }),
+  }
+});
 
-  // Debounce an action
-  updateQuery: debounceAction(function (query: string) {
-    this.search(query);
-  }, 300),
+// Setup a concurrent action outside the store
+export const performSearch = useConcurrency({
+  mode: 'switch', // Cancels previous pending requests (like takeLatest)
+  async action(query: string) {
+    const data = await api.search(query);
+    searchStore.setResults(data);
+  }
+});
+
+// Setup a debounced action
+export const debouncedSearch = useConcurrency({
+  mode: 'switch',
+  debounce: 300,
+  async action(query: string) {
+    const data = await api.search(query);
+    searchStore.setResults(data);
+  }
 });
 ```
 

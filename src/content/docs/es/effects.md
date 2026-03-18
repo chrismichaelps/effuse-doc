@@ -6,7 +6,7 @@ title: Efectos
 
 Effuse proporciona funciones específicas para manejar efectos secundarios y observar cambios de estado.
 
-## 1. effect
+## 1. watchEffect
 
 La función `effect` se ejecuta inmediatamente y se vuelve a ejecutar cada vez que sus señales rastreadas cambian.
 
