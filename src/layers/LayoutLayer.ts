@@ -1,4 +1,4 @@
-import { defineLayer, signal } from '@effuse/core';
+import { defineLayer, signal, type Signal } from '@effuse/core';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 
@@ -19,14 +19,17 @@ export const LayoutLayer = defineLayer({
     console.log('[LayoutLayer] unmounted');
   },
   onError: (err) => {
-    console.error('[LayoutLayer] error:', err.message);
+    console.error('[LayoutLayer] error:', (err as Error).message);
   },
   setup: (ctx) => {
+    const s = ctx as unknown as {
+      props: { isDarkMode: Signal<boolean>; isMobileMenuOpen: Signal<boolean> };
+    };
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    ctx.props.isDarkMode.value = mediaQuery.matches;
+    s.props.isDarkMode.value = mediaQuery.matches;
 
     const handleDarkModeChange = (e: MediaQueryListEvent) => {
-      ctx.props.isDarkMode.value = e.matches;
+      s.props.isDarkMode.value = e.matches;
     };
 
     mediaQuery.addEventListener('change', handleDarkModeChange);
