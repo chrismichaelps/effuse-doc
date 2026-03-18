@@ -1,5 +1,5 @@
 import { createStore, connectDevTools } from '@effuse/store';
-import { effect } from '@effuse/core';
+import { watchEffect } from '@effuse/core';
 import { i18nStore } from './appI18n.js';
 import { loadDocsIndex, type DocEntry } from '../utils/docsIndexer.js';
 import { searchDocs, type SearchResultItem } from '../utils/searchEngine.js';
@@ -279,7 +279,7 @@ export const searchStore = createStore<SearchState & SearchActions>(
       if (typeof window !== 'undefined') {
         this.indexDocs();
 
-        effect(() => {
+        watchEffect(() => {
           const locale = i18nStore.locale.value;
           if (locale) {
             this.indexDocs();
