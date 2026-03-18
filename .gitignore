@@ -34,3 +34,6 @@ coverage
 .env
 .env.*
 !.env.example
+
+# Ignore the master seed file
+FMCF-MASTER-SEED.md
