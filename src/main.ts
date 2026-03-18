@@ -15,8 +15,8 @@ import './styles.css';
 createApp(App)
   .useLayers([
     InkLayer,
-    LayoutLayer,
     RouterLayer,
+    LayoutLayer,
     I18nLayer,
     SidebarLayer,
     DocsLayer,
