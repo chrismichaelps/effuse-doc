@@ -1,5 +1,5 @@
-import {
-  define,
+import { isTaggedError } from '../../utils/data/tagged-error.js';
+import { define,
   useForm,
   useHead,
   v,
@@ -7,9 +7,8 @@ import {
   computed,
   For,
   Suspense,
-  effect,
-  isTaggedError,
-} from '@effuse/core';
+  watchEffect,
+   } from '@effuse/core';
 import { useMutation } from '@effuse/query';
 import { Ink } from '@effuse/ink';
 import { DocsLayout } from '../../components/docs/DocsLayout';
@@ -67,7 +66,7 @@ export const FormDemoPage = define({
 
     const t = computed(() => i18nStore.translations.value?.examples?.form);
 
-    effect(() => {
+    watchEffect(() => {
       useHead({
         title: `${t.value?.title as string} - Effuse Playground`,
         description: t.value?.description as string,

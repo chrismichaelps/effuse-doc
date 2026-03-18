@@ -129,7 +129,7 @@ The `script` function receives a `ScriptContext` object with useful utilities:
 | `onBeforeUnmount` | `(cb) => void`               | Callback before component unmounts.                           |
 | `watch`           | `(src, cb, opts?) => void`   | Watch a signal with optional debounce/retry.                  |
 | `watchMultiple`   | `(srcs, cb, opts?) => void`  | Watch multiple signals simultaneously.                        |
-| `effect`          | `(fn, opts?) => void`        | Run a side effect with optional settings.                     |
+| `watchEffect`          | `(fn, opts?) => void`        | Run a side effect with optional settings.                     |
 | `useCallback`     | `(fn, deps?) => fn`          | Memoize a callback with stable identity.                      |
 | `useMemo`         | `(fn, deps?) => getter`      | Memoize a computed value.                                     |
 | `useLayer`        | `(name) => LayerContext`     | Access a dependency injection layer.                          |

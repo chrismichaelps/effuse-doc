@@ -1,4 +1,4 @@
-import { define, useHead, effect, computed } from '@effuse/core';
+import { define, useHead, watchEffect, computed } from '@effuse/core';
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
 import { Link } from '@effuse/router';
 import './styles.css';
@@ -8,7 +8,7 @@ export const NotFoundPage = define({
     const i18nStore = useStore('i18n') as typeof I18nStoreType;
     const t = computed(() => i18nStore.translations.value?.notFound);
 
-    effect(() => {
+    watchEffect(() => {
       useHead({
         title: t.value?.meta?.title ?? '',
         description: t.value?.meta?.description ?? '',

@@ -39,7 +39,7 @@ interface ScrollSpyReturn {
 
 export const useScrollSpy = defineHook<ScrollSpyConfig, ScrollSpyReturn>({
   name: 'useScrollSpy',
-  setup: ({ config, signal, effect }): ScrollSpyReturn => {
+  setup: ({ config, signal, watchEffect }): ScrollSpyReturn => {
     const activeId = signal('');
     const items = signal<TocItem[]>([]);
     const initState = signal<InitState>(Init.Uninitialized({}));
@@ -75,7 +75,7 @@ export const useScrollSpy = defineHook<ScrollSpyConfig, ScrollSpyReturn>({
       });
     };
 
-    effect(() => {
+    watchEffect(() => {
       const currentInit = initState.value;
       let isInit = false;
       Init.$match(currentInit, {

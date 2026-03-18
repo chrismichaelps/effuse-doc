@@ -1,4 +1,4 @@
-import { define, useHead, effect } from '@effuse/core';
+import { define, useHead, watchEffect } from '@effuse/core';
 import { useTranslation } from '../../hooks';
 import '../Legal/styles.css';
 
@@ -6,7 +6,7 @@ export const ContactPage = define({
   script: () => {
     const { t } = useTranslation();
 
-    effect(() => {
+    watchEffect(() => {
       useHead({
         title: t('legal.contact.meta.title', ''),
         description: t(
