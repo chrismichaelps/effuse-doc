@@ -54,7 +54,7 @@ export const useToggle = defineHook<ToggleConfig, ToggleReturn>({
 | `config`        | 调用钩子时传递的配置 |
 | `signal`        | 创建响应式信号       |
 | `computed`      | 创建派生计算值       |
-| `effect`        | 运行跟踪依赖的副作用 |
+| `watchEffect`        | 运行跟踪依赖的副作用 |
 | `onMount`       | 注册钩子挂载时的回调 |
 | `layer`         | 按名称访问层的 props |
 | `layerProvider` | 访问层服务           |

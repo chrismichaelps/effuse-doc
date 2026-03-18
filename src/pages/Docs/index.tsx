@@ -2,7 +2,7 @@ import {
   define,
   signal,
   computed,
-  effect,
+  watchEffect,
   useHead,
   type Signal,
   type ReadonlySignal,
@@ -79,7 +79,7 @@ export const DocsPage = define<{}, DocsPageExposed>({
       return doc.title;
     });
 
-    effect(() => {
+    watchEffect(() => {
       useHead({
         title: `${pageTitle.value} - Effuse Docs`,
         description: `Learn about ${pageTitle.value} in Effuse. Detailed guide and examples for ${pageTitle.value.toLowerCase()} in the Effuse framework.`,

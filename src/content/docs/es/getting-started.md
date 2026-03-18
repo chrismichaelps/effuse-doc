@@ -131,7 +131,7 @@ La función `script` recibe un objeto `ScriptContext` con utilidades:
 | `useMemo`         | `(fn, deps?) => getter`      | Memorizar un valor computado.                                     |
 | `computed`        | `(getter) => Signal`         | Crear estado derivado reactivo.                                   |
 | `watchMultiple`   | `(sources, cb) => void`      | Observar múltiples señales simultáneamente.                       |
-| `effect`          | `(cb, options?) => Effect`   | Ejecutar efectos secundarios automáticamente.                     |
+| `watchEffect`          | `(cb, options?) => Effect`   | Ejecutar efectos secundarios automáticamente.                     |
 | `useLayer`        | `(name) => LayerContext`     | Acceder al contexto de una capa.                                  |
 | `useStore`        | `(key) => Store`             | Acceso tipado a stores globales.                                  |
 | `useService`      | `(key) => Service`           | Acceso a servicios inyectados por capas.                          |

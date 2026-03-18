@@ -4,7 +4,7 @@ import {
   For,
   useHead,
   signal,
-  effect,
+  watchEffect,
   useEmits,
   useEventSignal,
   type ReadonlySignal,
@@ -77,7 +77,7 @@ export const EmitDemoPage = define({
     const i18nStore = useStore('i18n') as typeof I18nStoreType;
     const t = computed(() => i18nStore.translations.value?.examples?.emit);
 
-    effect(() => {
+    watchEffect(() => {
       useHead({
         title: `${t.value?.title || 'Event Emits'} - Effuse Playground`,
         description:
@@ -132,7 +132,7 @@ export const EmitDemoPage = define({
       'message'
     );
 
-    effect(() => {
+    watchEffect(() => {
       if (messages.value.length && chatContainer) {
         requestAnimationFrame(() => {
           if (chatContainer) {
@@ -188,7 +188,7 @@ const { emit, on, context } = useEmits<Events>({
 emit('message', { text: 'Hello!', author: 'Dev' });
 \`\`\``.trim();
 
-    effect(() => {
+    watchEffect(() => {
       if (messages.value.length === 0) {
         emit('message', {
           id: generateId(),

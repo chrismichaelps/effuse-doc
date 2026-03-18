@@ -30,7 +30,7 @@ export const useSmoothScroll = defineHook<
   SmoothScrollReturn
 >({
   name: 'useSmoothScroll',
-  setup: ({ config, signal, effect }): SmoothScrollReturn => {
+  setup: ({ config, signal, watchEffect }): SmoothScrollReturn => {
     const state = signal<SmoothScrollState>(State.Uninitialized({}));
     const isActiveSig = signal(false);
     const isUninitializedSig = signal(true);
@@ -51,7 +51,7 @@ export const useSmoothScroll = defineHook<
       });
     };
 
-    effect(() => {
+    watchEffect(() => {
       const currentState = state.value;
       let isInit = false;
       State.$match(currentState, {

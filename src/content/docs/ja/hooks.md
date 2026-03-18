@@ -54,7 +54,7 @@ export const useToggle = defineHook<ToggleConfig, ToggleReturn>({
 | `config`        | フック呼び出し時に渡された設定                 |
 | `signal`        | リアクティブシグナルを作成                     |
 | `computed`      | 派生計算値を作成                               |
-| `effect`        | 依存関係を追跡する副作用を実行                 |
+| `watchEffect`        | 依存関係を追跡する副作用を実行                 |
 | `onMount`       | フックがマウントされたときのコールバックを登録 |
 | `layer`         | 名前でレイヤーの props にアクセス              |
 | `layerProvider` | レイヤーサービスにアクセス                     |

@@ -6,12 +6,12 @@ title: Effects
 
 Effuse provides specific functions to handle side effects and watch for state changes.
 
-## 1. effect
+## 1. watchEffect
 
-The `effect` function runs immediately and re-runs whenever its tracked signals change.
+The `watchEffect` function runs immediately and re-runs whenever its tracked signals change.
 
 ```tsx
-import { define, signal, effect } from '@effuse/core';
+import { define, signal, watchEffect } from '@effuse/core';
 
 const DataFetcher = define({
   script: () => {
@@ -19,7 +19,7 @@ const DataFetcher = define({
     const userData = signal<any>(null);
 
     // Runs automatically when 'userId' changes
-    effect(() => {
+    watchEffect(() => {
       fetch(`/api/users/${userId.value}`)
         .then((res) => res.json())
         .then((data) => {
@@ -38,12 +38,12 @@ const DataFetcher = define({
 });
 ```
 
-### Effect Options
+### watchEffect Options
 
-The `effect` function (and `watch`) accepts an optional `EffectOptions` object to control its behavior:
+The `watchEffect` function (and `watch`) accepts an optional `EffectOptions` object to control its behavior:
 
 ```typescript
-effect(
+watchEffect(
   () => {
     console.log('Running effect');
   },
@@ -68,7 +68,7 @@ effect(
 A common pattern is syncing external data with store state:
 
 ```tsx
-import { define, signal, effect } from '@effuse/core';
+import { define, signal, watchEffect } from '@effuse/core';
 import { useInfiniteQuery } from '@effuse/query';
 import { todosStore } from '../store/todosStore';
 
@@ -86,7 +86,7 @@ const TodosPage = define({
     const syncedPageCount = signal(0);
 
     // Sync server data to store
-    effect(() => {
+    watchEffect(() => {
       const pages = todosQuery.allPagesData.value;
       if (pages && pages.length > syncedPageCount.value) {
         if (syncedPageCount.value === 0) {
@@ -155,7 +155,7 @@ const Analytics = define({
 
 ## Best Practices
 
-1. **Use effect for reactive side effects** that should re-run when dependencies change
+1. **Use watchEffect for reactive side effects** that should re-run when dependencies change
 2. **Use watch for specific signals** when you only care about one value changing
 3. **Use onMount for initialization** that should only happen once
 4. **Return cleanup functions** from onMount to prevent memory leaks

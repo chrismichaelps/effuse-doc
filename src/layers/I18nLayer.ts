@@ -7,27 +7,34 @@ export const I18nLayer = defineLayer({
   name: 'i18n',
   dependencies: ['router'],
   store: i18nStore,
-  deriveProps: (store) => ({
-    locale: store.locale,
-    isLoading: store.isLoading,
-    translations: store.translations,
-  }),
+  deriveProps: (store) => {
+    const s = store as typeof i18nStore;
+    return {
+      locale: s.locale,
+      isLoading: s.isLoading,
+      translations: s.translations,
+    };
+  },
   provides: {
     i18n: () => i18nStore,
   },
   onMount: (ctx) => {
+    const s = ctx.store as typeof i18nStore;
     const savedLocale = localStorage.getItem(LOCALE_STORAGE_KEY);
-    if (savedLocale && savedLocale !== ctx.store.locale.value) {
-      ctx.store.setLocale(savedLocale as Locale);
+    if (savedLocale && savedLocale !== s.locale.value) {
+      s.setLocale(savedLocale as Locale);
     }
   },
   onUnmount: (ctx) => {
-    localStorage.setItem(LOCALE_STORAGE_KEY, ctx.store.locale.value);
+    const s = ctx.store as typeof i18nStore;
+    localStorage.setItem(LOCALE_STORAGE_KEY, s.locale.value);
   },
-  onError: (_, ctx) => {
-    ctx.store.setLocale('en');
+  onError: (_err, ctx) => {
+    const s = ctx.store as typeof i18nStore;
+    s.setLocale('en');
   },
   setup: (ctx) => {
-    ctx.store.init();
+    const s = ctx.store as typeof i18nStore;
+    s.init();
   },
 });
