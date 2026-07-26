@@ -75,7 +75,7 @@ const ThemeCard = define<ThemeCardProps, ThemeCardExposed>({
   script: ({ props }) => {
     return { label: props.label, theme: props.theme };
   },
-  template: ({ label, theme }) => (
+  template: ({ exposed: { label, theme } }) => (
     <article
       class="context-theme-card"
       style={() => ({

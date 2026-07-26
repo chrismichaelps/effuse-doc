@@ -3,12 +3,16 @@ import { versions } from '../../config/versions';
 import { i18nStore } from '../../store/appI18n';
 
 const packages = [
+  { name: '@effuse/cli', version: versions.cli },
+  { name: '@effuse/compiler', version: versions.compiler },
   { name: '@effuse/core', version: versions.core },
   { name: '@effuse/router', version: versions.router },
   { name: '@effuse/store', version: versions.store },
   { name: '@effuse/ink', version: versions.ink },
   { name: '@effuse/i18n', version: versions.i18n },
   { name: '@effuse/query', version: versions.query },
+  { name: '@effuse/server', version: versions.server },
+  { name: '@effuse/use', version: versions.use },
 ];
 
 export const SidebarVersions = define({

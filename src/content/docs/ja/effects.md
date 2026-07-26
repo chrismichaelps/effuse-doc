@@ -8,10 +8,10 @@ Effuse は副作用を処理し、状態変更を監視するための特定の�
 
 ## 1. watchEffect
 
-`effect` 関数は即座に実行され、追跡されたシグナルが変更されるたびに再実行されます。
+`watchEffect` 関数は即座に実行され、追跡されたシグナルが変更されるたびに再実行されます。
 
 ```tsx
-import { define, signal, effect } from '@effuse/core';
+import { define, signal, watchEffect } from '@effuse/core';
 
 const DataFetcher = define({
   script: () => {
@@ -19,7 +19,7 @@ const DataFetcher = define({
     const userData = signal<any>(null);
 
     // 'userId' が変更されると自動的に実行
-    effect(() => {
+    watchEffect(() => {
       fetch(`/api/users/${userId.value}`)
         .then((res) => res.json())
         .then((data) => {
@@ -40,12 +40,12 @@ const DataFetcher = define({
 
 ### Effect オプション
 
-`effect` 関数（および `watch`）は、その動作を制御するためのオプションの `EffectOptions` オブジェクトを受け入れます：
+`watchEffect` 関数（および `watch`）は、その動作を制御するためのオプションの `EffectOptions` オブジェクトを受け入れます：
 
 ```typescript
-effect(
+watchEffect(
   () => {
-    console.log('Running effect');
+    console.log('Running watchEffect');
   },
   {
     debounce: { wait: 300 }, // デバウンス実行
@@ -68,7 +68,7 @@ effect(
 外部データをストア状態と同期する一般的なパターン：
 
 ```tsx
-import { define, signal, effect } from '@effuse/core';
+import { define, signal, watchEffect } from '@effuse/core';
 import { useInfiniteQuery } from '@effuse/query';
 import { todosStore } from '../store/todosStore';
 
@@ -86,8 +86,8 @@ const TodosPage = define({
     const syncedPageCount = signal(0);
 
     // サーバーデータをストアに同期
-    effect(() => {
-      const pages = todosQuery.allPagesData.value;
+    watchEffect(() => {
+      const pages = todosQuery.data.value?.pages ?? [];
       if (pages && pages.length > syncedPageCount.value) {
         if (syncedPageCount.value === 0) {
           todosStore.setTodos(pages.flat());
@@ -155,7 +155,7 @@ const Analytics = define({
 
 ## ベストプラクティス
 
-1. **リアクティブな副作用には effect を使用** - 依存関係が変更されたときに再実行すべき場合
+1. **リアクティブな副作用には watchEffect を使用** - 依存関係が変更されたときに再実行すべき場合
 2. **特定のシグナルには watch を使用** - 一つの値の変更のみを気にする場合
 3. **初期化には onMount を使用** - 一度だけ発生すべき場合
 4. **クリーンアップ関数を返す** - メモリリークを防ぐため onMount から

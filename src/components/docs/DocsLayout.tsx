@@ -1,5 +1,6 @@
 import {
   define,
+  defineProps,
   type Signal,
   For,
   computed,
@@ -12,8 +13,8 @@ import {
   useScrollSpy,
   useSmoothScroll,
   useTranslation,
-  useBreakpoint,
 } from '../../hooks/index.js';
+import { useMediaQuery } from '@effuse/use';
 import type { docsStore as DocsStoreType } from '../../store/docsUIStore.js';
 import {
   isArray,
@@ -23,6 +24,7 @@ import {
   Option,
 } from '../../utils/data/index.js';
 import './styles.css';
+import { SidebarLayer } from '../../layers/SidebarLayer.js';
 
 interface DocsLayoutProps {
   children: any;
@@ -55,21 +57,18 @@ const unwrapTocItems = (
   return getOrElse(toOption(), () => []);
 };
 
-export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
-  script: ({
-    props,
-    onMount,
-    useCallback,
-    useLayerProps,
-    useLayerProvider,
-  }) => {
-    const sidebarProps = useLayerProps('sidebar')!;
-    const sidebarProvider = useLayerProvider('sidebar')!;
+export const DocsLayout = define({
+  props: defineProps<DocsLayoutProps>(),
+  layers: { sidebar: SidebarLayer } as const,
+  script: ({ props, onMount, useCallback, layers: { sidebar } }) => {
     const { t } = useTranslation();
 
-    const breakpoint = useBreakpoint({});
+    const { matches: isMobile } = useMediaQuery({
+      query: '(max-width: 767px)',
+      initialValue: false,
+    });
 
-    const docsStore = sidebarProvider.docsUI as typeof DocsStoreType;
+    const docsStore = sidebar.services.docsUI as typeof DocsStoreType;
 
     const normalizedTocItems = computed(() => unwrapTocItems(props.tocItems));
 
@@ -123,8 +122,8 @@ export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
     );
 
     const sidebarClass = computed(() => {
-      const open = sidebarProps.isOpen.value;
-      const collapsed = sidebarProps.isCollapsed.value;
+      const open = sidebar.props.isOpen.value;
+      const collapsed = sidebar.props.isCollapsed.value;
       const className = `sidebar-desktop-wrapper ${open ? 'sidebar-mobile-open' : 'sidebar-mobile-closed'} ${collapsed ? 'collapsed' : ''}`;
       return className;
     });
@@ -142,27 +141,25 @@ export const DocsLayout = define<DocsLayoutProps, DocsLayoutExposed>({
       handleTocClick,
       normalizedTocItems,
       t,
-      isCollapsed: sidebarProps.isCollapsed,
-      isOpen: sidebarProps.isOpen,
-      sidebarClass,
-      isMobile: breakpoint.isMobile,
-    };
-  },
-  template: (
-    {
-      docsStore,
-      activeSectionId,
-      handleTocClick,
-      normalizedTocItems,
-      t,
-      children,
-      isCollapsed,
-      isOpen,
+      isCollapsed: sidebar.props.isCollapsed,
+      isOpen: sidebar.props.isOpen,
       sidebarClass,
       isMobile,
-    },
-    props
-  ) => (
+    } satisfies DocsLayoutExposed;
+  },
+  template: ({
+    docsStore,
+    activeSectionId,
+    handleTocClick,
+    normalizedTocItems,
+    t,
+    children,
+    isCollapsed,
+    isOpen,
+    sidebarClass,
+    isMobile,
+    props,
+  }) => (
     <div
       class={() =>
         `docs-layout ${isCollapsed.value ? 'sidebar-collapsed' : ''}`

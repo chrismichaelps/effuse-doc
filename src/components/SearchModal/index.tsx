@@ -16,6 +16,7 @@ import type {
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
 import { matchTag } from '../../utils/data/index.js';
 import './styles.css';
+import { SearchLayer } from '../../layers/SearchLayer.js';
 
 interface SearchModalExposed {
   modalState: Signal<any>;
@@ -38,10 +39,10 @@ interface SearchModalExposed {
   t: ReadonlySignal<any>;
 }
 
-export const SearchModal = define<Record<string, never>, SearchModalExposed>({
-  script: ({ onMount, useStore, useCallback, useLayerProvider }) => {
-    const searchProvider = useLayerProvider('search');
-    const store = searchProvider?.search as SearchStore;
+export const SearchModal = define({
+  layers: { search: SearchLayer } as const,
+  script: ({ onMount, useStore, useCallback, layers: { search } }) => {
+    const store = search.services.search as SearchStore;
 
     const router = useRouter();
     const i18nStore = useStore('i18n') as typeof I18nStoreType;
@@ -250,7 +251,7 @@ export const SearchModal = define<Record<string, never>, SearchModalExposed>({
           </span>
         );
       },
-    };
+    } satisfies SearchModalExposed;
   },
   template: ({
     query,

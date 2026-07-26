@@ -1,4 +1,11 @@
-import { define, signal, computed, watchEffect, For, useHead } from '@effuse/core';
+import {
+  define,
+  signal,
+  computed,
+  watchEffect,
+  For,
+  useHead,
+} from '@effuse/core';
 import { isTaggedError } from '../../utils/data/tagged-error.js';
 import { useInfiniteQuery, useMutation } from '@effuse/query';
 import { Ink } from '@effuse/ink';
@@ -149,7 +156,7 @@ export const TodosPage = define({
     const syncedPageCount = signal(0);
 
     watchEffect(() => {
-      const pages = todosQuery.allPagesData.value;
+      const pages = todosQuery.data.value?.pages ?? [];
       if (pages && pages.length > syncedPageCount.value) {
         if (syncedPageCount.value === 0) {
           todosStore.setTodos(pages.flat());
@@ -545,7 +552,7 @@ const mutation = useMutation({
           {computed(() =>
             todosQuery.isError.value ? (
               <div class="p-4 bg-red-500/10 text-red-400 border-t border-red-500/20 text-center text-sm">
-                {(todosQuery.error.value && isTaggedError(todosQuery.error.value))
+                {todosQuery.error.value && isTaggedError(todosQuery.error.value)
                   ? todosQuery.error.value.toString()
                   : todosQuery.error.value?.message || 'Error loading todos'}
               </div>

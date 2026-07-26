@@ -1,7 +1,5 @@
 import { defineLayer } from '@effuse/core';
 import { searchStore } from '../store/searchStore';
-import { SearchModal } from '../components/SearchModal';
-import { SearchTrigger } from '../components/SearchTrigger';
 
 export const SearchLayer = defineLayer({
   name: 'search',
@@ -18,10 +16,6 @@ export const SearchLayer = defineLayer({
   },
   provides: {
     search: () => searchStore,
-  },
-  components: {
-    SearchModal,
-    SearchTrigger,
   },
   onMount: () => {
     console.log('[SearchLayer] mounted');

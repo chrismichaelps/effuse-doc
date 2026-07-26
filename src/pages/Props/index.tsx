@@ -17,10 +17,7 @@ import '../../styles/examples.css';
 interface DisplayProps {
   label: string | ReadonlySignal<string>;
   value:
-    | string
-    | number
-    | Signal<string | number>
-    | ReadonlySignal<string | number>;
+    string | number | Signal<string | number> | ReadonlySignal<string | number>;
   color?: string | Signal<string>;
   onAction?: () => void;
 }
@@ -53,12 +50,8 @@ const StatDisplay = define<DisplayProps, StatDisplayExposed>({
     };
   },
   template: ({
-    label,
-    value,
-    color,
-    onAction,
-    triggerUpdateText,
-  }: StatDisplayExposed) => (
+    exposed: { label, value, color, onAction, triggerUpdateText },
+  }) => (
     <article
       class="stat-card"
       style={() => ({

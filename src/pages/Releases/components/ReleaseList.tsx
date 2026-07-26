@@ -7,9 +7,9 @@ interface ReleaseListProps {
   formatDate: (date: string) => string;
 }
 
-export const ReleaseList = define<ReleaseListProps, any>({
-  script: ({ props }) => props,
-  template: ({ releases, formatDate }) => {
+export const ReleaseList = define<ReleaseListProps, Record<string, never>>({
+  script: () => ({}),
+  template: ({ props: { releases, formatDate } }) => {
     return (
       <div class="space-y-16">
         <For each={() => releases} keyExtractor={(r: GitHubRelease) => r.id}>

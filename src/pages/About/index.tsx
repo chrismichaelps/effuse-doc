@@ -2,14 +2,15 @@ import { define, computed, useHead, For, watchEffect } from '@effuse/core';
 import { useTranslation } from '../../hooks';
 import type { Translations } from '../../store/appI18n';
 import './styles.css';
+import { I18nLayer } from '../../layers/I18nLayer.js';
 
 export const AboutPage = define({
-  script: ({ useLayerProps }) => {
-    const i18nProps = useLayerProps('i18n')!;
+  layers: { i18n: I18nLayer } as const,
+  script: ({ layers: { i18n } }) => {
     const { t } = useTranslation();
 
     const trans = computed(
-      () => (i18nProps.translations.value as Translations | null)?.about
+      () => (i18n.props.translations.value as Translations | null)?.about
     );
 
     watchEffect(() => {

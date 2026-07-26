@@ -54,7 +54,7 @@ export const useToggle = defineHook<ToggleConfig, ToggleReturn>({
 | `config`        | フック呼び出し時に渡された設定                 |
 | `signal`        | リアクティブシグナルを作成                     |
 | `computed`      | 派生計算値を作成                               |
-| `watchEffect`        | 依存関係を追跡する副作用を実行                 |
+| `watchEffect`   | 依存関係を追跡する副作用を実行                 |
 | `onMount`       | フックがマウントされたときのコールバックを登録 |
 | `layer`         | 名前でレイヤーの props にアクセス              |
 | `layerProvider` | レイヤーサービスにアクセス                     |
@@ -139,11 +139,11 @@ export const useClickOutside = defineHook<
   ClickOutsideReturn
 >({
   name: 'useClickOutside',
-  setup: ({ config, signal, effect }): ClickOutsideReturn => {
+  setup: ({ config, signal, watchEffect }): ClickOutsideReturn => {
     const initialized = signal(false);
     let callback: (() => void) | null = null;
 
-    effect(() => {
+    watchEffect(() => {
       if (!initialized.value) return undefined;
 
       const handleClick = (e: Event) => {
@@ -195,10 +195,10 @@ export const useTranslation = defineHook<
 
 ## クリーンアップ
 
-エフェクトはコンポーネントがアンマウントされると自動的にクリーンアップされます。`effect` からクリーンアップ関数を返します：
+エフェクトはコンポーネントがアンマウントされると自動的にクリーンアップされます。`watchEffect` からクリーンアップ関数を返します：
 
 ```typescript
-effect(() => {
+watchEffect(() => {
   const handler = () => {
     /* ... */
   };

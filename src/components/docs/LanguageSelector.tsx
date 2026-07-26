@@ -1,5 +1,6 @@
 import {
   define,
+  defineProps,
   computed,
   type Signal,
   type ReadonlySignal,
@@ -11,6 +12,7 @@ import {
   useTranslation,
 } from '../../hooks/index.js';
 import type { Locale } from '../../store/appI18n';
+import { I18nLayer } from '../../layers/I18nLayer.js';
 
 interface LanguageSelectorProps {
   isMobile?: boolean;
@@ -31,19 +33,10 @@ interface LanguageSelectorExposed {
   dropdownClass: () => string;
 }
 
-export const LanguageSelector = define<
-  LanguageSelectorProps,
-  LanguageSelectorExposed
->({
-  script: ({
-    useCallback,
-    props,
-    useLayerProps,
-    useLayerProvider,
-    onMount,
-  }) => {
-    const i18nProps = useLayerProps('i18n')!;
-    const i18nProvider = useLayerProvider('i18n')!;
+export const LanguageSelector = define({
+  props: defineProps<LanguageSelectorProps>(),
+  layers: { i18n: I18nLayer } as const,
+  script: ({ useCallback, props, layers: { i18n }, onMount }) => {
     const { t } = useTranslation();
 
     const toggle = useToggle({ initial: false });
@@ -51,7 +44,7 @@ export const LanguageSelector = define<
       selector: '.lang-selector',
     });
 
-    const currentLocale = i18nProps.locale as Signal<Locale>;
+    const currentLocale = i18n.props.locale as Signal<Locale>;
 
     const availableLanguages = computed<LanguageOption[]>(() => [
       { locale: 'en', label: t('language.english', ''), flag: '' },
@@ -67,7 +60,7 @@ export const LanguageSelector = define<
 
     const handleSelect = useCallback((e: MouseEvent, loc: Locale) => {
       e.stopPropagation();
-      (i18nProvider.i18n as { setLocale: (l: Locale) => void }).setLocale(loc);
+      i18n.services.i18n.setLocale(loc);
       toggle.setOff();
     });
 
@@ -87,7 +80,7 @@ export const LanguageSelector = define<
       handleSelect,
       availableLanguages,
       dropdownClass,
-    };
+    } satisfies LanguageSelectorExposed;
   },
   template: ({
     currentLocale,

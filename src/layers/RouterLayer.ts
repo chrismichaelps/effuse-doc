@@ -16,7 +16,9 @@ export const RouterLayer = defineLayer({
     console.log('[RouterLayer] unmounted');
   },
   onError: (err) => {
-    const message = isTaggedError(err) ? err.toString() : (err as Error).message;
+    const message = isTaggedError(err)
+      ? err.toString()
+      : (err as Error).message;
     console.error('[RouterLayer] error:', message);
   },
   setup: (ctx) => {
@@ -26,7 +28,11 @@ export const RouterLayer = defineLayer({
     const tracing = s.getService('tracing');
     let unsubscribeTracing: (() => void) | undefined;
 
-    if (tracing && typeof tracing === 'object' && 'isCategoryEnabled' in tracing) {
+    if (
+      tracing &&
+      typeof tracing === 'object' &&
+      'isCategoryEnabled' in tracing
+    ) {
       const tracingService = tracing as {
         isCategoryEnabled: (cat: string) => boolean;
         logWithDuration: (

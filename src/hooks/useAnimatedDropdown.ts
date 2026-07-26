@@ -9,10 +9,7 @@ type DropdownOpening = { readonly _tag: 'Opening' };
 type DropdownOpen = { readonly _tag: 'Open' };
 type DropdownClosing = { readonly _tag: 'Closing' };
 type DropdownState =
-  | DropdownClosed
-  | DropdownOpening
-  | DropdownOpen
-  | DropdownClosing;
+  DropdownClosed | DropdownOpening | DropdownOpen | DropdownClosing;
 
 const State = taggedEnum<DropdownState>();
 
