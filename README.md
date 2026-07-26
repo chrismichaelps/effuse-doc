@@ -1,58 +1,87 @@
 <p align="center">
-  <img src="./public/logo/logo.svg" alt="logo" width="150px" />
+  <a href="https://github.com/chrismichaelps/effuse">
+    <img src="./public/logo/logo.svg" alt="Effuse" width="150" />
+  </a>
+</p>
+
+<h1 align="center">Effuse Documentation</h1>
+
+<p align="center">
+  The source and application for the official Effuse framework documentation.
 </p>
 
 <p align="center">
-Official documentation for the <a href="https://github.com/chrismichaelps/effuse">Effuse framework</a>
+  <a href="https://github.com/chrismichaelps/effuse">Framework</a> ·
+  <a href="https://github.com/chrismichaelps/effuse/wiki">Wiki</a> ·
+  <a href="https://www.npmjs.com/org/effuse">npm</a>
 </p>
 
-Effuse is a personal exploration into building a modern reactive framework. It prioritizes simplicity and fine-grained reactivity using **Signals**, offering a familiar developer experience without the complexity of a virtual DOM.
+## Purpose
 
-It's designed to be intuitive and minimalist, helping you build fast, interactive web applications with less boilerplate. While it borrows good ideas from the ecosystem, it aims to remain small and understandable.
+This repository is the runnable reference for Effuse. It documents the public
+contracts, demonstrates the framework in a real application, and validates that
+published packages work together as an ecosystem.
 
-> **Alert:** Effuse is currently in development and is not ready for production use.
+Effuse 2.0 combines fine-grained UI reactivity with typed capability layers,
+file-based server APIs, middleware, SSR, portable Node and Bun adapters, and
+production utilities. The documentation intentionally keeps browser and server
+entry points separate so examples can be moved into applications safely.
 
-> **Note:** This is an experimental project for learning and demonstration. It is not intended to compete with major frameworks like React, Vue, or Solid.
+## Package Ecosystem
 
-## Packages
+| Package            | Responsibility                                                                     |
+| ------------------ | ---------------------------------------------------------------------------------- |
+| `@effuse/core`     | Components, signals, layers, schemas, SSR, server routes, middleware, and caches   |
+| `@effuse/compiler` | JSX/TSX compilation and reactive expression transforms                             |
+| `@effuse/cli`      | Development server, production builds, deployment presets, and manifest generation |
+| `@effuse/router`   | Typed client-side routing and navigation guards                                    |
+| `@effuse/server`   | Portable Web Request/Response runtime with Node and Bun adapters                   |
+| `@effuse/use`      | Lifecycle-safe browser, timing, storage, and async utility hooks                   |
+| `@effuse/store`    | Signal-native application state                                                    |
+| `@effuse/query`    | Reactive remote data, mutations, caching, and retries                              |
+| `@effuse/i18n`     | Reactive internationalization and SSR-safe locale instances                        |
+| `@effuse/ink`      | Safe reactive Markdown rendering with SSR support                                  |
 
-- **@effuse/core**: The core reactivity engine (Signals) and DOM rendering system.
-- **@effuse/router**: A simple, type-safe router for SPA navigation.
-- **@effuse/store**: A functional, Effect-based state management library.
-- **@effuse/ink**: A reactive Markdown renderer with component embedding support.
-- **@effuse/query**: A reactive data fetching library with built-in reliability.
-- **@effuse/i18n**: A reactive internationalization library.
-- **@effuse/compiler**: An optimized JSX/TSX transformer that automatically handles reactive signal access, reducing boilerplate without impacting performance.
+## Development
 
----
+Requirements: Node.js 22 or later and pnpm 10.
 
-### **:busts_in_silhouette: Credits**
+```bash
+pnpm install --frozen-lockfile
+pnpm dev
+```
 
-- [Chris Michael](https://github.com/chrismichaelps) (Project Leader, and Developer)
+The Vite development server prints the local URL. Documentation content lives
+in `src/content/docs/<locale>`, while application examples live in `src/pages`
+and `src/components`.
 
----
+## Quality Gates
 
-### **:anger: Troubleshootings**
+```bash
+pnpm typecheck
+pnpm format:check
+pnpm build
+```
 
-This is just a personal project created for study / demonstration purpose and to simplify my working life, it may or may
-not be a good fit for your project(s).
+Every dependency upgrade must pass all three commands and a browser smoke test
+of the home page, documentation index, and newly changed routes.
 
----
+## Documentation Policy
 
-### **:heart: Show your support**
+- Document shipped public APIs, not proposals.
+- Prefer complete, type-inferred examples over isolated snippets.
+- Import server-only APIs only from server modules.
+- Use Effuse schemas (`serverSchema`, `v`) in public examples; developers do not
+  need to install or learn the internal validation engine.
+- Add English source documentation first. Missing localized pages intentionally
+  fall back to English until a reviewed translation is available.
 
-Please :star: this repository if you like it or this project helped you!\
-Feel free to open issues or submit pull-requests to help me improving my work.
+## Contributing
 
----
+Open an issue describing the contract or documentation gap before a substantial
+change. Keep examples executable, link the relevant framework package or test,
+and include the validation commands in the pull request.
 
-### **:robot: Author**
+## License
 
-_*Chris M. Perez*_
-
-> You can follow me on
-> [github](https://github.com/chrismichaelps)&nbsp;&middot;&nbsp;[twitter](https://twitter.com/Chris5855M)
-
----
-
-Copyright ©2025 [Effuse Doc](https://github.com/chrismichaelps/effuse-doc).
+MIT © Chris M. Pérez

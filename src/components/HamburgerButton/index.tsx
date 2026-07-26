@@ -5,7 +5,7 @@ interface HamburgerButtonProps {
   onToggle: () => void;
 }
 
-interface HamburgerButtonExposed extends HamburgerButtonProps {
+interface HamburgerButtonExposed {
   topBarStyle: Signal<Record<string, string>>;
   middleBarStyle: Signal<Record<string, string>>;
   bottomBarStyle: Signal<Record<string, string>>;
@@ -48,16 +48,13 @@ export const HamburgerButton = define<
         : 'none',
     }));
     return {
-      isOpen: props.isOpen,
-      onToggle: props.onToggle,
       topBarStyle,
       middleBarStyle,
       bottomBarStyle,
     };
   },
   template: ({
-    onToggle,
-    isOpen,
+    props: { onToggle, isOpen },
     topBarStyle,
     middleBarStyle,
     bottomBarStyle,
@@ -66,7 +63,7 @@ export const HamburgerButton = define<
       onClick={onToggle}
       class="md:hidden flex flex-col justify-center items-center w-10 h-10 rounded-lg hover:bg-slate-100 transition-colors"
       aria-label="Toggle menu"
-      aria-expanded={isOpen}
+      aria-expanded={isOpen.value}
       style={{
         cursor: 'pointer',
         border: 'none',

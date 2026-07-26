@@ -41,7 +41,7 @@ const UserCard = define<UserCardProps, UserCardExposed>({
 
 ## Reactivity in Props
 
-In the `script` function, `props` is a reactive object. If a parent passes a signal as a prop, accessing that prop in the script (e.g. inside a `computed` or `effect`) will track it.
+In the `script` function, `props` is a reactive object. If a parent passes a signal as a prop, accessing that prop inside a `computed` or `watchEffect` tracks it.
 
 ```tsx
 import { define, computed, unref } from '@effuse/core';

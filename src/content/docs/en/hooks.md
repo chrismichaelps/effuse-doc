@@ -6,6 +6,10 @@ title: Hooks
 
 Hooks in Effuse provide reusable, composable logic with built-in lifecycle management. Create custom hooks using `defineHook` from `@effuse/core`.
 
+For production browser and timing utilities, install `@effuse/use` and see
+[Utility Hooks](/docs/utility-hooks). Keep `defineHook` for application-specific
+composition and capability ownership.
+
 ## Creating a Hook
 
 Use `defineHook` to create typed, reusable hooks:
@@ -54,7 +58,7 @@ The `setup` function receives a context object with these utilities:
 | `config`        | Configuration passed when calling the hook      |
 | `signal`        | Create reactive signals                         |
 | `computed`      | Create derived computed values                  |
-| `watchEffect`        | Run side effects that track dependencies        |
+| `watchEffect`   | Run side effects that track dependencies        |
 | `onMount`       | Register callbacks for when the hook is mounted |
 | `layer`         | Access layer props by name                      |
 | `layerProvider` | Access layer services                           |
@@ -139,11 +143,11 @@ export const useClickOutside = defineHook<
   ClickOutsideReturn
 >({
   name: 'useClickOutside',
-  setup: ({ config, signal, effect }): ClickOutsideReturn => {
+  setup: ({ config, signal, watchEffect }): ClickOutsideReturn => {
     const initialized = signal(false);
     let callback: (() => void) | null = null;
 
-    effect(() => {
+    watchEffect(() => {
       if (!initialized.value) return undefined;
 
       const handleClick = (e: Event) => {
@@ -201,35 +205,27 @@ Hooks can access layer state and services:
 ```typescript
 import { defineHook } from '@effuse/core';
 
-export const useTranslation = defineHook<
-  undefined,
-  { t: (key: string) => string }
->({
+export const useTranslation = defineHook({
   name: 'useTranslation',
-  deps: ['i18n'],
-  setup: ({ layer }) => {
-    const i18n = layer('i18n');
-    const translations = i18n.translations;
-
-    return {
-      t: (key: string) => translations.value?.[key] ?? key,
-    };
-  },
+  layers: { i18n: I18nLayer } as const,
+  setup: ({ layers: { i18n } }) => ({
+    t: (key: string) => i18n.props.translations.value?.[key] ?? key,
+  }),
 });
 ```
 
 ## Cleanup
 
-Effects automatically clean up when the component unmounts. Return a cleanup function from `effect`:
+Watch effects automatically clean up when the component unmounts. Return a cleanup function from `watchEffect`:
 
 ```typescript
-effect(() => {
+watchEffect(() => {
   const handler = () => {
     /* ... */
   };
   window.addEventListener('resize', handler);
 
-  // Cleanup runs when effect re-runs or component unmounts
+  // Cleanup runs when the watcher re-runs or the component unmounts
   return () => window.removeEventListener('resize', handler);
 });
 ```

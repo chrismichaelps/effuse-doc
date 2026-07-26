@@ -8,10 +8,10 @@ Effuse 提供特定函数来处理副作用并监视状态更改。
 
 ## 1. watchEffect
 
-`effect` 函数立即运行，并在其跟踪的信号更改时重新运行。
+`watchEffect` 函数立即运行，并在其跟踪的信号更改时重新运行。
 
 ```tsx
-import { define, signal, effect } from '@effuse/core';
+import { define, signal, watchEffect } from '@effuse/core';
 
 const DataFetcher = define({
   script: () => {
@@ -19,7 +19,7 @@ const DataFetcher = define({
     const userData = signal<any>(null);
 
     // 当 'userId' 更改时自动运行
-    effect(() => {
+    watchEffect(() => {
       fetch(`/api/users/${userId.value}`)
         .then((res) => res.json())
         .then((data) => {
@@ -40,12 +40,12 @@ const DataFetcher = define({
 
 ### Effect 选项
 
-`effect` 函数（以及 `watch`）接受一个可选的 `EffectOptions` 对象来控制其行为：
+`watchEffect` 函数（以及 `watch`）接受一个可选的 `EffectOptions` 对象来控制其行为：
 
 ```typescript
-effect(
+watchEffect(
   () => {
-    console.log('Running effect');
+    console.log('Running watchEffect');
   },
   {
     debounce: { wait: 300 }, // 防抖执行
@@ -68,7 +68,7 @@ effect(
 将外部数据与 store 状态同步的常见模式：
 
 ```tsx
-import { define, signal, effect } from '@effuse/core';
+import { define, signal, watchEffect } from '@effuse/core';
 import { useInfiniteQuery } from '@effuse/query';
 import { todosStore } from '../store/todosStore';
 
@@ -86,8 +86,8 @@ const TodosPage = define({
     const syncedPageCount = signal(0);
 
     // 将服务器数据同步到 store
-    effect(() => {
-      const pages = todosQuery.allPagesData.value;
+    watchEffect(() => {
+      const pages = todosQuery.data.value?.pages ?? [];
       if (pages && pages.length > syncedPageCount.value) {
         if (syncedPageCount.value === 0) {
           todosStore.setTodos(pages.flat());
@@ -155,7 +155,7 @@ const Analytics = define({
 
 ## 最佳实践
 
-1. **使用 effect 处理响应式副作用** - 当依赖项更改时应重新运行
+1. **使用 watchEffect 处理响应式副作用** - 当依赖项更改时应重新运行
 2. **使用 watch 处理特定信号** - 当你只关心一个值的更改
 3. **使用 onMount 进行初始化** - 只应发生一次的操作
 4. **返回清理函数** - 从 onMount 返回以防止内存泄漏

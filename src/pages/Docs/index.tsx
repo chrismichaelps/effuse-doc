@@ -68,14 +68,16 @@ export const DocsPage = define<{}, DocsPageExposed>({
     const content = computed(() => {
       const registry = currentDocsRegistry.value;
       const slug = currentSlug.value;
-      const doc = registry[slug] ?? docsRegistry['getting-started'];
+      const doc =
+        registry[slug] ?? docsRegistry[slug] ?? docsRegistry['getting-started'];
       return doc.content;
     });
 
     const pageTitle = computed(() => {
       const registry = currentDocsRegistry.value;
       const slug = currentSlug.value;
-      const doc = registry[slug] ?? docsRegistry['getting-started'];
+      const doc =
+        registry[slug] ?? docsRegistry[slug] ?? docsRegistry['getting-started'];
       return doc.title;
     });
 

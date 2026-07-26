@@ -7,10 +7,10 @@ interface ReleaseItemProps {
   formatDate: (date: string) => string;
 }
 
-export const ReleaseItem = define<ReleaseItemProps, any>({
-  script: ({ props }) => props,
-  template: ({ release, formatDate }) => {
-    const r = release() as GitHubRelease;
+export const ReleaseItem = define<ReleaseItemProps, Record<string, never>>({
+  script: () => ({}),
+  template: ({ props: { release, formatDate } }) => {
+    const r = release;
     if (!r || !r.name) {
       return null;
     }
