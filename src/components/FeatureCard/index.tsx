@@ -7,15 +7,9 @@ interface FeatureCardProps {
   description: string;
 }
 
-export const FeatureCard = define<FeatureCardProps, FeatureCardProps>({
-  script: ({ props }) => {
-    return {
-      icon: props.icon,
-      title: props.title,
-      description: props.description,
-    };
-  },
-  template: ({ icon, title, description }) => (
+export const FeatureCard = define<FeatureCardProps, Record<string, never>>({
+  script: () => ({}),
+  template: ({ props: { icon, title, description } }) => (
     <article class="feature-card">
       <div class="flex items-center gap-3 mb-3">
         <img src={icon} alt={`${title} Icon`} class="w-6 h-6" />

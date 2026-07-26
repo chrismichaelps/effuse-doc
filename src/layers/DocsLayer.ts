@@ -1,7 +1,4 @@
 import { defineLayer, signal } from '@effuse/core';
-import { DocsLayout } from '../components/docs/DocsLayout';
-import { DocsHeader } from '../components/docs/DocsHeader';
-import { LanguageSelector } from '../components/docs/LanguageSelector';
 
 export const DocsLayer = defineLayer({
   name: 'docs',
@@ -9,11 +6,6 @@ export const DocsLayer = defineLayer({
   props: {
     theme: signal<'light' | 'dark'>('light'),
     currentSlug: signal(''),
-  },
-  components: {
-    DocsLayout,
-    DocsHeader,
-    LanguageSelector,
   },
   onMount: () => {
     console.log('[DocsLayer] mounted');

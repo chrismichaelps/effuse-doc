@@ -6,18 +6,16 @@ interface ReleaseErrorProps {
   onRetry: () => void;
 }
 
-export const ReleaseError = define<ReleaseErrorProps, any>({
-  script: ({ props }) => props,
-  template: ({ message, onRetry }) => (
+export const ReleaseError = define<ReleaseErrorProps, Record<string, never>>({
+  script: () => ({}),
+  template: ({ props: { message, onRetry } }) => (
     <div class="p-8 rounded-2xl bg-red-500/10 border border-red-500/20 text-center">
       <p class="text-red-400 font-medium">Failed to load releases</p>
-      <p class="text-red-400/60 text-sm mt-1">
-        {computed(() => message.value)}
-      </p>
+      <p class="text-red-400/60 text-sm mt-1">{computed(() => message)}</p>
       <button
         onClick={() => {
           triggerHaptic('medium');
-          onRetry.value();
+          onRetry();
         }}
         class="mt-4 px-6 py-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors text-sm font-medium"
       >

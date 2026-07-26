@@ -1,6 +1,4 @@
 import { defineLayer, signal, computed } from '@effuse/core';
-import { Sidebar } from '../components/docs/Sidebar';
-import { SidebarToggle } from '../components/docs/SidebarToggle';
 import { docsStore } from '../store/docsUIStore';
 
 export const SidebarLayer = defineLayer({
@@ -14,10 +12,6 @@ export const SidebarLayer = defineLayer({
       width: signal(280),
       isCollapsed: computed(() => s.isSidebarCollapsed()),
     };
-  },
-  components: {
-    Sidebar,
-    SidebarToggle,
   },
   provides: {
     docsUI: () => docsStore,

@@ -1,5 +1,6 @@
 import {
   define,
+  defineProps,
   computed,
   type ReadonlySignal,
   For,
@@ -15,6 +16,7 @@ import { SidebarToggle } from './SidebarToggle.js';
 import { SidebarVersions } from './SidebarVersions.js';
 import { docsStore } from '../../store/docsUIStore.js';
 import { i18nStore } from '../../store/appI18n';
+import { SidebarLayer } from '../../layers/SidebarLayer.js';
 
 interface NavItem {
   label: string;
@@ -89,6 +91,9 @@ const sectionsConfig: NavSection[] = [
     titleKey: 'advanced',
     items: [
       { labelKey: 'routing', href: '/docs/routing' },
+      { labelKey: 'server', href: '/docs/server' },
+      { labelKey: 'cli', href: '/docs/cli' },
+      { labelKey: 'utilityHooks', href: '/docs/utility-hooks' },
       { labelKey: 'stateManagement', href: '/docs/state' },
       { labelKey: 'seoHead', href: '/docs/seo' },
       { labelKey: 'internationalization', href: '/docs/i18n' },
@@ -156,6 +161,9 @@ const createStableSectionStates = (): SectionState[] => {
         lifecycle: sidebar?.lifecycle,
         form: sidebar?.form,
         routing: sidebar?.routing,
+        server: sidebar?.server,
+        cli: sidebar?.cli,
+        utilityHooks: sidebar?.utilityHooks,
         stateManagement: sidebar?.stateManagement,
         seoHead: sidebar?.seoHead,
         internationalization: sidebar?.internationalization,
@@ -202,10 +210,10 @@ const createStableSectionStates = (): SectionState[] => {
 
 const stableSectionStates = createStableSectionStates();
 
-export const Sidebar = define<SidebarProps, SidebarExposed>({
-  script: ({ onMount, useLayerProps }) => {
-    const sidebarProps = useLayerProps('sidebar')!;
-
+export const Sidebar = define({
+  props: defineProps<SidebarProps>(),
+  layers: { sidebar: SidebarLayer } as const,
+  script: ({ onMount, layers: { sidebar } }) => {
     onMount(() => {
       requestAnimationFrame(() => {
         const links = document.querySelectorAll('.sidebar-link');
@@ -218,11 +226,11 @@ export const Sidebar = define<SidebarProps, SidebarExposed>({
 
     return {
       sectionStates: stableSectionStates,
-      isSidebarOpen: sidebarProps.isOpen,
+      isSidebarOpen: sidebar.props.isOpen,
       toggleSidebar: () => {
-        sidebarProps.isOpen.value = !sidebarProps.isOpen.value;
+        sidebar.props.isOpen.value = !sidebar.props.isOpen.value;
       },
-    };
+    } satisfies SidebarExposed;
   },
 
   template: ({ sectionStates }) => (

@@ -1,5 +1,6 @@
 import {
   define,
+  defineProps,
   computed,
   signal,
   type Signal,
@@ -14,6 +15,7 @@ import {
 import { useAnimatedDropdown, useTranslation } from '../../hooks/index.js';
 import type { docsStore as DocsStoreType } from '../../store/docsUIStore.js';
 import { SidebarToggle } from './SidebarToggle.js';
+import { SidebarLayer } from '../../layers/SidebarLayer.js';
 
 export interface TocItem {
   id: string;
@@ -60,19 +62,13 @@ const TocChevron = define<
   ),
 });
 
-export const DocsHeader = define<DocsHeaderProps, DocsHeaderExposed>({
-  script: ({
-    props,
-    useCallback,
-    onMount,
-    useLayerProps,
-    useLayerProvider,
-  }) => {
-    const sidebarProps = useLayerProps('sidebar')!;
-    const sidebarProvider = useLayerProvider('sidebar')!;
+export const DocsHeader = define({
+  props: defineProps<DocsHeaderProps>(),
+  layers: { sidebar: SidebarLayer } as const,
+  script: ({ props, useCallback, onMount, layers: { sidebar } }) => {
     const { t } = useTranslation();
 
-    const docsStore = sidebarProvider.docsUI as typeof DocsStoreType;
+    const docsStore = sidebar.services.docsUI as typeof DocsStoreType;
 
     const pageTitle = computed(() => props.pageTitle as string);
 
@@ -168,26 +164,24 @@ export const DocsHeader = define<DocsHeaderProps, DocsHeaderExposed>({
       handleTocItemClick,
       onThisPageText,
       dropdownRef: dropdown.ref,
-      isSidebarOpen: sidebarProps.isOpen,
-    };
+      isSidebarOpen: sidebar.props.isOpen,
+    } satisfies DocsHeaderExposed;
   },
-  template: (
-    {
-      tocItems,
-      dropdownOpen,
-      toggleDropdown,
-      activeSectionId,
-      activeSectionTitle,
-      docsStore,
-      handleTocItemClick,
-      onThisPageText,
-      dropdownRef,
-      isSidebarOpen,
-    },
-    props
-  ) => (
+  template: ({
+    dropdownOpen,
+    toggleDropdown,
+    activeSectionId,
+    activeSectionTitle,
+    docsStore,
+    handleTocItemClick,
+    onThisPageText,
+    dropdownRef,
+    isSidebarOpen,
+    props,
+    exposed: { tocItems },
+  }) => (
     <header
-      class={() => `toc-nav shadow-lg ${props.class || ''}`}
+      class={() => `toc-nav shadow-lg ${props.class ?? ''}`}
       id="nd-tocnav"
     >
       <div class="flex items-center w-full h-full relative px-2">

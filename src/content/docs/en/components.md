@@ -193,12 +193,14 @@ const UserRole = define({
 ### Switch/Match Props
 
 **Switch Props**
-| Prop | Type | Description |
+
+| Prop       | Type          | Description                                     |
 | ---------- | ------------- | ----------------------------------------------- |
 | `fallback` | `JSX.Element` | Optional element to render if no match is found |
 
 **Match Props**
-| Prop | Type | Description |
+
+| Prop   | Type                     | Description                          |
 | ------ | ------------------------ | ------------------------------------ |
 | `when` | `Signal<T>` or `() => T` | Condition to evaluate for truthiness |
 

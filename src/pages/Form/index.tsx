@@ -1,5 +1,6 @@
 import { isTaggedError } from '../../utils/data/tagged-error.js';
-import { define,
+import {
+  define,
   useForm,
   useHead,
   v,
@@ -8,7 +9,7 @@ import { define,
   For,
   Suspense,
   watchEffect,
-   } from '@effuse/core';
+} from '@effuse/core';
 import { useMutation } from '@effuse/query';
 import { Ink } from '@effuse/ink';
 import { DocsLayout } from '../../components/docs/DocsLayout';
@@ -41,9 +42,7 @@ type SubmissionStatusError = {
   readonly message: string;
 };
 type SubmissionStatus =
-  | SubmissionStatusNone
-  | SubmissionStatusSuccess
-  | SubmissionStatusError;
+  SubmissionStatusNone | SubmissionStatusSuccess | SubmissionStatusError;
 
 const SubmissionStatusState = taggedEnum<SubmissionStatus>();
 

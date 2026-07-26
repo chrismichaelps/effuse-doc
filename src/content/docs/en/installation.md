@@ -4,78 +4,55 @@ title: Installation
 
 # Installation
 
-Get Effuse set up in your project in minutes.
+Effuse applications can target the browser only or ship as full-stack
+applications with SSR and server APIs.
 
 ## Requirements
 
-- **Node.js** v23.0.0 or later
-- **npm**, **yarn**, or **pnpm**
-- TypeScript 5.0+ (recommended)
+- Node.js 22 or later, or a current Bun release for the Bun server adapter
+- pnpm 10 or later
+- TypeScript 5.9 or later
 
-## Package Installation
+## Create the package set
 
-Install the core package and any additional packages you need:
-
-### Using pnpm (recommended)
+Install only the capabilities your application uses:
 
 ```bash
-# Core package (required)
-pnpm add @effuse/core
-
-# Additional packages
-pnpm add @effuse/router    # Routing
-pnpm add @effuse/store     # State management
-pnpm add @effuse/i18n      # Internationalization
-pnpm add @effuse/query     # Data fetching
-pnpm add @effuse/ink       # Markdown rendering
-
-# Development
-pnpm add -D @effuse/compiler  # JSX compiler plugin
+pnpm add @effuse/core @effuse/router
+pnpm add @effuse/store @effuse/query @effuse/i18n @effuse/ink @effuse/use
+pnpm add @effuse/server
+pnpm add -D @effuse/cli @effuse/compiler typescript
 ```
 
-### Using npm
+`@effuse/server` belongs in server entry points. Do not import it from browser
+components. Portable server contracts such as route definitions, middleware,
+request schemas, and caches are exported by `@effuse/core`.
 
-```bash
-# Core package (required)
-npm install @effuse/core
+## Scripts
 
-# Additional packages
-npm install @effuse/router @effuse/store @effuse/i18n @effuse/query @effuse/ink
-
-# Development
-npm install -D @effuse/compiler
+```json
+{
+  "scripts": {
+    "dev": "effuse dev",
+    "build": "effuse build",
+    "typecheck": "effuse typecheck",
+    "manifest": "effuse manifest"
+  }
+}
 ```
 
-### Using yarn
+## Browser entry
 
-```bash
-# Core package (required)
-yarn add @effuse/core
-
-# Additional packages
-yarn add @effuse/router @effuse/store @effuse/i18n @effuse/query @effuse/ink
-
-# Development
-yarn add -D @effuse/compiler
-```
-
-## Manual Setup
-
-### 1. Create Entry Point
-
-```typescript
+```tsx
 // src/main.tsx
 import { createApp } from '@effuse/core';
-import { installRouter, router } from './router';
+import { installRouter } from '@effuse/router';
 import { App } from './App';
+import { router } from './router';
 
 installRouter(router);
-
-const app = createApp(App);
-app.mount('#app');
+createApp(App).mount('#app');
 ```
-
-### 2. Create App Component
 
 ```tsx
 // src/App.tsx
@@ -83,43 +60,55 @@ import { define } from '@effuse/core';
 import { RouterView } from '@effuse/router';
 
 export const App = define({
-  script: () => ({}),
-  template: () => (
-    <div>
-      <RouterView />
-    </div>
-  ),
+  template: () => <RouterView />,
 });
 ```
 
-### 3. Configure Router
+## Router
 
-```typescript
-// src/router/index.ts
-import {
-  createRouter,
-  createWebHistory,
-  installRouter,
-  type RouteRecord,
-} from '@effuse/router';
-import { HomePage } from '../pages/Home';
+```ts
+// src/router.ts
+import { createRouter, createWebHistory, defineRoutes } from '@effuse/router';
+import { HomePage } from './pages/Home';
 
-const routes: RouteRecord[] = [
+const routes = defineRoutes([
   { path: '/', name: 'home', component: HomePage },
-];
+] as const);
 
 export const router = createRouter({
   history: createWebHistory(),
   routes,
 });
-
-export { installRouter };
 ```
 
-## TypeScript Configuration
+## Full-stack entry
 
-Not available at the moment.
+Add routes under `src/server/api` and use an Effuse build preset:
 
-## Vite Configuration
+```bash
+pnpm effuse build --preset node
+# or
+pnpm effuse build --preset bun
+```
 
-Not available at the moment.
+The CLI also accepts `vercel`, `netlify`, and `cloudflare` build presets. Check
+the generated output and adapter capability matrix before deployment because
+provider runtime support can differ from the Node and Bun reference adapters.
+
+## TypeScript
+
+Use the automatic JSX runtime:
+
+```json
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "@effuse/core",
+    "moduleResolution": "Bundler",
+    "strict": true
+  }
+}
+```
+
+Keep browser code on `@effuse/core` or `@effuse/core/client`. Server entries may
+use `@effuse/core/server` when an explicit server-only boundary is useful.

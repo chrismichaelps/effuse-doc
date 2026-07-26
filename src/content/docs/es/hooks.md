@@ -54,7 +54,7 @@ La función `setup` recibe un objeto de contexto con estas utilidades:
 | `config`        | Configuración pasada al llamar al hook                 |
 | `signal`        | Crear señales reactivas                                |
 | `computed`      | Crear valores derivados computados                     |
-| `watchEffect`        | Ejecutar efectos secundarios que rastrean dependencias |
+| `watchEffect`   | Ejecutar efectos secundarios que rastrean dependencias |
 | `onMount`       | Registrar callbacks para cuando el hook se monta       |
 | `layer`         | Acceder a props de capas por nombre                    |
 | `layerProvider` | Acceder a servicios de capas                           |
@@ -139,11 +139,11 @@ export const useClickOutside = defineHook<
   ClickOutsideReturn
 >({
   name: 'useClickOutside',
-  setup: ({ config, signal, effect }): ClickOutsideReturn => {
+  setup: ({ config, signal, watchEffect }): ClickOutsideReturn => {
     const initialized = signal(false);
     let callback: (() => void) | null = null;
 
-    effect(() => {
+    watchEffect(() => {
       if (!initialized.value) return undefined;
 
       const handleClick = (e: Event) => {
@@ -195,10 +195,10 @@ export const useTranslation = defineHook<
 
 ## Limpieza
 
-Los efectos se limpian automáticamente cuando el componente se desmonta. Retorna una función de limpieza desde `effect`:
+Los efectos se limpian automáticamente cuando el componente se desmonta. Retorna una función de limpieza desde `watchEffect`:
 
 ```typescript
-effect(() => {
+watchEffect(() => {
   const handler = () => {
     /* ... */
   };

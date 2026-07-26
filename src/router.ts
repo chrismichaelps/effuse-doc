@@ -1,8 +1,4 @@
-import {
-  createRouter,
-  createWebHistory,
-  defineRoutes,
-} from '@effuse/router';
+import { createRouter, createWebHistory, defineRoutes } from '@effuse/router';
 import { HomePage } from './pages/Home';
 import { FormDemoPage } from './pages/Form';
 import { TodosPage } from './pages/Todos';

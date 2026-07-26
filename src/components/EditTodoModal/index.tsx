@@ -14,24 +14,20 @@ interface EditTodoModalProps {
   onClose: () => void;
 }
 
-interface EditTodoModalExposed extends EditTodoModalProps {
+interface EditTodoModalExposed {
   t: ReadonlySignal<any>;
 }
 
 export const EditTodoModal = define<EditTodoModalProps, EditTodoModalExposed>({
-  script: ({ props, useStore }) => {
+  script: ({ useStore }) => {
     const i18nStore = useStore('i18n') as typeof I18nStoreType;
     const t = computed(() => i18nStore.translations.value?.examples?.todos);
     return {
       t,
-      isOpen: props.isOpen,
-      title: props.title,
-      onTitleChange: props.onTitleChange,
-      onSave: props.onSave,
-      onClose: props.onClose,
     };
   },
-  template: ({ t, isOpen, title, onTitleChange, onSave, onClose }) => {
+  template: ({ t, props }) => {
+    const { isOpen, title, onTitleChange, onSave, onClose } = props;
     if (!isOpen.value) return null;
     return (
       <div class="fixed inset-0 z-50 flex items-center justify-center">

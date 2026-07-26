@@ -1,6 +1,7 @@
-import { define } from '@effuse/core';
+import { define, defineProps } from '@effuse/core';
 import type { SearchStore } from '../../store/searchStore';
 import './styles.css';
+import { SearchLayer } from '../../layers/SearchLayer.js';
 
 interface SearchTriggerProps {}
 
@@ -9,14 +10,15 @@ interface SearchTriggerExposed {
   handleClick: () => void;
 }
 
-export const SearchTrigger = define<SearchTriggerProps, SearchTriggerExposed>({
-  script: ({ useCallback, useLayerProvider }) => {
+export const SearchTrigger = define({
+  props: defineProps<SearchTriggerProps>(),
+  layers: { search: SearchLayer } as const,
+  script: ({ useCallback, layers: { search } }) => {
     const isMac =
       typeof navigator !== 'undefined' &&
       navigator.platform.toLowerCase().includes('mac');
 
-    const searchProvider = useLayerProvider('search');
-    const store = searchProvider?.search as SearchStore | undefined;
+    const store = search.services.search as SearchStore;
 
     const handleClick = useCallback(() => {
       store?.open();
@@ -25,7 +27,7 @@ export const SearchTrigger = define<SearchTriggerProps, SearchTriggerExposed>({
     return {
       isMac,
       handleClick,
-    };
+    } satisfies SearchTriggerExposed;
   },
   template: ({ isMac, handleClick }) => (
     <button type="button" class="search-trigger" onClick={handleClick}>

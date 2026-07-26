@@ -36,19 +36,14 @@ type SearchErrorExecution = {
 };
 
 type SearchError =
-  | SearchErrorQueryTooShort
-  | SearchErrorIndexNotLoaded
-  | SearchErrorExecution;
+  SearchErrorQueryTooShort | SearchErrorIndexNotLoaded | SearchErrorExecution;
 
 type SearchModalClosed = { readonly _tag: 'Closed' };
 type SearchModalOpening = { readonly _tag: 'Opening' };
 type SearchModalOpen = { readonly _tag: 'Open' };
 type SearchModalClosing = { readonly _tag: 'Closing' };
 type SearchModalState =
-  | SearchModalClosed
-  | SearchModalOpening
-  | SearchModalOpen
-  | SearchModalClosing;
+  SearchModalClosed | SearchModalOpening | SearchModalOpen | SearchModalClosing;
 
 type SearchStatusIdle = { readonly _tag: 'Idle' };
 type SearchStatusLoading = { readonly _tag: 'Loading'; readonly query: string };
