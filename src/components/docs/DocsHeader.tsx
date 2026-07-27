@@ -13,7 +13,10 @@ import {
 } from '../../utils/motion';
 import { useAnimatedDropdown, useTranslation } from '../../hooks/index.js';
 import type { docsStore as DocsStoreType } from '../../store/docsUIStore.js';
+import { SidebarLayer } from '../../layers/SidebarLayer.js';
 import { SidebarToggle } from './SidebarToggle.js';
+
+const docsHeaderLayers = { sidebar: SidebarLayer } as const;
 
 export interface TocItem {
   id: string;
@@ -60,19 +63,16 @@ const TocChevron = define<
   ),
 });
 
-export const DocsHeader = define<DocsHeaderProps, DocsHeaderExposed>({
-  script: ({
-    props,
-    useCallback,
-    onMount,
-    useLayerProps,
-    useLayerProvider,
-  }) => {
-    const sidebarProps = useLayerProps('sidebar')!;
-    const sidebarProvider = useLayerProvider('sidebar')!;
+export const DocsHeader = define<
+  DocsHeaderProps,
+  DocsHeaderExposed,
+  typeof docsHeaderLayers
+>({
+  layers: docsHeaderLayers,
+  script: ({ props, onMount, layers: { sidebar } }) => {
     const { t } = useTranslation();
 
-    const docsStore = sidebarProvider.docsUI as typeof DocsStoreType;
+    const docsStore = sidebar.service('docsUI') as typeof DocsStoreType;
 
     const pageTitle = computed(() => props.pageTitle as string);
 
@@ -107,8 +107,8 @@ export const DocsHeader = define<DocsHeaderProps, DocsHeaderExposed>({
 
     const onThisPageText = computed(() => t('toc.onThisPage', ''));
 
-    const handleTocItemClick = useCallback(
-      (e: Event, id: string, title: string) => {
+    const handleTocItemClick = (e: Event, id: string, title: string) => {
+      {
         e.preventDefault();
         dropdown.close();
 
@@ -155,7 +155,7 @@ export const DocsHeader = define<DocsHeaderProps, DocsHeaderExposed>({
           });
         }
       }
-    );
+    };
 
     return {
       pageTitle,
@@ -168,24 +168,22 @@ export const DocsHeader = define<DocsHeaderProps, DocsHeaderExposed>({
       handleTocItemClick,
       onThisPageText,
       dropdownRef: dropdown.ref,
-      isSidebarOpen: sidebarProps.isOpen,
+      isSidebarOpen: sidebar.prop('isOpen'),
     };
   },
-  template: (
-    {
-      tocItems,
-      dropdownOpen,
-      toggleDropdown,
-      activeSectionId,
-      activeSectionTitle,
-      docsStore,
-      handleTocItemClick,
-      onThisPageText,
-      dropdownRef,
-      isSidebarOpen,
-    },
-    props
-  ) => (
+  template: ({
+    exposed: { tocItems },
+    dropdownOpen,
+    toggleDropdown,
+    activeSectionId,
+    activeSectionTitle,
+    docsStore,
+    handleTocItemClick,
+    onThisPageText,
+    dropdownRef,
+    isSidebarOpen,
+    props,
+  }) => (
     <header
       class={() => `toc-nav shadow-lg ${props.class || ''}`}
       id="nd-tocnav"

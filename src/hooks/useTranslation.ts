@@ -1,12 +1,9 @@
-import { defineHook, signal, type Signal } from '@effuse/core';
+import { defineHook, type Signal } from '@effuse/core';
 import type { Translations } from '@effuse/i18n';
+import { I18nLayer } from '../layers/I18nLayer.js';
 import { Option, some, none, getOrElse } from '../utils/data/index.js';
 
-interface I18nProps {
-  locale: Signal<string>;
-  isLoading: Signal<boolean>;
-  translations: Signal<Translations | null>;
-}
+const translationLayers = { i18n: I18nLayer } as const;
 
 interface TranslationReturn {
   t: (key: string, fallback?: string) => string;
@@ -25,22 +22,22 @@ const getNestedValue = (obj: Translations, path: string): Option<string> => {
   return typeof result === 'string' ? some(result) : none();
 };
 
-export const useTranslation = defineHook<undefined, TranslationReturn>({
+export const useTranslation = defineHook<
+  undefined,
+  TranslationReturn,
+  typeof translationLayers
+>({
   name: 'useTranslation',
-  deps: ['i18n'] as const,
-  setup: ({ layer }): TranslationReturn => {
-    const i18n = layer('i18n') as I18nProps;
-
-    const locale = signal<string>(i18n.locale.value);
-    const isLoading = signal<boolean>(i18n.isLoading.value);
+  layers: translationLayers,
+  setup: ({ layers: { i18n } }): TranslationReturn => {
+    const locale = i18n.prop('locale') as Signal<string>;
+    const isLoading = i18n.prop('isLoading') as Signal<boolean>;
+    const translations = i18n.prop('translations') as Signal<Translations | null>;
 
     const t = (key: string, fallback?: string): string => {
-      const translations = i18n.translations.value;
-      if (!translations) return fallback ?? key;
-      return getOrElse(
-        getNestedValue(translations, key),
-        () => fallback ?? key
-      );
+      const value = translations.value;
+      if (!value) return fallback ?? key;
+      return getOrElse(getNestedValue(value, key), () => fallback ?? key);
     };
 
     return { t, locale, isLoading };

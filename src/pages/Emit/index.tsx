@@ -54,7 +54,7 @@ const StatDisplay = define<StatDisplayProps, StatDisplayExposed>({
     value: props.value,
     color: props.color || 'mint',
   }),
-  template: ({ label, value, color }: StatDisplayExposed) => (
+  template: ({ exposed: { label, value, color } }) => (
     <article class="text-center">
       <div
         class="text-2xl font-bold"

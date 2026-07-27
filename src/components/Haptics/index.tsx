@@ -43,12 +43,9 @@ export const Haptics = define<HapticsProps, HapticsExposed>({
       handleInteraction,
     };
   },
-  template: (
-    { handleInteraction }: HapticsExposed,
-    props: Readonly<HapticsProps>
-  ) => (
+  template: ({ handleInteraction, children }) => (
     <div onClick={() => handleInteraction()} style="display: contents;">
-      {props.children}
+      {children}
     </div>
   ),
 });

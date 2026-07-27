@@ -8,11 +8,8 @@ import {
   type ReadonlySignal,
 } from '@effuse/core';
 import { useRouter } from '@effuse/router';
-import type {
-  SearchStore,
-  SearchResultItem,
-  SearchStatus,
-} from '../../store/searchStore';
+import { searchStore } from '../../store/searchStore';
+import type { SearchResultItem, SearchStatus } from '../../store/searchStore';
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
 import { matchTag } from '../../utils/data/index.js';
 import './styles.css';
@@ -39,9 +36,8 @@ interface SearchModalExposed {
 }
 
 export const SearchModal = define<Record<string, never>, SearchModalExposed>({
-  script: ({ onMount, useStore, useCallback, useLayerProvider }) => {
-    const searchProvider = useLayerProvider('search');
-    const store = searchProvider?.search as SearchStore;
+  script: ({ onMount, useStore, useCallback }) => {
+    const store = searchStore;
 
     const router = useRouter();
     const i18nStore = useStore('i18n') as typeof I18nStoreType;

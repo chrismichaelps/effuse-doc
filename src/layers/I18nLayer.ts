@@ -15,7 +15,7 @@ export const I18nLayer = defineLayer({
       translations: s.translations,
     };
   },
-  provides: {
+  services: {
     i18n: () => i18nStore,
   },
   onMount: (ctx) => {

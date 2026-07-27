@@ -1,5 +1,5 @@
 import { define } from '@effuse/core';
-import type { SearchStore } from '../../store/searchStore';
+import { searchStore } from '../../store/searchStore';
 import './styles.css';
 
 interface SearchTriggerProps {}
@@ -10,17 +10,14 @@ interface SearchTriggerExposed {
 }
 
 export const SearchTrigger = define<SearchTriggerProps, SearchTriggerExposed>({
-  script: ({ useCallback, useLayerProvider }) => {
+  script: () => {
     const isMac =
       typeof navigator !== 'undefined' &&
       navigator.platform.toLowerCase().includes('mac');
 
-    const searchProvider = useLayerProvider('search');
-    const store = searchProvider?.search as SearchStore | undefined;
-
-    const handleClick = useCallback(() => {
-      store?.open();
-    });
+    const handleClick = () => {
+      searchStore.open();
+    };
 
     return {
       isMac,

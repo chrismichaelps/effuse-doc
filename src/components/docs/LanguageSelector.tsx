@@ -1,16 +1,17 @@
 import {
   define,
   computed,
+  signal,
+  useOnClickOutside,
   type Signal,
   type ReadonlySignal,
   For,
 } from '@effuse/core';
-import {
-  useToggle,
-  useClickOutside,
-  useTranslation,
-} from '../../hooks/index.js';
+import { useToggle, useTranslation } from '../../hooks/index.js';
 import type { Locale } from '../../store/appI18n';
+import { I18nLayer } from '../../layers/I18nLayer';
+
+const languageSelectorLayers = { i18n: I18nLayer } as const;
 
 interface LanguageSelectorProps {
   isMobile?: boolean;
@@ -29,29 +30,27 @@ interface LanguageSelectorExposed {
   handleSelect: (e: MouseEvent, loc: Locale) => void;
   availableLanguages: ReadonlySignal<LanguageOption[]>;
   dropdownClass: () => string;
+  rootRef: Signal<Element | null>;
 }
 
 export const LanguageSelector = define<
   LanguageSelectorProps,
-  LanguageSelectorExposed
+  LanguageSelectorExposed,
+  typeof languageSelectorLayers
 >({
-  script: ({
-    useCallback,
-    props,
-    useLayerProps,
-    useLayerProvider,
-    onMount,
-  }) => {
-    const i18nProps = useLayerProps('i18n')!;
-    const i18nProvider = useLayerProvider('i18n')!;
+  layers: languageSelectorLayers,
+  script: ({ props, layers: { i18n } }) => {
     const { t } = useTranslation();
 
     const toggle = useToggle({ initial: false });
-    const clickOutside = useClickOutside({
-      selector: '.lang-selector',
-    });
+    const rootRef = signal<Element | null>(null);
 
-    const currentLocale = i18nProps.locale as Signal<Locale>;
+    useOnClickOutside(
+      () => rootRef.value,
+      () => toggle.setOff()
+    );
+
+    const currentLocale = i18n.prop('locale') as Signal<Locale>;
 
     const availableLanguages = computed<LanguageOption[]>(() => [
       { locale: 'en', label: t('language.english', ''), flag: '' },
@@ -60,25 +59,21 @@ export const LanguageSelector = define<
       { locale: 'es', label: t('language.spanish', ''), flag: '' },
     ]);
 
-    const handleToggle = useCallback((e: MouseEvent) => {
+    const handleToggle = (e: MouseEvent) => {
       e.stopPropagation();
       toggle.toggle();
-    });
+    };
 
-    const handleSelect = useCallback((e: MouseEvent, loc: Locale) => {
+    const handleSelect = (e: MouseEvent, loc: Locale) => {
       e.stopPropagation();
-      (i18nProvider.i18n as { setLocale: (l: Locale) => void }).setLocale(loc);
+      (i18n.service('i18n') as { setLocale: (l: Locale) => void }).setLocale(
+        loc
+      );
       toggle.setOff();
-    });
+    };
 
     const dropdownClass = () =>
       `lang-dropdown ${toggle.isOpen.value ? 'open' : ''} ${props.isMobile ? 'is-mobile' : ''}`;
-
-    onMount(() => {
-      clickOutside.onOutside(() => toggle.setOff());
-      clickOutside.init();
-      return undefined;
-    });
 
     return {
       isOpen: toggle.isOpen,
@@ -87,6 +82,7 @@ export const LanguageSelector = define<
       handleSelect,
       availableLanguages,
       dropdownClass,
+      rootRef,
     };
   },
   template: ({
@@ -95,8 +91,14 @@ export const LanguageSelector = define<
     handleSelect,
     availableLanguages,
     dropdownClass,
+    rootRef,
   }) => (
-    <div class="lang-selector relative">
+    <div
+      class="lang-selector relative"
+      ref={(el: Element) => {
+        rootRef.value = el;
+      }}
+    >
       <button
         type="button"
         onClick={handleToggle}

@@ -1,9 +1,4 @@
-import {
-  define,
-  computed,
-  type Signal,
-  type ReadonlySignal,
-} from '@effuse/core';
+import { define, defineProps, computed, type Signal } from '@effuse/core';
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
 
 interface EditTodoModalProps {
@@ -14,24 +9,16 @@ interface EditTodoModalProps {
   onClose: () => void;
 }
 
-interface EditTodoModalExposed extends EditTodoModalProps {
-  t: ReadonlySignal<any>;
-}
-
-export const EditTodoModal = define<EditTodoModalProps, EditTodoModalExposed>({
-  script: ({ props, useStore }) => {
+export const EditTodoModal = define({
+  props: defineProps<EditTodoModalProps>(),
+  script: ({ useStore }) => {
     const i18nStore = useStore('i18n') as typeof I18nStoreType;
-    const t = computed(() => i18nStore.translations.value?.examples?.todos);
-    return {
-      t,
-      isOpen: props.isOpen,
-      title: props.title,
-      onTitleChange: props.onTitleChange,
-      onSave: props.onSave,
-      onClose: props.onClose,
-    };
+    return { t: computed(() => i18nStore.translations.value?.examples?.todos) };
   },
-  template: ({ t, isOpen, title, onTitleChange, onSave, onClose }) => {
+  template: ({
+    t,
+    props: { isOpen, title, onTitleChange, onSave, onClose },
+  }) => {
     if (!isOpen.value) return null;
     return (
       <div class="fixed inset-0 z-50 flex items-center justify-center">
