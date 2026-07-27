@@ -53,12 +53,8 @@ const StatDisplay = define<DisplayProps, StatDisplayExposed>({
     };
   },
   template: ({
-    label,
-    value,
-    color,
-    onAction,
-    triggerUpdateText,
-  }: StatDisplayExposed) => (
+    exposed: { label, value, color, onAction, triggerUpdateText },
+  }) => (
     <article
       class="stat-card"
       style={() => ({

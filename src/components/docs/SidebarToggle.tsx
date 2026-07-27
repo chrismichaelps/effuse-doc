@@ -1,7 +1,7 @@
 import { define, type Signal, computed } from '@effuse/core';
 import { taggedEnum, matchTag, constant } from '../../utils/data/index.js';
 import { docsStore } from '../../store/docsUIStore.js';
-import { useBreakpoint } from '../../hooks/index.js';
+import { useIsMobile } from '../../hooks/index.js';
 
 type ToggleContextMobile = {
   readonly _tag: 'Mobile';
@@ -60,30 +60,25 @@ interface SidebarToggleExposed {
 }
 
 export const SidebarToggle = define<SidebarToggleProps, SidebarToggleExposed>({
-  script: ({ props, useCallback, useLayerProvider }) => {
-    const provider = useLayerProvider('sidebar');
-    const docsUI = provider?.docsUI as typeof docsStore | undefined;
-    const breakpoint = useBreakpoint({});
+  script: ({ props }) => {
+    const isMobile = useIsMobile();
 
-    const resolveContext = useCallback((): ToggleContext => {
+    const resolveContext = (): ToggleContext => {
       if (props.onToggle) {
         return Context.Custom({ onToggle: props.onToggle });
       }
-      if (!docsUI) {
-        return Context.Custom({ onToggle: (): void => {} });
-      }
-      return breakpoint.isMobile.value
-        ? Context.Mobile({ store: docsUI })
-        : Context.Desktop({ store: docsUI });
-    });
+      return isMobile.value
+        ? Context.Mobile({ store: docsStore })
+        : Context.Desktop({ store: docsStore });
+    };
 
     const context = computed(resolveContext);
 
-    const handleClick = useCallback((e: MouseEvent) => {
+    const handleClick = (e: MouseEvent) => {
       e.stopPropagation();
       const action = getToggleAction(context.value);
       action();
-    });
+    };
 
     const buttonClass = computed(() => {
       const baseClass = 'sidebar-toggle-btn';

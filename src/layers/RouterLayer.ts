@@ -6,7 +6,7 @@ import { router } from '../router';
 export const RouterLayer = defineLayer({
   name: 'router',
   dependencies: [],
-  provides: {
+  services: {
     router: () => router,
   },
   onMount: () => {

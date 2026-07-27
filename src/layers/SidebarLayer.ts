@@ -19,7 +19,7 @@ export const SidebarLayer = defineLayer({
     Sidebar,
     SidebarToggle,
   },
-  provides: {
+  services: {
     docsUI: () => docsStore,
   },
 });

@@ -43,8 +43,6 @@ interface SidebarProps {
 
 interface SidebarExposed {
   sectionStates: SectionState[];
-  isSidebarOpen: Signal<unknown>;
-  toggleSidebar: () => void;
 }
 
 const sectionTitleKeys = {
@@ -203,9 +201,7 @@ const createStableSectionStates = (): SectionState[] => {
 const stableSectionStates = createStableSectionStates();
 
 export const Sidebar = define<SidebarProps, SidebarExposed>({
-  script: ({ onMount, useLayerProps }) => {
-    const sidebarProps = useLayerProps('sidebar')!;
-
+  script: ({ onMount }) => {
     onMount(() => {
       requestAnimationFrame(() => {
         const links = document.querySelectorAll('.sidebar-link');
@@ -216,13 +212,7 @@ export const Sidebar = define<SidebarProps, SidebarExposed>({
       return undefined;
     });
 
-    return {
-      sectionStates: stableSectionStates,
-      isSidebarOpen: sidebarProps.isOpen,
-      toggleSidebar: () => {
-        sidebarProps.isOpen.value = !sidebarProps.isOpen.value;
-      },
-    };
+    return { sectionStates: stableSectionStates };
   },
 
   template: ({ sectionStates }) => (
