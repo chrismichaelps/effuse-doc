@@ -37,3 +37,8 @@ coverage
 
 # Ignore the master seed file
 FMCF-MASTER-SEED.md
+
+# Ignore docs folder, except design specs
+docs
+!docs/superpowers/
+!docs/superpowers/**
