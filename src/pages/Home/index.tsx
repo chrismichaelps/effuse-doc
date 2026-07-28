@@ -1,10 +1,12 @@
 import { define, useHead } from '@effuse/core';
 import { Link } from '@effuse/router';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FeatureCard } from '../../components/FeatureCard';
 import { HeroCanvas } from '../../components/HeroCanvas';
-import { useScrollReveal } from '../../utils/ui';
 import './styles.css';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export const HomePage = define({
   script: ({ onMount }) => {
@@ -49,31 +51,112 @@ export const HomePage = define({
     });
 
     onMount(() => {
-      gsap.from('.hero-heading', {
+      // 1. Initial Hero Entrance Animation
+      const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+      heroTl
+        .from('.hero-heading', { y: 45, opacity: 0, duration: 1 })
+        .from('.hero-subtext', { y: 30, opacity: 0, duration: 0.85 }, '-=0.6')
+        .from('.hero-ctas', { y: 25, opacity: 0, duration: 0.75 }, '-=0.5');
+
+      // 2. Hero Scroll Scale-Down & Fade Out (GSAP.com style)
+      gsap.to('.hero-container', {
+        scrollTrigger: {
+          trigger: '.hero-section',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.6,
+        },
+        scale: 0.92,
+        opacity: 0.15,
+        y: -40,
+        ease: 'none',
+      });
+
+      // 3. Background Aurora Parallax Shift
+      gsap.to('.blob-1', {
+        scrollTrigger: {
+          trigger: '.home-page',
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 1,
+        },
+        y: 350,
+        scale: 1.3,
+      });
+
+      gsap.to('.blob-2', {
+        scrollTrigger: {
+          trigger: '.home-page',
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 1,
+        },
+        y: -300,
+        scale: 0.85,
+      });
+
+      // 4. Feature Cards 3D Perspective Stagger Reveal
+      gsap.from('.features-header', {
+        scrollTrigger: {
+          trigger: '.features-section',
+          start: 'top 80%',
+          end: 'top 50%',
+          scrub: 0.8,
+        },
         y: 40,
         opacity: 0,
-        duration: 1,
-        ease: 'power3.out',
-        delay: 0.1,
+        ease: 'power2.out',
       });
-      gsap.from('.hero-subtext', {
-        y: 30,
+
+      gsap.from('.features-grid article', {
+        scrollTrigger: {
+          trigger: '.features-grid',
+          start: 'top 85%',
+          end: 'top 45%',
+          scrub: 0.8,
+        },
+        y: 60,
         opacity: 0,
-        duration: 0.9,
+        scale: 0.93,
+        stagger: 0.15,
         ease: 'power3.out',
-        delay: 0.25,
       });
-      gsap.from('.hero-ctas', {
-        y: 20,
+
+      // 5. Code Window 3D Perspective Pitch Reveal
+      gsap.from('.code-window', {
+        scrollTrigger: {
+          trigger: '.code-section',
+          start: 'top 85%',
+          end: 'top 40%',
+          scrub: 0.8,
+        },
+        y: 80,
+        scale: 0.9,
+        rotateX: 12,
         opacity: 0,
-        duration: 0.8,
         ease: 'power3.out',
-        delay: 0.4,
       });
-      return undefined;
+
+      // 6. CTA Section Reveal
+      gsap.from('.cta-container', {
+        scrollTrigger: {
+          trigger: '.cta-section',
+          start: 'top 85%',
+          end: 'top 50%',
+          scrub: 0.8,
+        },
+        y: 45,
+        scale: 0.94,
+        opacity: 0,
+        ease: 'power2.out',
+      });
+
+      return () => {
+        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      };
     });
 
-    useScrollReveal(onMount);
     return {};
   },
   template: () => (
