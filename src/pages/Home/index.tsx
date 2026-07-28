@@ -1,12 +1,14 @@
 import { define, useHead, signal, computed } from '@effuse/core';
 import { Link } from '@effuse/router';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import ScrollTrigger from 'gsap/ScrollTrigger';
 import { FeatureCard } from '../../components/FeatureCard';
 import { HeroCanvas } from '../../components/HeroCanvas';
 import './styles.css';
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const CODE_EXAMPLES = {
   counter: {

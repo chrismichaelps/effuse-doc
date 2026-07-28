@@ -11,6 +11,9 @@ import { effuseDevApi } from './src/server/dev-middleware';
  */
 export default defineConfig(({ isSsrBuild }) => ({
   plugins: [tailwindcss(), effuse({ debug: false }), effuseDevApi()],
+  ssr: {
+    noExternal: ['gsap', 'lenis'],
+  },
   resolve: {
     dedupe: [
       '@effuse/core',
