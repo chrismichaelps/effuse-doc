@@ -49,15 +49,15 @@ export const useToggle = defineHook<ToggleConfig, ToggleReturn>({
 
 La función `setup` recibe un objeto de contexto con estas utilidades:
 
-| Propiedad       | Descripción                                            |
-| --------------- | ------------------------------------------------------ |
-| `config`        | Configuración pasada al llamar al hook                 |
-| `signal`        | Crear señales reactivas                                |
-| `computed`      | Crear valores derivados computados                     |
-| `watchEffect`   | Ejecutar efectos secundarios que rastrean dependencias |
-| `onMount`       | Registrar callbacks para cuando el hook se monta       |
-| `layers`        | Acceso tipado a las props y servicios de las capas declaradas |
-| `scope`         | Gestionar limpieza y finalizadores                     |
+| Propiedad     | Descripción                                                   |
+| ------------- | ------------------------------------------------------------- |
+| `config`      | Configuración pasada al llamar al hook                        |
+| `signal`      | Crear señales reactivas                                       |
+| `computed`    | Crear valores derivados computados                            |
+| `watchEffect` | Ejecutar efectos secundarios que rastrean dependencias        |
+| `onMount`     | Registrar callbacks para cuando el hook se monta              |
+| `layers`      | Acceso tipado a las props y servicios de las capas declaradas |
+| `scope`       | Gestionar limpieza y finalizadores                            |
 
 ## Hooks Utilitarios Incorporados
 

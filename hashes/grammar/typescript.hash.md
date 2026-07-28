@@ -3,71 +3,73 @@ Language: TypeScript
 Version: 5.9.x
 Fidelity: 100% (Physical Disk Reference)
 State_ID: BigInt(0x1)
-LSP_Discovery_Root: "@root/node_modules/typescript/package.json"
-Grammar_Lock: "@root/hashes/grammar/typescript.hash.md"
+LSP_Discovery_Root: '@root/node_modules/typescript/package.json'
+Grammar_Lock: '@root/hashes/grammar/typescript.hash.md'
 ---
 
 /** EiderScript.Grammar.TypeScript - Linguistic DNA anchor for TypeScript 5.9.x */
 
 ## [SDK_Discovery_Map]
-/** === Core Lib Files (70+ declarations) === */
-/** @Ref: @root/node_modules/typescript/lib/lib.d.ts */
-/** @Ref: @root/node_modules/typescript/lib/lib.es5.d.ts (4601L — Object, Array, String, Number, Boolean, RegExp, Error, Date, JSON, Math, Function, Symbol primitives) */
-/** === ES2015 (11 files) === */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2015.collection.d.ts (Map, Set, WeakMap, WeakSet) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2015.core.d.ts (Array.from, Array.of, Object.assign, String methods) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2015.generator.d.ts (Generator, GeneratorFunction) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2015.iterable.d.ts (605L — Iterator, Iterable, IterableIterator, IteratorObject) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2015.promise.d.ts (Promise, PromiseLike) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2015.proxy.d.ts (ProxyHandler 13 traps, ProxyConstructor) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2015.reflect.d.ts (Reflect namespace — 13 methods) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2015.symbol.d.ts (Symbol, Symbol.for, Symbol.keyFor) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts (326L — well-known symbols on builtins) */
-/** === ES2016-2019 === */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2016.array.include.d.ts (Array.includes) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2017.object.d.ts (Object.values, entries) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2017.string.d.ts (padStart, padEnd) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts (SharedArrayBuffer, Atomics) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts (AsyncGenerator, AsyncGeneratorFunction) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts (AsyncIterator, AsyncIterable, for-await-of) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2018.promise.d.ts (Promise.prototype.finally) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2018.regexp.d.ts (named capture groups, dotAll, lookbehind) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2019.array.d.ts (flat, flatMap) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2019.object.d.ts (Object.fromEntries) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2019.string.d.ts (trimStart, trimEnd) */
-/** === ES2020-2024 === */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2020.bigint.d.ts (BigInt, BigInt64Array, BigUint64Array) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2020.promise.d.ts (Promise.allSettled) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2020.string.matchall.d.ts (String.matchAll) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2020.intl.d.ts (Intl.RelativeTimeFormat, etc.) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2020.sharedmemory.d.ts (Atomics.waitAsync) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2021.promise.d.ts (Promise.any, AggregateError) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2021.string.d.ts (String.replaceAll) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2021.weakref.d.ts (WeakRef, FinalizationRegistry) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2021.intl.d.ts (Intl.ListFormat, DisplayNames) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2022.array.d.ts (Array.at) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2022.error.d.ts (Error.cause) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2022.object.d.ts (Object.hasOwn) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2022.regexp.d.ts (RegExp hasIndices /d flag, RegExpIndicesArray) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2022.string.d.ts (String.at) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2023.array.d.ts (findLast, findLastIndex, toSorted, toReversed, toSpliced, with) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2023.collection.d.ts (WeakMap accepts Symbol keys) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2024.arraybuffer.d.ts (ArrayBuffer.transfer, resize, SharedArrayBuffer.grow) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2024.collection.d.ts (Map.groupBy) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2024.object.d.ts (Object.groupBy) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2024.promise.d.ts (Promise.withResolvers) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2024.regexp.d.ts (RegExp.unicodeSets /v flag) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2024.sharedmemory.d.ts (Atomics.waitAsync) */
-/** @Ref: @root/node_modules/typescript/lib/lib.es2024.string.d.ts (String.isWellFormed, toWellFormed) */
-/** === Decorator System === */
-/** @Ref: @root/node_modules/typescript/lib/lib.decorators.d.ts (384L — Stage 3 decorators) */
-/** @Ref: @root/node_modules/typescript/lib/lib.decorators.legacy.d.ts (experimental decorators) */
-/** === DOM === */
-/** @Ref: @root/node_modules/typescript/lib/lib.dom.d.ts (massive — all Web APIs) */
-/** @Ref: @root/node_modules/typescript/lib/lib.dom.iterable.d.ts */
-/** @Ref: @root/node_modules/typescript/lib/lib.dom.asynciterable.d.ts */
+
+/** === Core Lib Files (70+ declarations) === _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.d.ts _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es5.d.ts (4601L — Object, Array, String, Number, Boolean, RegExp, Error, Date, JSON, Math, Function, Symbol primitives) _/
+/_* === ES2015 (11 files) === _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2015.collection.d.ts (Map, Set, WeakMap, WeakSet) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2015.core.d.ts (Array.from, Array.of, Object.assign, String methods) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2015.generator.d.ts (Generator, GeneratorFunction) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2015.iterable.d.ts (605L — Iterator, Iterable, IterableIterator, IteratorObject) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2015.promise.d.ts (Promise, PromiseLike) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2015.proxy.d.ts (ProxyHandler 13 traps, ProxyConstructor) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2015.reflect.d.ts (Reflect namespace — 13 methods) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2015.symbol.d.ts (Symbol, Symbol.for, Symbol.keyFor) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts (326L — well-known symbols on builtins) _/
+/_* === ES2016-2019 === _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2016.array.include.d.ts (Array.includes) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2017.object.d.ts (Object.values, entries) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2017.string.d.ts (padStart, padEnd) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2017.typedarrays.d.ts (SharedArrayBuffer, Atomics) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2018.asyncgenerator.d.ts (AsyncGenerator, AsyncGeneratorFunction) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2018.asynciterable.d.ts (AsyncIterator, AsyncIterable, for-await-of) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2018.promise.d.ts (Promise.prototype.finally) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2018.regexp.d.ts (named capture groups, dotAll, lookbehind) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2019.array.d.ts (flat, flatMap) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2019.object.d.ts (Object.fromEntries) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2019.string.d.ts (trimStart, trimEnd) _/
+/_* === ES2020-2024 === _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2020.bigint.d.ts (BigInt, BigInt64Array, BigUint64Array) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2020.promise.d.ts (Promise.allSettled) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2020.string.matchall.d.ts (String.matchAll) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2020.intl.d.ts (Intl.RelativeTimeFormat, etc.) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2020.sharedmemory.d.ts (Atomics.waitAsync) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2021.promise.d.ts (Promise.any, AggregateError) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2021.string.d.ts (String.replaceAll) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2021.weakref.d.ts (WeakRef, FinalizationRegistry) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2021.intl.d.ts (Intl.ListFormat, DisplayNames) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2022.array.d.ts (Array.at) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2022.error.d.ts (Error.cause) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2022.object.d.ts (Object.hasOwn) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2022.regexp.d.ts (RegExp hasIndices /d flag, RegExpIndicesArray) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2022.string.d.ts (String.at) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2023.array.d.ts (findLast, findLastIndex, toSorted, toReversed, toSpliced, with) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2023.collection.d.ts (WeakMap accepts Symbol keys) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2024.arraybuffer.d.ts (ArrayBuffer.transfer, resize, SharedArrayBuffer.grow) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2024.collection.d.ts (Map.groupBy) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2024.object.d.ts (Object.groupBy) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2024.promise.d.ts (Promise.withResolvers) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2024.regexp.d.ts (RegExp.unicodeSets /v flag) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2024.sharedmemory.d.ts (Atomics.waitAsync) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.es2024.string.d.ts (String.isWellFormed, toWellFormed) _/
+/_* === Decorator System === _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.decorators.d.ts (384L — Stage 3 decorators) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.decorators.legacy.d.ts (experimental decorators) _/
+/_* === DOM === _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.dom.d.ts (massive — all Web APIs) _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.dom.iterable.d.ts _/
+/_* @Ref: @root/node_modules/typescript/lib/lib.dom.asynciterable.d.ts */
 
 ## [SDK_Imports / Namespaces]
+
 ```ts
 // TypeScript is a language, not a library. No import needed.
 // Configured via tsconfig.json:
@@ -98,6 +100,7 @@ Grammar_Lock: "@root/hashes/grammar/typescript.hash.md"
 ```
 
 ## [Core_Primitives]
+
 ```ts
 // Primitive types (lib.es5.d.ts)
 string | number | boolean | bigint | symbol | undefined | null | void | never | unknown | any | object
@@ -263,73 +266,98 @@ type DecoratorMetadataObject = Record<PropertyKey, unknown> & { [Symbol.metadata
 ```
 
 ## [Type_System_Features]
+
 ```ts
 // Conditional Types (TS 2.8+)
-type IsString<T> = T extends string ? true : false
-type ElementType<T> = T extends (infer U)[] ? U : T           // infer keyword
-type Flatten<T> = T extends Array<infer U> ? Flatten<U> : T   // recursive conditional
+type IsString<T> = T extends string ? true : false;
+type ElementType<T> = T extends (infer U)[] ? U : T; // infer keyword
+type Flatten<T> = T extends Array<infer U> ? Flatten<U> : T; // recursive conditional
 
 // Mapped Types (TS 2.1+)
-type Mutable<T> = { -readonly [P in keyof T]: T[P] }           // remove readonly
-type Optional<T> = { [P in keyof T]+?: T[P] }                  // add optional
-type Concrete<T> = { [P in keyof T]-?: T[P] }                  // remove optional
-type Getters<T> = { [P in keyof T as `get${Capitalize<string & P>}`]: () => T[P] }  // key remapping (TS 4.1+)
+type Mutable<T> = { -readonly [P in keyof T]: T[P] }; // remove readonly
+type Optional<T> = { [P in keyof T]+?: T[P] }; // add optional
+type Concrete<T> = { [P in keyof T]-?: T[P] }; // remove optional
+type Getters<T> = {
+  [P in keyof T as `get${Capitalize<string & P>}`]: () => T[P];
+}; // key remapping (TS 4.1+)
 
 // Template Literal Types (TS 4.1+)
-type Route = `/${string}`
-type EventName = `on${Capitalize<string>}`
-type PropEventHandler<T extends string> = `on${Capitalize<T>}Change`
-type ExpandDotPaths<T> = T extends `${infer A}.${infer B}` ? { [K in A]: ExpandDotPaths<B> } : T
+type Route = `/${string}`;
+type EventName = `on${Capitalize<string>}`;
+type PropEventHandler<T extends string> = `on${Capitalize<T>}Change`;
+type ExpandDotPaths<T> = T extends `${infer A}.${infer B}`
+  ? { [K in A]: ExpandDotPaths<B> }
+  : T;
 
 // Variadic Tuple Types (TS 4.0+)
-type Concat<A extends unknown[], B extends unknown[]> = [...A, ...B]
-type Head<T extends unknown[]> = T extends [infer H, ...unknown[]] ? H : never
-type Tail<T extends unknown[]> = T extends [unknown, ...infer R] ? R : never
-type Last<T extends unknown[]> = T extends [...unknown[], infer L] ? L : never
+type Concat<A extends unknown[], B extends unknown[]> = [...A, ...B];
+type Head<T extends unknown[]> = T extends [infer H, ...unknown[]] ? H : never;
+type Tail<T extends unknown[]> = T extends [unknown, ...infer R] ? R : never;
+type Last<T extends unknown[]> = T extends [...unknown[], infer L] ? L : never;
 
 // Assertion Functions (TS 3.7+)
-function assertIsString(val: unknown): asserts val is string { if (typeof val !== 'string') throw new Error() }
-function assertNonNull<T>(val: T | null | undefined): asserts val is T { if (val == null) throw new Error() }
+function assertIsString(val: unknown): asserts val is string {
+  if (typeof val !== 'string') throw new Error();
+}
+function assertNonNull<T>(val: T | null | undefined): asserts val is T {
+  if (val == null) throw new Error();
+}
 
 // User-Defined Type Guards
-function isString(val: unknown): val is string { return typeof val === 'string' }
+function isString(val: unknown): val is string {
+  return typeof val === 'string';
+}
 
 // Branded / Nominal Types
-type Brand<T, B> = T & { readonly __brand: B }
-type UserId = Brand<string, 'UserId'>
-type Email = Brand<string, 'Email'>
+type Brand<T, B> = T & { readonly __brand: B };
+type UserId = Brand<string, 'UserId'>;
+type Email = Brand<string, 'Email'>;
 
 // Discriminated Unions
-type Result<T, E = Error> = { ok: true; value: T } | { ok: false; error: E }
+type Result<T, E = Error> = { ok: true; value: T } | { ok: false; error: E };
 // Narrowing: if (result.ok) { result.value } else { result.error }
 
 // Index Access Types
-type Person = { name: string; age: number }
-type AgeType = Person['age']                  // number
-type PersonKeys = keyof Person                 // 'name' | 'age'
-type PersonValues = Person[keyof Person]       // string | number
+type Person = { name: string; age: number };
+type AgeType = Person['age']; // number
+type PersonKeys = keyof Person; // 'name' | 'age'
+type PersonValues = Person[keyof Person]; // string | number
 
 // Module Augmentation
-declare module 'express' { interface Request { user?: User } }
-declare global { interface Window { __APP_DATA__: AppData } }
+declare module 'express' {
+  interface Request {
+    user?: User;
+  }
+}
+declare global {
+  interface Window {
+    __APP_DATA__: AppData;
+  }
+}
 
 // Declaration Merging
-interface Box { width: number }
-interface Box { height: number }  // merged: { width: number; height: number }
+interface Box {
+  width: number;
+}
+interface Box {
+  height: number;
+} // merged: { width: number; height: number }
 
 // Import Types
-import type { User } from './types'            // type-only import (erased at runtime)
-import { type User, createUser } from './user' // inline type import (TS 4.5+)
-export type { User }                            // type-only re-export
-type Config = import('./config').Config          // import() type expression
+import type { User } from './types'; // type-only import (erased at runtime)
+import { type User, createUser } from './user'; // inline type import (TS 4.5+)
+export type { User }; // type-only re-export
+type Config = import('./config').Config; // import() type expression
 ```
 
 ## [Architectural_Laws]
+
 - **Export_Law**: Use named exports exclusively. Re-export via barrel `index.ts`. Default exports only for React components and Next.js pages. Use `verbatimModuleSyntax` для enforce `import type`.
 - **Transformation_Law**: Use discriminated unions over inheritance. Prefer `unknown` over `any`. Narrow via user-defined type guards: `(val): val is T =>`. Use `satisfies` for validation without widening.
 - **Propagation_Law**: Errors as values (Result pattern) or typed `throw`. Use `Error.cause` (ES2022) for error chaining. Never `catch(e: any)` — use `catch(e: unknown)` and narrow.
 
 ## [Syntax_Rules] | [Naming_Conventions]
+
 - PascalCase: types, interfaces, classes, enums
 - camelCase: functions, variables, methods, properties
 - UPPER_CASE: const enums, true constants
@@ -340,6 +368,7 @@ type Config = import('./config').Config          // import() type expression
 - `readonly` on arrays/tuples when immutable: `readonly string[]`
 
 ## [Prohibited_Patterns]
+
 - NO `any` — use `unknown` and narrow
 - NO `enum` in new code — use `as const` objects with `typeof` for unions
 - NO non-null assertion `!` — use proper narrowing or optional chaining
@@ -352,6 +381,7 @@ type Config = import('./config').Config          // import() type expression
 - NO runtime-emitted syntax with `erasableSyntaxOnly` — no enums, no namespaces with values, no parameter properties
 
 ## [Deprecated_Definitions]
+
 ```ts
 // @deprecated lib.es5.d.ts
 escape(string: string): string    // use encodeURIComponent
@@ -366,6 +396,7 @@ type PropertyDecorator = (target, propertyKey) => void
 ```
 
 ## [Standard_Library_Signatures]
+
 ```ts
 // Object (lib.es5.d.ts — 4601 lines + ES2017-2024)
 Object.keys(o: object): string[]
@@ -458,47 +489,66 @@ Atomics.isLockFree(size): boolean
 ```
 
 ## [Tactical_Patterns]
+
 ```ts
 // Discriminated union with exhaustive check
-type Shape = { kind: 'circle'; radius: number } | { kind: 'rect'; width: number; height: number }
+type Shape =
+  | { kind: 'circle'; radius: number }
+  | { kind: 'rect'; width: number; height: number };
 function area(s: Shape): number {
   switch (s.kind) {
-    case 'circle': return Math.PI * s.radius ** 2
-    case 'rect': return s.width * s.height
-    default: const _exhaustive: never = s; return _exhaustive  // compile error if case missed
+    case 'circle':
+      return Math.PI * s.radius ** 2;
+    case 'rect':
+      return s.width * s.height;
+    default:
+      const _exhaustive: never = s;
+      return _exhaustive; // compile error if case missed
   }
 }
 
 // Builder pattern with method chaining and branded types
-type UserId = Brand<string, 'UserId'>
-const userId = 'abc' as UserId  // branded at assignment
+type UserId = Brand<string, 'UserId'>;
+const userId = 'abc' as UserId; // branded at assignment
 
 // as const + typeof for type-safe enums
-const STATUS = { Active: 'active', Inactive: 'inactive' } as const
-type Status = typeof STATUS[keyof typeof STATUS]  // 'active' | 'inactive'
+const STATUS = { Active: 'active', Inactive: 'inactive' } as const;
+type Status = (typeof STATUS)[keyof typeof STATUS]; // 'active' | 'inactive'
 
 // Using declarations for resource management
 async function query() {
-  await using conn = await pool.getConnection()  // auto-disposed
-  return conn.execute('SELECT ...')
-}  // conn[Symbol.asyncDispose]() called here
+  await using conn = await pool.getConnection(); // auto-disposed
+  return conn.execute('SELECT ...');
+} // conn[Symbol.asyncDispose]() called here
 
 // Const generics for literal inference
-function createRoutes<const T extends Record<string, string>>(routes: T): T { return routes }
-const routes = createRoutes({ home: '/', about: '/about' })  // { readonly home: '/'; readonly about: '/about' }
+function createRoutes<const T extends Record<string, string>>(routes: T): T {
+  return routes;
+}
+const routes = createRoutes({ home: '/', about: '/about' }); // { readonly home: '/'; readonly about: '/about' }
 
 // Type-safe event emitter with mapped types
-type EventMap = { click: MouseEvent; keydown: KeyboardEvent; custom: { data: string } }
+type EventMap = {
+  click: MouseEvent;
+  keydown: KeyboardEvent;
+  custom: { data: string };
+};
 type TypedEmitter<T extends Record<string, unknown>> = {
-  on<K extends keyof T>(event: K, handler: (payload: T[K]) => void): void
-  emit<K extends keyof T>(event: K, payload: T[K]): void
-}
+  on<K extends keyof T>(event: K, handler: (payload: T[K]) => void): void;
+  emit<K extends keyof T>(event: K, payload: T[K]): void;
+};
 
 // Recursive type for deep partial
-type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T
+type DeepPartial<T> = T extends object
+  ? { [P in keyof T]?: DeepPartial<T[P]> }
+  : T;
 
 // Path type for nested object access
-type NestedPaths<T> = T extends object ? {
-  [K in keyof T & string]: T[K] extends object ? K | `${K}.${NestedPaths<T[K]>}` : K
-}[keyof T & string] : never
+type NestedPaths<T> = T extends object
+  ? {
+      [K in keyof T & string]: T[K] extends object
+        ? K | `${K}.${NestedPaths<T[K]>}`
+        : K;
+    }[keyof T & string]
+  : never;
 ```

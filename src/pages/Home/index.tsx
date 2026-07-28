@@ -139,7 +139,11 @@ export const HomePage = define({
         .from('.hero-heading', { y: 40, opacity: 0, duration: 0.85 }, '-=0.4')
         .from('.hero-subtext', { y: 25, opacity: 0, duration: 0.75 }, '-=0.5')
         .from('.hero-ctas', { y: 20, opacity: 0, duration: 0.65 }, '-=0.4')
-        .from('.hero-stats-grid', { y: 20, opacity: 0, duration: 0.65 }, '-=0.3');
+        .from(
+          '.hero-stats-grid',
+          { y: 20, opacity: 0, duration: 0.65 },
+          '-=0.3'
+        );
 
       // Hero Scroll Scale-Down & Fade Out
       gsap.to('.hero-container', {
@@ -221,8 +225,8 @@ export const HomePage = define({
           </h1>
 
           <p class="hero-subtext">
-            Build high-performance reactive applications with fine-grained signals,
-            capability-first layers, and type-safe components.
+            Build high-performance reactive applications with fine-grained
+            signals, capability-first layers, and type-safe components.
           </p>
 
           <div class="hero-ctas">
@@ -390,7 +394,9 @@ export const HomePage = define({
                 <div class="code-tabs">
                   <button
                     type="button"
-                    class={() => `code-tab ${activeTab.value === 'counter' ? 'active' : ''}`}
+                    class={() =>
+                      `code-tab ${activeTab.value === 'counter' ? 'active' : ''}`
+                    }
                     onClick={() => {
                       activeTab.value = 'counter';
                     }}
@@ -399,7 +405,9 @@ export const HomePage = define({
                   </button>
                   <button
                     type="button"
-                    class={() => `code-tab ${activeTab.value === 'signals' ? 'active' : ''}`}
+                    class={() =>
+                      `code-tab ${activeTab.value === 'signals' ? 'active' : ''}`
+                    }
                     onClick={() => {
                       activeTab.value = 'signals';
                     }}
@@ -408,7 +416,9 @@ export const HomePage = define({
                   </button>
                   <button
                     type="button"
-                    class={() => `code-tab ${activeTab.value === 'server' ? 'active' : ''}`}
+                    class={() =>
+                      `code-tab ${activeTab.value === 'server' ? 'active' : ''}`
+                    }
                     onClick={() => {
                       activeTab.value = 'server';
                     }}
@@ -434,7 +444,8 @@ export const HomePage = define({
         <div class="cta-container">
           <h2 class="cta-title">Ready to build with Effuse?</h2>
           <p class="cta-subtitle">
-            Explore the docs, build your first component, and experience fine-grained reactivity.
+            Explore the docs, build your first component, and experience
+            fine-grained reactivity.
           </p>
           <div class="cta-buttons">
             <Link to="/docs/getting-started" class="cta-primary">

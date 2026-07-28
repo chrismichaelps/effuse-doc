@@ -1,4 +1,8 @@
-import { defineServerFileHandler, defineServerRequest, serverSchema } from '@effuse/core';
+import {
+  defineServerFileHandler,
+  defineServerRequest,
+  serverSchema,
+} from '@effuse/core';
 import { DEFAULT_LOCALE, listSlugs, LOCALES } from '../../../docs/content.js';
 
 export const request = defineServerRequest({

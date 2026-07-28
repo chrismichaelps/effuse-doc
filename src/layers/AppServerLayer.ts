@@ -6,10 +6,11 @@ import type { ServerActionFileModule, ServerApiFileModule } from '@effuse/core';
  * `src/server/actions` into the layer server model. A route's URL is its file
  * path; a declared path that disagrees is reported during discovery.
  */
-const serverFiles = import.meta.glob<ServerApiFileModule | ServerActionFileModule>(
-  ['/src/server/api/**/route.ts', '/src/server/actions/**/*.ts'],
-  { eager: true }
-);
+const serverFiles = import.meta.glob<
+  ServerApiFileModule | ServerActionFileModule
+>(['/src/server/api/**/route.ts', '/src/server/actions/**/*.ts'], {
+  eager: true,
+});
 
 export const AppServerLayer = defineLayer({
   name: 'app-server',

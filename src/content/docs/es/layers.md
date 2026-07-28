@@ -10,11 +10,11 @@ Las capas proporcionan inyección de dependencias, estado compartido y gestión 
 
 El sistema de capas consiste en tres conceptos clave:
 
-| Concepto        | Propósito                                          | Acceso en Componentes                       |
-| --------------- | -------------------------------------------------- | ------------------------------------------- |
-| **store**       | Contenedor de estado reactivo (signals)            | Via `deriveProps` → `layers.<alias>.props`         |
-| **deriveProps** | Extraer signals del store para componentes         | `layers.<alias>.props`                   |
-| **services**    | Servicios/factories para inyección de dependencias | `layers.<alias>.service('clave')` |
+| Concepto        | Propósito                                          | Acceso en Componentes                      |
+| --------------- | -------------------------------------------------- | ------------------------------------------ |
+| **store**       | Contenedor de estado reactivo (signals)            | Via `deriveProps` → `layers.<alias>.props` |
+| **deriveProps** | Extraer signals del store para componentes         | `layers.<alias>.props`                     |
+| **services**    | Servicios/factories para inyección de dependencias | `layers.<alias>.service('clave')`          |
 
 ## Creando una Capa
 
@@ -130,12 +130,12 @@ interface EffuseLayer<P, D, S> {
 
 ## store vs provides
 
-| Aspecto          | `store`                      | `provides`                                 |
-| ---------------- | ---------------------------- | ------------------------------------------ |
-| **Propósito**    | Estado reactivo de la capa   | Servicios de inyección de dependencias     |
-| **Qué contiene** | Instancia de `createStore()` | Funciones factory `{ clave: () => valor }` |
-| **Usado en**     | `deriveProps(store)` → props | Componentes via `layers.<alias>.service('clave')`        |
-| **Reactividad**  | Signals incorporados         | Lo que retornes                            |
+| Aspecto          | `store`                      | `provides`                                        |
+| ---------------- | ---------------------------- | ------------------------------------------------- |
+| **Propósito**    | Estado reactivo de la capa   | Servicios de inyección de dependencias            |
+| **Qué contiene** | Instancia de `createStore()` | Funciones factory `{ clave: () => valor }`        |
+| **Usado en**     | `deriveProps(store)` → props | Componentes via `layers.<alias>.service('clave')` |
+| **Reactividad**  | Signals incorporados         | Lo que retornes                                   |
 
 ### store
 

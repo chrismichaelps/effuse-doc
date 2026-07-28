@@ -301,7 +301,9 @@ const DynamicStyleDemo = define({
             borderRadius: '0.5rem',
             textAlign: 'center',
             transition: 'all 0.3s ease',
-            border: isWhiteBg ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid transparent',
+            border: isWhiteBg
+              ? '1px solid rgba(255, 255, 255, 0.3)'
+              : '1px solid transparent',
           };
         }}
       >

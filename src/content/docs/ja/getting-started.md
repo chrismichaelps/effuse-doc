@@ -136,7 +136,7 @@ export { installRouter };
 | `useLayer`        | `(name) => LayerContext`     | レイヤーのコンテキストにアクセスする。                 |
 | `useStore`        | `(key) => Store`             | グローバルストアへの型安全なアクセス。                 |
 | `useService`      | `(key) => Service`           | レイヤーによって注入されたサービスへのアクセス。       |
-| `layers`          | `Record<alias, LayerEntry>`            | レイヤーのプロパティにアクセスする。                   |
+| `layers`          | `Record<alias, LayerEntry>`  | レイヤーのプロパティにアクセスする。                   |
 
 ## 次のステップ
 

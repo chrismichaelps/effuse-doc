@@ -18,13 +18,13 @@ to the services that own them.
 
 Most frameworks split an app across too many disconnected surfaces:
 
-| Need | Common friction |
-| --- | --- |
-| Shared services | Global modules, context trees, or untyped injection |
-| Server APIs | Separate route files that drift from the service layer |
-| Component logic | Hook/import sprawl and implicit runtime dependencies |
-| Reactivity | Coarse rerenders or compiler magic with unclear boundaries |
-| Testing | Business capability and UI code tested through different seams |
+| Need            | Common friction                                                |
+| --------------- | -------------------------------------------------------------- |
+| Shared services | Global modules, context trees, or untyped injection            |
+| Server APIs     | Separate route files that drift from the service layer         |
+| Component logic | Hook/import sprawl and implicit runtime dependencies           |
+| Reactivity      | Coarse rerenders or compiler magic with unclear boundaries     |
+| Testing         | Business capability and UI code tested through different seams |
 
 Effuse should make those boundaries explicit without making component code
 heavy.

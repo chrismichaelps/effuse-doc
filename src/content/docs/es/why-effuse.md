@@ -21,13 +21,13 @@ a los servicios que las poseen.
 La mayoría de los frameworks reparten una aplicación entre demasiadas
 superficies desconectadas:
 
-| Necesidad | Fricción habitual |
-| --- | --- |
-| Servicios compartidos | Módulos globales, árboles de contexto o inyección sin tipos |
-| APIs de servidor | Archivos de rutas separados que se desvían de la capa de servicios |
-| Lógica de componentes | Proliferación de hooks/imports y dependencias implícitas en runtime |
-| Reactividad | Rerenderizados gruesos o magia del compilador con límites poco claros |
-| Pruebas | La capacidad de negocio y el código de UI se prueban por costuras distintas |
+| Necesidad             | Fricción habitual                                                           |
+| --------------------- | --------------------------------------------------------------------------- |
+| Servicios compartidos | Módulos globales, árboles de contexto o inyección sin tipos                 |
+| APIs de servidor      | Archivos de rutas separados que se desvían de la capa de servicios          |
+| Lógica de componentes | Proliferación de hooks/imports y dependencias implícitas en runtime         |
+| Reactividad           | Rerenderizados gruesos o magia del compilador con límites poco claros       |
+| Pruebas               | La capacidad de negocio y el código de UI se prueban por costuras distintas |
 
 Effuse debe hacer esos límites explícitos sin volver pesado el código del
 componente.

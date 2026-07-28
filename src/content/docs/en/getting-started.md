@@ -133,7 +133,7 @@ The `script` function receives a `ScriptContext` object with useful utilities:
 | `useCallback`     | `(fn, deps?) => fn`          | Memoize a callback with stable identity.                      |
 | `useMemo`         | `(fn, deps?) => getter`      | Memoize a computed value.                                     |
 | `useLayer`        | `(name) => LayerContext`     | Access a dependency injection layer.                          |
-| `layers`          | `Record<alias, LayerEntry>`       | Access reactive props from a layer.                           |
+| `layers`          | `Record<alias, LayerEntry>`  | Access reactive props from a layer.                           |
 | `useService`      | `(key) => Service`           | Access a provided service (dependency injection).             |
 | `useStore`        | `(key) => Store`             | Access a global store (typed).                                |
 

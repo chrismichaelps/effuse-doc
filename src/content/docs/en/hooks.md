@@ -53,15 +53,15 @@ export const useToggle = defineHook<ToggleConfig, ToggleReturn>({
 
 The `setup` function receives a context object with these utilities:
 
-| Property        | Description                                     |
-| --------------- | ----------------------------------------------- |
-| `config`        | Configuration passed when calling the hook      |
-| `signal`        | Create reactive signals                         |
-| `computed`      | Create derived computed values                  |
-| `watchEffect`   | Run side effects that track dependencies        |
-| `onMount`       | Register callbacks for when the hook is mounted |
-| `layers`        | Typed access to declared layers' props and services |
-| `scope`         | Manage cleanup and finalizers                   |
+| Property      | Description                                         |
+| ------------- | --------------------------------------------------- |
+| `config`      | Configuration passed when calling the hook          |
+| `signal`      | Create reactive signals                             |
+| `computed`    | Create derived computed values                      |
+| `watchEffect` | Run side effects that track dependencies            |
+| `onMount`     | Register callbacks for when the hook is mounted     |
+| `layers`      | Typed access to declared layers' props and services |
+| `scope`       | Manage cleanup and finalizers                       |
 
 ## Built-in Utility Hooks
 

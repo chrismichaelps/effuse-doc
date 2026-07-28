@@ -67,7 +67,10 @@ export const NAV_SECTIONS: readonly NavSection[] = [
       { labelKey: 'seoHead', href: '/docs/seo' },
       { labelKey: 'internationalization', href: '/docs/i18n' },
       { labelKey: 'serverApis', href: '/docs/server-apis' },
-      { labelKey: 'migratingLayerAccess', href: '/docs/migrating-layer-access' },
+      {
+        labelKey: 'migratingLayerAccess',
+        href: '/docs/migrating-layer-access',
+      },
     ],
   },
   {

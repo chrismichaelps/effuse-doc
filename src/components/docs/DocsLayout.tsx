@@ -64,7 +64,8 @@ export const DocsLayout = define({
     const { t } = useTranslation();
     const isMobile = useIsMobile();
 
-    const docsStore = (sidebar.services.docsUI ?? sidebar.service('docsUI')) as typeof DocsStoreType;
+    const docsStore = (sidebar.services.docsUI ??
+      sidebar.service('docsUI')) as typeof DocsStoreType;
 
     const normalizedTocItems = computed(() => unwrapTocItems(props.tocItems));
 

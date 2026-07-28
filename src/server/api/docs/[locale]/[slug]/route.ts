@@ -1,4 +1,8 @@
-import { defineServerFileHandler, defineServerRequest, serverSchema } from '@effuse/core';
+import {
+  defineServerFileHandler,
+  defineServerRequest,
+  serverSchema,
+} from '@effuse/core';
 import { getDocWithFallback, LOCALES } from '../../../../docs/content.js';
 
 export const request = defineServerRequest({
@@ -19,7 +23,10 @@ export const GET = defineServerFileHandler(
   '/api/docs/[locale]/[slug]',
   request,
   async ({ input, response }) => {
-    const doc = await getDocWithFallback(input.params.locale, input.params.slug);
+    const doc = await getDocWithFallback(
+      input.params.locale,
+      input.params.slug
+    );
 
     return (
       doc ??
