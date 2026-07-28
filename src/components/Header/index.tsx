@@ -102,7 +102,7 @@ export const Header = define<Record<string, never>, HeaderExposed>({
                       activeClass="header-nav-link-active"
                       exactActiveClass="header-nav-link-active"
                     >
-                      {docsLabel}
+                      {() => docsLabel.value || 'Docs'}
                     </Link>
                   </li>
                   <li class="header-nav-item">
@@ -112,7 +112,7 @@ export const Header = define<Record<string, never>, HeaderExposed>({
                       activeClass="header-nav-link-active"
                       exactActiveClass="header-nav-link-active"
                     >
-                      {aboutLabel}
+                      {() => aboutLabel.value || 'About'}
                     </Link>
                   </li>
                 </ul>
@@ -160,7 +160,7 @@ export const Header = define<Record<string, never>, HeaderExposed>({
                   exactActiveClass="header-mobile-link-active"
                   onClick={toggleMenu}
                 >
-                  {docsLabel}
+                  {() => docsLabel.value || 'Docs'}
                 </Link>
               </li>
               <li class="header-mobile-item">
@@ -171,7 +171,7 @@ export const Header = define<Record<string, never>, HeaderExposed>({
                   exactActiveClass="header-mobile-link-active"
                   onClick={toggleMenu}
                 >
-                  {aboutLabel}
+                  {() => aboutLabel.value || 'About'}
                 </Link>
               </li>
               <li
