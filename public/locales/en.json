@@ -18,10 +18,10 @@
 		"layers": "Layers",
 		"lifecycle": "Lifecycle",
 		"advancedTitle": "Advanced",
-    "routing": "Routing",
-    "server": "Server & APIs",
-    "cli": "CLI & Builds",
-    "utilityHooks": "Utility Hooks",
+		"routing": "Routing",
+		"server": "Server & APIs",
+		"cli": "CLI & Builds",
+		"utilityHooks": "Utility Hooks",
 		"stateManagement": "State Management",
 		"seoHead": "SEO & Head",
 		"internationalization": "Internationalization",
@@ -39,7 +39,12 @@
 		"await": "Await",
 		"refs": "Refs",
 		"releases": "Releases",
-		"ecosystem": "Effuse Ecosystem"
+		"ecosystem": "Effuse Ecosystem",
+		"whyEffuse": "Why Effuse",
+		"serverApis": "Server APIs",
+		"migratingLayerAccess": "Migrating Layer Access",
+		"query": "Query",
+		"ink": "Ink"
 	},
 	"toc": {
 		"onThisPage": "On this page"

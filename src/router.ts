@@ -35,7 +35,7 @@ const routes = defineRoutes([
   { path: '/components', name: 'components-demo', component: ComponentsPage },
   { path: '/releases', name: 'releases', component: ReleasesPage },
   { path: '/refs', name: 'refs', component: RefsPage },
-  { path: '*', name: 'not-found', component: NotFoundPage },
+  { path: '/[...slug]', name: 'not-found', component: NotFoundPage },
 ]);
 
 export const router = createRouter({

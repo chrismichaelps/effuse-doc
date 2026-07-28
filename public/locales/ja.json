@@ -39,7 +39,12 @@
 		"await": "Await",
 		"refs": "Refs",
 		"releases": "リリース",
-		"ecosystem": "Effuse エコシステム"
+		"ecosystem": "Effuse エコシステム",
+		"whyEffuse": "なぜ Effuse なのか",
+		"serverApis": "サーバー API",
+		"migratingLayerAccess": "レイヤーアクセスの移行",
+		"query": "Query",
+		"ink": "Ink"
 	},
 	"toc": {
 		"onThisPage": "このページの内容"

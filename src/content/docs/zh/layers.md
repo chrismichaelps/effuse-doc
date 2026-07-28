@@ -12,9 +12,9 @@ title: 层
 
 | 概念            | 目的                               | 组件中的访问方式                       |
 | --------------- | ---------------------------------- | -------------------------------------- |
-| **store**       | 响应式状态容器（signals）          | 通过 `deriveProps` → `useLayerProps`   |
-| **deriveProps** | 从 store 中提取 signals 供组件使用 | `useLayerProps('名称')`                |
-| **provides**    | 用于依赖注入的服务/工厂            | `useStore('键')` 或 `useService('键')` |
+| **store**       | 响应式状态容器（signals）          | 通过 `deriveProps` → `layers.<alias>.props`   |
+| **deriveProps** | 从 store 中提取 signals 供组件使用 | `layers.<alias>.props`                |
+| **services**    | 用于依赖注入的服务/工厂            | `layers.<alias>.service('键')` |
 
 ## 创建层
 
@@ -54,7 +54,7 @@ export const ThemeLayer = defineLayer({
   }),
 
   // 通过依赖注入暴露的服务
-  provides: {
+  services: {
     theme: () => themeStore,
   },
 
@@ -134,7 +134,7 @@ interface EffuseLayer<P, D, S> {
 | ------------ | ---------------------------- | --------------------------- |
 | **目的**     | 层的响应式状态               | 依赖注入服务                |
 | **包含内容** | `createStore()` 实例         | 工厂函数 `{ 键: () => 值 }` |
-| **使用位置** | `deriveProps(store)` → props | 组件中通过 `useStore('键')` |
+| **使用位置** | `deriveProps(store)` → props | 组件中通过 `layers.<alias>.service('键')` |
 | **响应性**   | 内置 signals                 | 取决于返回的内容            |
 
 ### store
@@ -169,14 +169,15 @@ defineLayer({
 ```typescript
 defineLayer({
   name: 'router',
-  provides: {
+  services: {
     router: () => routerInstance, // 工厂函数
   },
 });
 
 // 在组件中:
-script: ({ useStore }) => {
-  const router = useStore('router'); // 获取 router
+layers: { router: RouterLayer } as const,
+script: ({ layers }) => {
+  const router = layers.router.service('router'); // 获取 router
 };
 ```
 
@@ -188,12 +189,12 @@ script: ({ useStore }) => {
 import { define, computed } from '@effuse/core';
 
 const ThemeToggle = define({
-  script: ({ useLayerProps, useStore }) => {
+  script: ({ layers: { theme } }) => {
     // 从 deriveProps 获取响应式 props
-    const themeProps = useLayerProps('theme');
+    const themeProps = theme.props;
 
     // 从 provides 获取服务
-    const themeStore = useStore('theme');
+    const themeStore = theme.service('theme');
 
     const buttonText = computed(() =>
       themeProps?.mode.value === 'dark' ? '浅色' : '深色'
@@ -223,10 +224,10 @@ export const useTheme = defineHook<
   { mode: Signal<string>; toggle: () => void }
 >({
   name: 'useTheme',
-  deps: ['theme'] as const,
-  setup: ({ layer }) => {
+  layers: { theme: ThemeLayer } as const,
+  setup: ({ layers: { theme } }) => {
     // layer() 返回 deriveProps 的结果
-    const themeProps = layer('theme');
+    const themeProps = theme.props;
 
     return {
       mode: themeProps.mode,
@@ -272,14 +273,14 @@ declare module '@effuse/core' {
         mode: Signal<'light' | 'dark'>;
         accentColor: Signal<string>;
       };
-      provides: { theme: typeof themeStore };
+      services: { theme: typeof themeStore };
     };
     i18n: {
       props: {
         locale: Signal<string>;
         translations: Signal<Record<string, string> | null>;
       };
-      provides: { i18n: typeof i18nStore };
+      services: { i18n: typeof i18nStore };
     };
   }
 }
@@ -290,7 +291,7 @@ export {};
 这启用类型推断:
 
 ```typescript
-const { mode } = useLayerProps('theme')!;
+const { mode } = layers.theme.props;
 //      ^? Signal<'light' | 'dark'>
 ```
 
@@ -312,7 +313,7 @@ export const I18nLayer = defineLayer({
     translations: store.translations,
   }),
 
-  provides: {
+  services: {
     i18n: () => i18nStore,
   },
 

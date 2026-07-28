@@ -6,6 +6,7 @@ import {
   computed,
   type ReadonlySignal,
 } from '@effuse/core';
+import { SidebarLayer } from '../../layers/SidebarLayer.js';
 import { Sidebar } from './Sidebar.js';
 import { DocsHeader, type TocItem } from './DocsHeader.js';
 import { SidebarToggle } from './SidebarToggle.js';
@@ -13,8 +14,8 @@ import {
   useScrollSpy,
   useSmoothScroll,
   useTranslation,
+  useIsMobile,
 } from '../../hooks/index.js';
-import { useMediaQuery } from '@effuse/use';
 import type { docsStore as DocsStoreType } from '../../store/docsUIStore.js';
 import {
   isArray,
@@ -24,7 +25,6 @@ import {
   Option,
 } from '../../utils/data/index.js';
 import './styles.css';
-import { SidebarLayer } from '../../layers/SidebarLayer.js';
 
 interface DocsLayoutProps {
   children: any;
@@ -60,15 +60,11 @@ const unwrapTocItems = (
 export const DocsLayout = define({
   props: defineProps<DocsLayoutProps>(),
   layers: { sidebar: SidebarLayer } as const,
-  script: ({ props, onMount, useCallback, layers: { sidebar } }) => {
+  script: ({ props, onMount, layers: { sidebar } }) => {
     const { t } = useTranslation();
+    const isMobile = useIsMobile();
 
-    const { matches: isMobile } = useMediaQuery({
-      query: '(max-width: 767px)',
-      initialValue: false,
-    });
-
-    const docsStore = sidebar.services.docsUI as typeof DocsStoreType;
+    const docsStore = (sidebar.services.docsUI ?? sidebar.service('docsUI')) as typeof DocsStoreType;
 
     const normalizedTocItems = computed(() => unwrapTocItems(props.tocItems));
 
@@ -83,8 +79,8 @@ export const DocsLayout = define({
       duration: 1.2,
     });
 
-    const handleTocClick = useCallback(
-      (e: Event, id: string, title: string) => {
+    const handleTocClick = (e: Event, id: string, title: string) => {
+      {
         e.preventDefault();
         scrollSpy.setActiveId(id);
 
@@ -119,7 +115,7 @@ export const DocsLayout = define({
           }
         }
       }
-    );
+    };
 
     const sidebarClass = computed(() => {
       const open = sidebar.props.isOpen.value;

@@ -14,7 +14,7 @@ export const SearchLayer = defineLayer({
       selectedIndex: s.selectedIndex,
     };
   },
-  provides: {
+  services: {
     search: () => searchStore,
   },
   onMount: () => {

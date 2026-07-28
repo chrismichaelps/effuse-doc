@@ -15,19 +15,13 @@ import {
 import { SidebarToggle } from './SidebarToggle.js';
 import { SidebarVersions } from './SidebarVersions.js';
 import { docsStore } from '../../store/docsUIStore.js';
-import { i18nStore } from '../../store/appI18n';
+import { i18nStore } from '../../store/appI18n.js';
+import { NAV_SECTIONS } from '../../content/docs/nav.js';
 import { SidebarLayer } from '../../layers/SidebarLayer.js';
 
 interface NavItem {
   label: string;
   href: string;
-}
-
-interface NavSection {
-  key: string;
-  titleKey: keyof typeof sectionTitleKeys;
-  items: { labelKey: string; href: string }[];
-  isOpen?: boolean;
 }
 
 interface SectionState {
@@ -45,82 +39,12 @@ interface SidebarProps {
 
 interface SidebarExposed {
   sectionStates: SectionState[];
-  isSidebarOpen: Signal<unknown>;
-  toggleSidebar: () => void;
+  isSidebarOpen?: ReadonlySignal<boolean>;
+  toggleSidebar?: () => void;
 }
 
-const sectionTitleKeys = {
-  gettingStarted: 'gettingStarted',
-  coreConcepts: 'coreConceptsTitle',
-  advanced: 'advancedTitle',
-  examples: 'examplesTitle',
-} as const;
-
-const sectionsConfig: NavSection[] = [
-  {
-    key: 'Getting Started',
-    titleKey: 'gettingStarted',
-    items: [
-      { labelKey: 'introduction', href: '/docs/getting-started' },
-      { labelKey: 'installation', href: '/docs/installation' },
-      { labelKey: 'quickStart', href: '/docs/quick-start' },
-      { labelKey: 'releases', href: '/releases' },
-    ],
-    isOpen: true,
-  },
-  {
-    key: 'Core Concepts',
-    titleKey: 'coreConcepts',
-    items: [
-      { labelKey: 'components', href: '/docs/components' },
-      { labelKey: 'reactivity', href: '/docs/signals' },
-      { labelKey: 'hooks', href: '/docs/hooks' },
-      { labelKey: 'layers', href: '/docs/layers' },
-      { labelKey: 'lifecycle', href: '/docs/effects' },
-      { labelKey: 'form', href: '/docs/use-form' },
-      { labelKey: 'events', href: '/docs/emit' },
-      { labelKey: 'context', href: '/docs/context' },
-      { labelKey: 'errorHandling', href: '/docs/tagged-errors' },
-      { labelKey: 'refs', href: '/docs/refs' },
-    ],
-    isOpen: true,
-  },
-
-  {
-    key: 'Advanced',
-    titleKey: 'advanced',
-    items: [
-      { labelKey: 'routing', href: '/docs/routing' },
-      { labelKey: 'server', href: '/docs/server' },
-      { labelKey: 'cli', href: '/docs/cli' },
-      { labelKey: 'utilityHooks', href: '/docs/utility-hooks' },
-      { labelKey: 'stateManagement', href: '/docs/state' },
-      { labelKey: 'seoHead', href: '/docs/seo' },
-      { labelKey: 'internationalization', href: '/docs/i18n' },
-    ],
-    isOpen: false,
-  },
-  {
-    key: 'Examples',
-    titleKey: 'examples',
-    items: [
-      { labelKey: 'controlFlow', href: '/components' },
-      { labelKey: 'context', href: '/context' },
-      { labelKey: 'form', href: '/form' },
-      { labelKey: 'todos', href: '/todos' },
-      { labelKey: 'props', href: '/props' },
-      { labelKey: 'i18n', href: '/i18n' },
-      { labelKey: 'emit', href: '/emit' },
-      { labelKey: 'refs', href: '/refs' },
-    ],
-    isOpen: false,
-  },
-];
-
-const ChevronIcon = define<
-  { isOpen: ReadonlySignal<boolean> },
-  { getClass: () => string }
->({
+const ChevronIcon = define({
+  props: defineProps<{ isOpen: ReadonlySignal<boolean> }>(),
   script: ({ props }) => ({
     getClass: () => `sidebar-chevron ${props.isOpen.value ? 'open' : ''}`,
   }),
@@ -135,80 +59,42 @@ const ChevronIcon = define<
   ),
 });
 
-const createStableSectionStates = (): SectionState[] => {
-  return sectionsConfig.map((section) => {
+const translate = (key: string): string =>
+  (i18nStore.translations.value?.sidebar as Record<string, string> | undefined)?.[
+    key
+  ] ?? key;
+
+const createSectionStates = (): SectionState[] =>
+  NAV_SECTIONS.map((section) => {
     const containerRef = signal<HTMLElement | null>(null);
 
-    const title = computed(() => {
-      const sidebar = i18nStore.translations.value?.sidebar;
-      const titleKeyMapping: Record<string, string | undefined> = {
-        gettingStarted: sidebar?.gettingStarted,
-        coreConcepts: sidebar?.coreConceptsTitle,
-        advanced: sidebar?.advancedTitle,
-        examples: sidebar?.examplesTitle,
-      };
-      return titleKeyMapping[section.titleKey] ?? section.key;
-    });
-
-    const items = computed(() => {
-      const sidebar = i18nStore.translations.value?.sidebar;
-      const labelMapping: Record<string, string | undefined> = {
-        introduction: sidebar?.introduction,
-        installation: sidebar?.installation,
-        quickStart: sidebar?.quickStart,
-        components: sidebar?.components,
-        reactivity: sidebar?.reactivity,
-        lifecycle: sidebar?.lifecycle,
-        form: sidebar?.form,
-        routing: sidebar?.routing,
-        server: sidebar?.server,
-        cli: sidebar?.cli,
-        utilityHooks: sidebar?.utilityHooks,
-        stateManagement: sidebar?.stateManagement,
-        seoHead: sidebar?.seoHead,
-        internationalization: sidebar?.internationalization,
-        todos: sidebar?.todos,
-        props: sidebar?.props,
-        i18n: sidebar?.i18n,
-        emit: sidebar?.emit,
-        events: sidebar?.events,
-        errorHandling: sidebar?.errorHandling,
-        context: sidebar?.context,
-        hooks: sidebar?.hooks,
-        layers: sidebar?.layers,
-        controlFlow: sidebar?.controlFlow,
-        repeat: sidebar?.repeat,
-        await: sidebar?.await,
-        refs: sidebar?.refs,
-        releases: sidebar?.releases,
-      };
-      return section.items.map((item) => ({
-        label: labelMapping[item.labelKey] ?? item.labelKey,
-        href: item.href,
-      }));
-    });
-
-    const isOpen = computed(() => docsStore.isSectionOpen(section.key));
-
-    const toggle = () => {
+    const toggle = (): void => {
       docsStore.toggleSection(section.key);
 
       const container = containerRef.value;
       if (!container) return;
 
-      const willBeOpen = docsStore.isSectionOpen(section.key);
-      if (willBeOpen) {
+      if (docsStore.isSectionOpen(section.key)) {
         requestAnimationFrame(() => {
           animateStaggerChildren(container, '.sidebar-link', 0.03);
         });
       }
     };
 
-    return { key: section.key, title, items, isOpen, toggle, containerRef };
+    return {
+      key: section.key,
+      title: computed(() => translate(section.titleKey)),
+      items: computed(() =>
+        section.items.map((item) => ({
+          label: translate(item.labelKey),
+          href: item.href,
+        }))
+      ),
+      isOpen: computed(() => docsStore.isSectionOpen(section.key)),
+      toggle,
+      containerRef,
+    };
   });
-};
-
-const stableSectionStates = createStableSectionStates();
 
 export const Sidebar = define({
   props: defineProps<SidebarProps>(),
@@ -225,8 +111,8 @@ export const Sidebar = define({
     });
 
     return {
-      sectionStates: stableSectionStates,
-      isSidebarOpen: sidebar.props.isOpen,
+      sectionStates: createSectionStates(),
+      isSidebarOpen: sidebar.props.isOpen as ReadonlySignal<boolean>,
       toggleSidebar: () => {
         sidebar.props.isOpen.value = !sidebar.props.isOpen.value;
       },

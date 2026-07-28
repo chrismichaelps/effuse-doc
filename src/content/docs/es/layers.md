@@ -12,9 +12,9 @@ El sistema de capas consiste en tres conceptos clave:
 
 | Concepto        | Propósito                                          | Acceso en Componentes                       |
 | --------------- | -------------------------------------------------- | ------------------------------------------- |
-| **store**       | Contenedor de estado reactivo (signals)            | Via `deriveProps` → `useLayerProps`         |
-| **deriveProps** | Extraer signals del store para componentes         | `useLayerProps('nombre')`                   |
-| **provides**    | Servicios/factories para inyección de dependencias | `useStore('clave')` o `useService('clave')` |
+| **store**       | Contenedor de estado reactivo (signals)            | Via `deriveProps` → `layers.<alias>.props`         |
+| **deriveProps** | Extraer signals del store para componentes         | `layers.<alias>.props`                   |
+| **services**    | Servicios/factories para inyección de dependencias | `layers.<alias>.service('clave')` |
 
 ## Creando una Capa
 
@@ -54,7 +54,7 @@ export const ThemeLayer = defineLayer({
   }),
 
   // Servicios expuestos via inyección de dependencias
-  provides: {
+  services: {
     theme: () => themeStore,
   },
 
@@ -134,7 +134,7 @@ interface EffuseLayer<P, D, S> {
 | ---------------- | ---------------------------- | ------------------------------------------ |
 | **Propósito**    | Estado reactivo de la capa   | Servicios de inyección de dependencias     |
 | **Qué contiene** | Instancia de `createStore()` | Funciones factory `{ clave: () => valor }` |
-| **Usado en**     | `deriveProps(store)` → props | Componentes via `useStore('clave')`        |
+| **Usado en**     | `deriveProps(store)` → props | Componentes via `layers.<alias>.service('clave')`        |
 | **Reactividad**  | Signals incorporados         | Lo que retornes                            |
 
 ### store
@@ -169,14 +169,15 @@ defineLayer({
 ```typescript
 defineLayer({
   name: 'router',
-  provides: {
+  services: {
     router: () => routerInstance, // Función factory
   },
 });
 
 // En un componente:
-script: ({ useStore }) => {
-  const router = useStore('router'); // Obtiene el router
+layers: { router: RouterLayer } as const,
+script: ({ layers }) => {
+  const router = layers.router.service('router'); // Obtiene el router
 };
 ```
 
@@ -188,12 +189,12 @@ Accede a los datos y servicios de capas en scripts de componentes:
 import { define, computed } from '@effuse/core';
 
 const ThemeToggle = define({
-  script: ({ useLayerProps, useStore }) => {
+  script: ({ layers: { theme } }) => {
     // Obtener props reactivos de deriveProps
-    const themeProps = useLayerProps('theme');
+    const themeProps = theme.props;
 
     // Obtener servicio de provides
-    const themeStore = useStore('theme');
+    const themeStore = theme.service('theme');
 
     const buttonText = computed(() =>
       themeProps?.mode.value === 'dark' ? 'Claro' : 'Oscuro'
@@ -223,10 +224,10 @@ export const useTheme = defineHook<
   { mode: Signal<string>; toggle: () => void }
 >({
   name: 'useTheme',
-  deps: ['theme'] as const,
-  setup: ({ layer }) => {
+  layers: { theme: ThemeLayer } as const,
+  setup: ({ layers: { theme } }) => {
     // layer() retorna el resultado de deriveProps
-    const themeProps = layer('theme');
+    const themeProps = theme.props;
 
     return {
       mode: themeProps.mode,
@@ -272,14 +273,14 @@ declare module '@effuse/core' {
         mode: Signal<'light' | 'dark'>;
         accentColor: Signal<string>;
       };
-      provides: { theme: typeof themeStore };
+      services: { theme: typeof themeStore };
     };
     i18n: {
       props: {
         locale: Signal<string>;
         translations: Signal<Record<string, string> | null>;
       };
-      provides: { i18n: typeof i18nStore };
+      services: { i18n: typeof i18nStore };
     };
   }
 }
@@ -290,7 +291,7 @@ export {};
 Esto habilita la inferencia de tipos:
 
 ```typescript
-const { mode } = useLayerProps('theme')!;
+const { mode } = layers.theme.props;
 //      ^? Signal<'light' | 'dark'>
 ```
 
@@ -312,7 +313,7 @@ export const I18nLayer = defineLayer({
     translations: store.translations,
   }),
 
-  provides: {
+  services: {
     i18n: () => i18nStore,
   },
 
