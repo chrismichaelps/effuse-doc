@@ -57,7 +57,7 @@ export const NAV_SECTIONS: readonly NavSection[] = [
   {
     key: 'Advanced',
     titleKey: 'advancedTitle',
-    defaultOpen: false,
+    defaultOpen: true,
     items: [
       { labelKey: 'routing', href: '/docs/routing' },
       { labelKey: 'server', href: '/docs/server' },
@@ -73,7 +73,7 @@ export const NAV_SECTIONS: readonly NavSection[] = [
   {
     key: 'Examples',
     titleKey: 'examplesTitle',
-    defaultOpen: false,
+    defaultOpen: true,
     items: [
       { labelKey: 'controlFlow', href: '/components' },
       { labelKey: 'context', href: '/context' },
@@ -83,6 +83,12 @@ export const NAV_SECTIONS: readonly NavSection[] = [
       { labelKey: 'i18n', href: '/i18n' },
       { labelKey: 'emit', href: '/emit' },
       { labelKey: 'refs', href: '/refs' },
+      { labelKey: 'reactivity', href: '/docs/signals' },
+      { labelKey: 'query', href: '/docs/query' },
+      { labelKey: 'ink', href: '/docs/ink' },
+      { labelKey: 'serverApis', href: '/docs/server-apis' },
+      { labelKey: 'stateManagement', href: '/docs/state' },
+      { labelKey: 'layers', href: '/docs/layers' },
     ],
   },
 ];
