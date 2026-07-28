@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { effuse } from '@effuse/compiler/vite';
 import tailwindcss from '@tailwindcss/vite';
+import { effuseDevApi } from './src/server/dev-middleware';
 
 export default defineConfig({
   plugins: [
@@ -8,6 +9,7 @@ export default defineConfig({
     effuse({
       debug: false,
     }),
+    effuseDevApi(),
   ],
   resolve: {
     dedupe: [
