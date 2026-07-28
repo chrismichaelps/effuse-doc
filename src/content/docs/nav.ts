@@ -60,6 +60,9 @@ export const NAV_SECTIONS: readonly NavSection[] = [
     defaultOpen: false,
     items: [
       { labelKey: 'routing', href: '/docs/routing' },
+      { labelKey: 'server', href: '/docs/server' },
+      { labelKey: 'cli', href: '/docs/cli' },
+      { labelKey: 'utilityHooks', href: '/docs/utility-hooks' },
       { labelKey: 'stateManagement', href: '/docs/state' },
       { labelKey: 'seoHead', href: '/docs/seo' },
       { labelKey: 'internationalization', href: '/docs/i18n' },
