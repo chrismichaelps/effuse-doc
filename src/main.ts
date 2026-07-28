@@ -1,28 +1,10 @@
 import { createApp } from '@effuse/core';
-import { InkLayer } from '@effuse/ink';
 import { App } from './App';
-import {
-  RouterLayer,
-  I18nLayer,
-  SidebarLayer,
-  TodosLayer,
-  DocsLayer,
-  LayoutLayer,
-  SearchLayer,
-} from './layers';
+import { clientLayers } from './layers/client-layers';
 import './styles.css';
 
 createApp(App)
-  .useLayers([
-    InkLayer,
-    RouterLayer,
-    LayoutLayer,
-    I18nLayer,
-    SidebarLayer,
-    DocsLayer,
-    TodosLayer,
-    SearchLayer,
-  ])
+  .useLayers(clientLayers)
 
   .then((app) => {
     app
