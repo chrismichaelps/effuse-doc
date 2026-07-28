@@ -10,11 +10,11 @@ title: 层
 
 层系统由三个关键概念组成:
 
-| 概念            | 目的                               | 组件中的访问方式                       |
-| --------------- | ---------------------------------- | -------------------------------------- |
-| **store**       | 响应式状态容器（signals）          | 通过 `deriveProps` → `layers.<alias>.props`   |
-| **deriveProps** | 从 store 中提取 signals 供组件使用 | `layers.<alias>.props`                |
-| **services**    | 用于依赖注入的服务/工厂            | `layers.<alias>.service('键')` |
+| 概念            | 目的                               | 组件中的访问方式                            |
+| --------------- | ---------------------------------- | ------------------------------------------- |
+| **store**       | 响应式状态容器（signals）          | 通过 `deriveProps` → `layers.<alias>.props` |
+| **deriveProps** | 从 store 中提取 signals 供组件使用 | `layers.<alias>.props`                      |
+| **services**    | 用于依赖注入的服务/工厂            | `layers.<alias>.service('键')`              |
 
 ## 创建层
 
@@ -130,12 +130,12 @@ interface EffuseLayer<P, D, S> {
 
 ## store vs provides
 
-| 方面         | `store`                      | `provides`                  |
-| ------------ | ---------------------------- | --------------------------- |
-| **目的**     | 层的响应式状态               | 依赖注入服务                |
-| **包含内容** | `createStore()` 实例         | 工厂函数 `{ 键: () => 值 }` |
+| 方面         | `store`                      | `provides`                                |
+| ------------ | ---------------------------- | ----------------------------------------- |
+| **目的**     | 层的响应式状态               | 依赖注入服务                              |
+| **包含内容** | `createStore()` 实例         | 工厂函数 `{ 键: () => 值 }`               |
 | **使用位置** | `deriveProps(store)` → props | 组件中通过 `layers.<alias>.service('键')` |
-| **响应性**   | 内置 signals                 | 取决于返回的内容            |
+| **响应性**   | 内置 signals                 | 取决于返回的内容                          |
 
 ### store
 

@@ -15,12 +15,12 @@ export type TocEntry = {
   readonly id: string;
   readonly title: string;
   readonly level: number;
-}
+};
 
 export type DocRef = {
   readonly slug: string;
   readonly title: string;
-}
+};
 
 export type Doc = {
   readonly slug: string;
@@ -28,7 +28,7 @@ export type Doc = {
   readonly title: string;
   readonly content: string;
   readonly toc: readonly TocEntry[];
-}
+};
 
 /** Lazy: one chunk per document, so a request loads only what it serves. */
 const documents = import.meta.glob('../../content/docs/*/*.md', {
@@ -45,7 +45,7 @@ const TITLE_FIELD = /^title:\s*(.+)$/m;
 type Parsed = {
   readonly frontmatter: string | null;
   readonly body: string;
-}
+};
 
 const splitFrontmatter = (markdown: string): Parsed => {
   const match = FRONTMATTER.exec(markdown);

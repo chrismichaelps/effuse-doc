@@ -187,7 +187,9 @@ export const DocsHeader = define({
             aria-label="Table of contents"
           >
             <span class="font-bold text-sm tracking-wide text-gray-200 hover:text-white truncate transition-colors">
-              {() => activeSectionTitle.value || props.pageTitle || 'On this page'}
+              {() =>
+                activeSectionTitle.value || props.pageTitle || 'On this page'
+              }
             </span>
             <TocChevron isOpen={dropdownOpen} />
           </button>
@@ -208,7 +210,10 @@ export const DocsHeader = define({
         </div>
         <nav class="toc-list-container max-h-[60vh] overflow-y-auto custom-scrollbar">
           <ul class="space-y-1 p-0 m-0 list-none">
-            <For each={normalizedTocItems} keyExtractor={(item: TocItem) => item.id}>
+            <For
+              each={normalizedTocItems}
+              keyExtractor={(item: TocItem) => item.id}
+            >
               {(itemSignal: ReadonlySignal<TocItem>) => (
                 <li
                   class={() =>

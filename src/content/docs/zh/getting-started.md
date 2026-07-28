@@ -135,7 +135,7 @@ export { installRouter };
 | `useLayer`        | `(name) => LayerContext`     | 访问层上下文。                     |
 | `useStore`        | `(key) => Store`             | 类型安全地访问全局存储。           |
 | `useService`      | `(key) => Service`           | 访问由层注入的服务。               |
-| `layers`          | `Record<alias, LayerEntry>`            | 访问层属性。                       |
+| `layers`          | `Record<alias, LayerEntry>`  | 访问层属性。                       |
 
 ## 下一步
 

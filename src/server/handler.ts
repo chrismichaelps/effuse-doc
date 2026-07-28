@@ -12,7 +12,9 @@ import { serverLayers } from './layers';
 /** Origin response cache. Per-process; a deploy replaces the instances. */
 const responseCache = createResponseCache({ maxEntries: 500 });
 
-export const createDocsHandler = (): ((request: Request) => Promise<Response>) =>
+export const createDocsHandler = (): ((
+  request: Request
+) => Promise<Response>) =>
   createHandler({
     root: App,
     layers: serverLayers,

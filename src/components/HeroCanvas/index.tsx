@@ -6,7 +6,9 @@ export const HeroCanvas = define({
     let animId: number | null = null;
 
     onMount(() => {
-      canvas = document.querySelector('.hero-canvas') as HTMLCanvasElement | null;
+      canvas = document.querySelector(
+        '.hero-canvas'
+      ) as HTMLCanvasElement | null;
       if (!canvas) return undefined;
 
       const ctx = canvas.getContext('2d');
@@ -116,13 +118,18 @@ export const HeroCanvas = define({
             // Reactive cursor radius
             const radius = 260;
             const mouseEffect = Math.max(0, (radius - dist) / radius);
-            const smoothEffect = mouseEffect * mouseEffect * (3 - 2 * mouseEffect);
+            const smoothEffect =
+              mouseEffect * mouseEffect * (3 - 2 * mouseEffect);
 
             // Dynamic displacement offset
             const angle = Math.atan2(dy, dx);
             const pushDist = smoothEffect * 16;
-            const offsetX = Math.cos(angle) * pushDist + Math.sin(dist * 0.02 - time * 1.8) * smoothEffect * 6;
-            const offsetY = Math.sin(angle) * pushDist + Math.cos(dist * 0.02 - time * 1.8) * smoothEffect * 6;
+            const offsetX =
+              Math.cos(angle) * pushDist +
+              Math.sin(dist * 0.02 - time * 1.8) * smoothEffect * 6;
+            const offsetY =
+              Math.sin(angle) * pushDist +
+              Math.cos(dist * 0.02 - time * 1.8) * smoothEffect * 6;
 
             const px = x + offsetX;
             const py = y + (wave1 + wave2 + wave3) * 4 + offsetY;

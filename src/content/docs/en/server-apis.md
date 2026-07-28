@@ -51,7 +51,11 @@ Validators may be functions or schema objects with `parse` or `safeParse`.
 ```ts
 const parseLogin = (value: unknown): { email: string; password: string } => {
   const input = value as Record<string, unknown>;
-  if (!input || typeof input.email !== 'string' || typeof input.password !== 'string') {
+  if (
+    !input ||
+    typeof input.email !== 'string' ||
+    typeof input.password !== 'string'
+  ) {
     throw new Error('email and password are required');
   }
   return { email: input.email, password: input.password };

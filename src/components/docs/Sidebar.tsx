@@ -60,9 +60,9 @@ const ChevronIcon = define({
 });
 
 const translate = (key: string): string =>
-  (i18nStore.translations.value?.sidebar as Record<string, string> | undefined)?.[
-    key
-  ] ?? key;
+  (
+    i18nStore.translations.value?.sidebar as Record<string, string> | undefined
+  )?.[key] ?? key;
 
 const createSectionStates = (): SectionState[] =>
   NAV_SECTIONS.map((section) => {

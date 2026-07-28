@@ -1,4 +1,8 @@
-import { defineServerFileHandler, defineServerRequest, serverSchema } from '@effuse/core';
+import {
+  defineServerFileHandler,
+  defineServerRequest,
+  serverSchema,
+} from '@effuse/core';
 import { NAV_SECTIONS } from '../../../../../content/docs/nav.js';
 import { LOCALES } from '../../../../docs/content.js';
 

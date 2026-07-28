@@ -32,7 +32,9 @@ export const useTranslation = defineHook<
   setup: ({ layers: { i18n } }): TranslationReturn => {
     const locale = i18n.prop('locale') as Signal<string>;
     const isLoading = i18n.prop('isLoading') as Signal<boolean>;
-    const translations = i18n.prop('translations') as Signal<Translations | null>;
+    const translations = i18n.prop(
+      'translations'
+    ) as Signal<Translations | null>;
 
     const t = (key: string, fallback?: string): string => {
       const value = translations.value;
@@ -43,4 +45,3 @@ export const useTranslation = defineHook<
     return { t, locale, isLoading };
   },
 });
-
