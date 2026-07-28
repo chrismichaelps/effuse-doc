@@ -15,7 +15,7 @@ export const FeatureCard = define<FeatureCardProps, Record<string, never>>({
         <img src={icon} alt={`${title} Icon`} class="w-6 h-6" />
         <h3 class="text-lg font-medium text-white">{title}</h3>
       </div>
-      <p class="text-zinc-500 text-sm leading-relaxed">{description}</p>
+      <p class="text-gray-300 text-sm leading-relaxed">{description}</p>
     </article>
   ),
 });

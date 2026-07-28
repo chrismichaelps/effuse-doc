@@ -60,9 +60,9 @@ export const HeroCanvas = define({
       let time = 0;
 
       const render = () => {
-        time += 0.015;
+        time += 0.016;
 
-        // Smooth responsive lerp factor
+        // Smooth mouse position lerp
         const dxMouse = mouse.targetX - mouse.x;
         const dyMouse = mouse.targetY - mouse.y;
         mouse.vx = dxMouse * 0.12;
@@ -72,7 +72,7 @@ export const HeroCanvas = define({
 
         ctx.clearRect(0, 0, width, height);
 
-        // Subtle ambient spotlight centered at cursor
+        // Soft ambient radial glow centered on cursor
         if (mouse.active || Math.abs(mouse.vx) > 0.01) {
           const auraGrad = ctx.createRadialGradient(
             mouse.x,
@@ -80,17 +80,17 @@ export const HeroCanvas = define({
             0,
             mouse.x,
             mouse.y,
-            280
+            300
           );
-          auraGrad.addColorStop(0, 'rgba(255, 255, 255, 0.035)');
-          auraGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.01)');
+          auraGrad.addColorStop(0, 'rgba(255, 255, 255, 0.06)');
+          auraGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.015)');
           auraGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
           ctx.fillStyle = auraGrad;
           ctx.fillRect(0, 0, width, height);
         }
 
-        // Draw refined micro-dot grid (small, subtle, crisp)
-        const gridSize = 24;
+        // Crisp, visible dot matrix grid (always visible by default)
+        const gridSize = 26;
         const cols = Math.ceil(width / gridSize) + 2;
         const rows = Math.ceil(height / gridSize) + 2;
         const spacingX = width / (cols - 1);
@@ -108,39 +108,40 @@ export const HeroCanvas = define({
             const dy = y - mouse.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
 
-            // Subtle wave motion
-            const wave1 = Math.sin(x * 0.005 + time * 1.2);
-            const wave2 = Math.cos(y * 0.005 + time * 1.4);
+            // Dynamic sine wave motion for default continuous animation
+            const wave1 = Math.sin(x * 0.005 + time * 1.3);
+            const wave2 = Math.cos(y * 0.005 + time * 1.5);
+            const wave3 = Math.sin((x + y) * 0.003 + time * 0.9);
 
-            // Reactive radius around cursor
-            const radius = 240;
+            // Reactive cursor radius
+            const radius = 260;
             const mouseEffect = Math.max(0, (radius - dist) / radius);
             const smoothEffect = mouseEffect * mouseEffect * (3 - 2 * mouseEffect);
 
-            // Gentle force offset
+            // Dynamic displacement offset
             const angle = Math.atan2(dy, dx);
-            const pushDist = smoothEffect * 12;
-            const offsetX = Math.cos(angle) * pushDist + Math.sin(dist * 0.025 - time * 1.5) * smoothEffect * 4;
-            const offsetY = Math.sin(angle) * pushDist + Math.cos(dist * 0.025 - time * 1.5) * smoothEffect * 4;
+            const pushDist = smoothEffect * 16;
+            const offsetX = Math.cos(angle) * pushDist + Math.sin(dist * 0.02 - time * 1.8) * smoothEffect * 6;
+            const offsetY = Math.sin(angle) * pushDist + Math.cos(dist * 0.02 - time * 1.8) * smoothEffect * 6;
 
             const px = x + offsetX;
-            const py = y + (wave1 + wave2) * 3 + offsetY;
+            const py = y + (wave1 + wave2 + wave3) * 4 + offsetY;
 
-            // Subtle micro dots (0.6px - 1.2px)
-            const baseAlpha = 0.025 + (wave1 + 1) * 0.015;
-            const hoverAlpha = smoothEffect * 0.22;
-            const alpha = Math.min(0.35, baseAlpha + hoverAlpha);
+            // Base opacity ensuring dots are 100% visible by default on screen
+            const baseAlpha = 0.12 + (wave1 + 1) * 0.06;
+            const hoverAlpha = smoothEffect * 0.45;
+            const alpha = Math.min(0.75, baseAlpha + hoverAlpha);
 
             ctx.fillStyle = `rgba(255, 255, 255, ${alpha.toFixed(3)})`;
-            const dotSize = 0.65 + smoothEffect * 0.7;
+            const dotSize = 1.0 + smoothEffect * 1.5;
 
             ctx.beginPath();
             ctx.arc(px, py, dotSize, 0, Math.PI * 2);
             ctx.fill();
 
-            // Ultra faint vector connections on hover
-            if (smoothEffect > 0.35 && (i % 3 === 0 && j % 3 === 0)) {
-              ctx.strokeStyle = `rgba(255, 255, 255, ${(smoothEffect * 0.06).toFixed(3)})`;
+            // Subtle vector lines near cursor on hover
+            if (smoothEffect > 0.3 && (i % 2 === 0 || j % 2 === 0)) {
+              ctx.strokeStyle = `rgba(255, 255, 255, ${(smoothEffect * 0.12).toFixed(3)})`;
               ctx.beginPath();
               ctx.moveTo(px, py);
               ctx.lineTo(mouse.x, mouse.y);

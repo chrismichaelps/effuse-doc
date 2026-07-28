@@ -59,7 +59,7 @@ export const HomePage = define({
         .from('.hero-subtext', { y: 30, opacity: 0, duration: 0.85 }, '-=0.6')
         .from('.hero-ctas', { y: 25, opacity: 0, duration: 0.75 }, '-=0.5');
 
-      // 2. Hero Parallax Scale-Down & Fade Out (GSAP.com style)
+      // 2. Hero Parallax Fade Out on Scroll
       gsap.to('.hero-container', {
         scrollTrigger: {
           trigger: '.hero-section',
@@ -67,8 +67,8 @@ export const HomePage = define({
           end: 'bottom top',
           scrub: 0.6,
         },
-        scale: 0.94,
-        opacity: 0.25,
+        scale: 0.95,
+        opacity: 0.3,
         y: -30,
         ease: 'none',
       });
@@ -92,59 +92,6 @@ export const HomePage = define({
           scrub: 1,
         },
         y: -200,
-      });
-
-      // 4. Features Section Reveal
-      gsap.from('.features-header', {
-        scrollTrigger: {
-          trigger: '.features-section',
-          start: 'top 85%',
-          toggleActions: 'play none none reverse',
-        },
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-        ease: 'power2.out',
-      });
-
-      gsap.from('.features-grid article', {
-        scrollTrigger: {
-          trigger: '.features-grid',
-          start: 'top 85%',
-          toggleActions: 'play none none reverse',
-        },
-        y: 50,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: 'power3.out',
-      });
-
-      // 5. Code Window 3D Perspective Reveal
-      gsap.from('.code-window', {
-        scrollTrigger: {
-          trigger: '.code-section',
-          start: 'top 85%',
-          toggleActions: 'play none none reverse',
-        },
-        y: 60,
-        scale: 0.94,
-        opacity: 0,
-        duration: 0.9,
-        ease: 'power3.out',
-      });
-
-      // 6. CTA Section Reveal
-      gsap.from('.cta-container', {
-        scrollTrigger: {
-          trigger: '.cta-section',
-          start: 'top 85%',
-          toggleActions: 'play none none reverse',
-        },
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-        ease: 'power2.out',
       });
 
       return () => {
