@@ -156,6 +156,7 @@ export const HomePage = define({
   },
   template: () => (
     <main class="home-page">
+      <HeroCanvas />
       <div class="vibrant-bg" aria-hidden="true">
         <div class="aurora-blob blob-1"></div>
         <div class="aurora-blob blob-2"></div>
@@ -163,7 +164,6 @@ export const HomePage = define({
 
       {/* Hero Section */}
       <section class="hero-section">
-        <HeroCanvas />
         <div class="hero-container">
           <h1 class="hero-heading">
             A modern approach to
