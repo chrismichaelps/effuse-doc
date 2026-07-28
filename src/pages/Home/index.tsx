@@ -59,7 +59,7 @@ export const HomePage = define({
         .from('.hero-subtext', { y: 30, opacity: 0, duration: 0.85 }, '-=0.6')
         .from('.hero-ctas', { y: 25, opacity: 0, duration: 0.75 }, '-=0.5');
 
-      // 2. Hero Scroll Scale-Down & Fade Out (GSAP.com style)
+      // 2. Hero Parallax Scale-Down & Fade Out (GSAP.com style)
       gsap.to('.hero-container', {
         scrollTrigger: {
           trigger: '.hero-section',
@@ -67,13 +67,13 @@ export const HomePage = define({
           end: 'bottom top',
           scrub: 0.6,
         },
-        scale: 0.92,
-        opacity: 0.15,
-        y: -40,
+        scale: 0.94,
+        opacity: 0.25,
+        y: -30,
         ease: 'none',
       });
 
-      // 3. Background Aurora Parallax Shift
+      // 3. Background Parallax Shift
       gsap.to('.blob-1', {
         scrollTrigger: {
           trigger: '.home-page',
@@ -81,8 +81,7 @@ export const HomePage = define({
           end: 'bottom bottom',
           scrub: 1,
         },
-        y: 350,
-        scale: 1.3,
+        y: 250,
       });
 
       gsap.to('.blob-2', {
@@ -92,20 +91,19 @@ export const HomePage = define({
           end: 'bottom bottom',
           scrub: 1,
         },
-        y: -300,
-        scale: 0.85,
+        y: -200,
       });
 
-      // 4. Feature Cards 3D Perspective Stagger Reveal
+      // 4. Features Section Reveal
       gsap.from('.features-header', {
         scrollTrigger: {
           trigger: '.features-section',
-          start: 'top 80%',
-          end: 'top 50%',
-          scrub: 0.8,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse',
         },
         y: 40,
         opacity: 0,
+        duration: 0.8,
         ease: 'power2.out',
       });
 
@@ -113,28 +111,26 @@ export const HomePage = define({
         scrollTrigger: {
           trigger: '.features-grid',
           start: 'top 85%',
-          end: 'top 45%',
-          scrub: 0.8,
+          toggleActions: 'play none none reverse',
         },
-        y: 60,
+        y: 50,
         opacity: 0,
-        scale: 0.93,
+        duration: 0.8,
         stagger: 0.15,
         ease: 'power3.out',
       });
 
-      // 5. Code Window 3D Perspective Pitch Reveal
+      // 5. Code Window 3D Perspective Reveal
       gsap.from('.code-window', {
         scrollTrigger: {
           trigger: '.code-section',
           start: 'top 85%',
-          end: 'top 40%',
-          scrub: 0.8,
+          toggleActions: 'play none none reverse',
         },
-        y: 80,
-        scale: 0.9,
-        rotateX: 12,
+        y: 60,
+        scale: 0.94,
         opacity: 0,
+        duration: 0.9,
         ease: 'power3.out',
       });
 
@@ -143,12 +139,11 @@ export const HomePage = define({
         scrollTrigger: {
           trigger: '.cta-section',
           start: 'top 85%',
-          end: 'top 50%',
-          scrub: 0.8,
+          toggleActions: 'play none none reverse',
         },
-        y: 45,
-        scale: 0.94,
+        y: 40,
         opacity: 0,
+        duration: 0.8,
         ease: 'power2.out',
       });
 
@@ -216,7 +211,7 @@ export const HomePage = define({
 
       {/* Features Section */}
       <section class="features-section" aria-labelledby="features-title">
-        <div class="features-container reveal-on-scroll">
+        <div class="features-container">
           <div class="features-header">
             <h2 id="features-title" class="features-title">
               Everything you need
@@ -253,7 +248,7 @@ export const HomePage = define({
 
       {/* Code Example */}
       <section class="code-section" aria-label="Code example">
-        <div class="code-container reveal-on-scroll">
+        <div class="code-container">
           <figure class="code-window">
             <figcaption class="code-header">
               <div class="code-dots" aria-hidden="true">
@@ -284,7 +279,7 @@ const Counter = define({
 
       {/* CTA Section */}
       <section class="cta-section">
-        <div class="cta-container reveal-on-scroll">
+        <div class="cta-container">
           <h2 class="cta-title">Ready to start?</h2>
           <p class="cta-subtitle">
             Read the documentation and build your first app.
