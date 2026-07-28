@@ -129,10 +129,17 @@
 }
 
 .docs-toc-sidebar {
-  width: 240px;
-  padding: 2rem 1.5rem;
+  width: 280px;
+  padding: 2rem 1.25rem 2rem 0.75rem;
   font-size: 0.875rem;
   display: none !important;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1280px) {
+  .docs-toc-sidebar {
+    width: 310px;
+  }
 }
 
 @media (min-width: 1024px) {
