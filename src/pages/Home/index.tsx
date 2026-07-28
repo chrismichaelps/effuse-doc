@@ -222,7 +222,7 @@ export const HomePage = define({
 
           <p class="hero-subtext">
             Build high-performance reactive applications with fine-grained signals,
-            type-safe components, and an Effect-powered architecture.
+            capability-first layers, and type-safe components.
           </p>
 
           <div class="hero-ctas">
@@ -298,20 +298,20 @@ export const HomePage = define({
           {/* Key Metrics / Highlights Bar */}
           <div class="hero-stats-grid">
             <div class="stat-card">
-              <span class="stat-number">&lt; 3kb</span>
-              <span class="stat-label">Gzipped Core</span>
-            </div>
-            <div class="stat-card">
               <span class="stat-number">100%</span>
               <span class="stat-label">Fine-Grained Signals</span>
             </div>
             <div class="stat-card">
-              <span class="stat-number">Effect</span>
-              <span class="stat-label">Concurrency & Fibers</span>
+              <span class="stat-number">0 VDOM</span>
+              <span class="stat-label">Virtual DOM Overhead</span>
             </div>
             <div class="stat-card">
-              <span class="stat-number">0 DOM</span>
-              <span class="stat-label">Virtual DOM Overhead</span>
+              <span class="stat-number">Layered</span>
+              <span class="stat-label">Capability Architecture</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">Full-Stack</span>
+              <span class="stat-label">Built-in Server & APIs</span>
             </div>
           </div>
         </div>
@@ -347,8 +347,8 @@ export const HomePage = define({
             <article>
               <FeatureCard
                 icon="/logo/efficient.svg"
-                title="Effect-Powered Engine"
-                description="Built-in structured concurrency, fibers, and resilient error management."
+                title="Capability Layers"
+                description="Explicit capability-first layer architecture with typed dependency injection."
               />
             </article>
             <article>
