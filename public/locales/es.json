@@ -39,7 +39,12 @@
 		"await": "Await",
 		"refs": "Refs",
 		"releases": "Versiones",
-		"ecosystem": "Ecosistema Effuse"
+		"ecosystem": "Ecosistema Effuse",
+		"whyEffuse": "Por qué Effuse",
+		"serverApis": "APIs del Servidor",
+		"migratingLayerAccess": "Migración de Acceso a Capas",
+		"query": "Consulta",
+		"ink": "Ink"
 	},
 	"toc": {
 		"onThisPage": "En esta página"
