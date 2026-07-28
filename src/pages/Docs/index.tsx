@@ -45,6 +45,18 @@ export const DocsPage = define<Record<string, never>, DocsPageExposed>({
       const currentLocale = locale.value;
       const currentSlug = slug.value;
 
+      const cached = queryClient.getQueryData<Doc>([
+        'docs',
+        currentLocale,
+        currentSlug,
+      ]);
+      if (cached && doc.value !== cached) {
+        doc.value = cached;
+        return;
+      }
+
+      if (typeof window === 'undefined') return;
+
       void ensureQueryData<Doc>(
         ['docs', currentLocale, currentSlug],
         async () => {
@@ -59,15 +71,17 @@ export const DocsPage = define<Record<string, never>, DocsPageExposed>({
         { client: queryClient, staleTime: Number.POSITIVE_INFINITY }
       )
         .then((data) => {
-          // A slower response for a page the reader already navigated away
-          // from must not replace the document now on screen.
           if (locale.value === currentLocale && slug.value === currentSlug) {
-            doc.value = data;
+            if (doc.value !== data) {
+              doc.value = data;
+            }
           }
         })
         .catch(() => {
           if (locale.value === currentLocale && slug.value === currentSlug) {
-            doc.value = undefined;
+            if (doc.value !== undefined) {
+              doc.value = undefined;
+            }
           }
         });
     });
