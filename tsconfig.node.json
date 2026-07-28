@@ -11,5 +11,10 @@
       "@effuse/compiler/*": ["../packages/compiler/src/*"]
     }
   },
-  "include": ["vite.config.ts", "../packages/compiler/src/**/*.ts"]
+  "include": [
+    "vite.config.ts",
+    "src/server/dev-middleware.ts",
+    "api/**/*.ts",
+    "../packages/compiler/src/**/*.ts"
+  ]
 }
