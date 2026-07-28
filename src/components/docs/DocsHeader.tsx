@@ -220,7 +220,7 @@ export const DocsHeader = define({
                     class={() =>
                       `block py-1.5 px-3 rounded-lg text-xs transition-all duration-200 ${
                         activeSectionId.value === itemSignal.value.id
-                          ? 'bg-gradient-to-r from-[#2dd4bf]/20 to-[#a855f7]/20 text-[#2dd4bf] font-medium shadow-sm'
+                          ? 'bg-white/10 text-white font-medium shadow-sm'
                           : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
                       }`
                     }

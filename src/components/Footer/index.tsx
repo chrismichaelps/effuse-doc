@@ -115,7 +115,7 @@ export const Footer = define({
           <div class="footer-effuse-badge">
             <div class="footer-badge-left">
               <img
-                src="/logo/logo-mint.svg"
+                src="/logo/logo-white.svg"
                 alt="Effuse"
                 class="footer-badge-logo"
               />
