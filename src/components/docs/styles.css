@@ -178,8 +178,8 @@
 }
 
 .toc-sidebar-link.active {
-  color: var(--accent-mint);
-  font-weight: 500;
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .toc-sidebar-link.active::before {
@@ -190,7 +190,8 @@
   transform: translateY(-50%);
   width: 2px;
   height: 14px;
-  background: var(--accent-mint);
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
 
 :root {
@@ -442,7 +443,7 @@
 }
 
 .sidebar-link.router-link-exact-active {
-  color: var(--accent-mint);
+  color: #ffffff;
   background: rgba(255, 255, 255, 0.08);
   font-weight: 600;
 }
@@ -455,7 +456,8 @@
   transform: translateY(-50%);
   width: 2px;
   height: 14px;
-  background: var(--accent-mint);
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
 
 .toc-nav {
@@ -621,8 +623,8 @@
 }
 
 .toc-item.active {
-  color: var(--accent-mint);
-  background: rgba(141, 240, 204, 0.08);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
   font-weight: 600;
 }
 
@@ -634,7 +636,8 @@
   transform: translateY(-50%);
   width: 2px;
   height: 16px;
-  background: var(--accent-mint);
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
 
 .docs-header {
@@ -943,18 +946,17 @@
 
 .prose a,
 .prose .ink-link {
-  color: var(--accent-mint) !important;
-  text-decoration: none;
+  color: #ffffff !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
   font-weight: 500;
   transition: all 0.15s ease;
-  border-bottom: 1px solid transparent;
 }
 
 .prose a:hover,
 .prose .ink-link:hover {
-  border-bottom-color: var(--accent-mint) !important;
   opacity: 0.8 !important;
-  color: var(--accent-mint) !important;
+  color: #ffffff !important;
 }
 
 .prose strong {
@@ -968,20 +970,22 @@
 }
 
 .prose :not(pre) > code {
-  background: var(--bg-elevated);
-  padding: 0.2em 0.4em;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.2em 0.45em;
   border-radius: 4px;
-  color: var(--accent-mint);
+  color: #f0f6fc;
 }
 
 .prose pre {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 1rem 1.25rem;
+  background: rgba(14, 17, 20, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
   overflow-x: auto;
   font-size: 0.875rem;
-  line-height: 1.6;
+  line-height: 1.65;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .prose pre code {
@@ -1073,12 +1077,12 @@
 }
 
 .prose tr:hover td {
-  background: rgba(141, 240, 204, 0.03);
+  background: rgba(255, 255, 255, 0.03);
   color: var(--text-primary);
 }
 
 .prose tr:hover td:first-child {
-  box-shadow: inset 3px 0 0 var(--accent-mint);
+  box-shadow: inset 3px 0 0 #ffffff;
 }
 
 .prose .callout,
@@ -1194,8 +1198,9 @@
 }
 
 .lang-option.active {
-  color: var(--accent-mint);
-  background: rgba(141, 240, 204, 0.08);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  font-weight: 600;
 }
 
 .lang-flag {
