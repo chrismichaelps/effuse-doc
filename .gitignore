@@ -38,9 +38,8 @@ coverage
 # Ignore the master seed file
 FMCF-MASTER-SEED.md
 
-# Ignore the top-level docs folder, except design specs.
+# Ignore the top-level docs folder and specs.
 # Anchored with a leading slash: an unanchored "docs" also matches
 # src/content/docs and src/server/docs.
 /docs
-!/docs/superpowers/
-!/docs/superpowers/**
+/docs/superpowers
