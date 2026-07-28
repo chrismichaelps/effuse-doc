@@ -2,13 +2,13 @@ allowBuilds:
   '@parcel/watcher': true
   msgpackr-extract: true
 minimumReleaseAgeExclude:
-  - '@effuse/cli@1.0.1'
+  - '@effuse/cli@1.0.2'
   - '@effuse/compiler@1.0.5'
-  - '@effuse/core@2.0.1'
-  - '@effuse/i18n@1.1.1'
-  - '@effuse/ink@1.2.1'
-  - '@effuse/query@2.0.1'
-  - '@effuse/router@1.2.1'
-  - '@effuse/server@1.0.1'
-  - '@effuse/store@1.1.1'
-  - '@effuse/use@1.2.1'
+  - '@effuse/core@2.0.2'
+  - '@effuse/i18n@1.1.2'
+  - '@effuse/ink@1.2.2'
+  - '@effuse/query@2.0.2'
+  - '@effuse/router@1.2.2'
+  - '@effuse/server@1.0.2'
+  - '@effuse/store@1.1.2'
+  - '@effuse/use@1.2.2'

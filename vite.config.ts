@@ -3,14 +3,14 @@ import { effuse } from '@effuse/compiler/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { effuseDevApi } from './src/server/dev-middleware';
 
-export default defineConfig({
-  plugins: [
-    tailwindcss(),
-    effuse({
-      debug: false,
-    }),
-    effuseDevApi(),
-  ],
+/**
+ * Two outputs from one config, selected by `--ssr`:
+ *
+ *   dist/client   browser bundle, index.html shell, and the asset manifest
+ *   dist/server   entry-server.js, imported by api/ and scripts/serve.mjs
+ */
+export default defineConfig(({ isSsrBuild }) => ({
+  plugins: [tailwindcss(), effuse({ debug: false }), effuseDevApi()],
   resolve: {
     dedupe: [
       '@effuse/core',
@@ -23,16 +23,22 @@ export default defineConfig({
   build: {
     sourcemap: false,
     chunkSizeWarningLimit: 1000,
+    outDir: isSsrBuild ? 'dist/server' : 'dist/client',
+    emptyOutDir: true,
+    // The handler needs the manifest to emit asset tags matching the hashed
+    // filenames the client build produced.
+    manifest: !isSsrBuild,
     rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('effect')) {
-              return 'vendor-effect';
-            }
-          }
-        },
-      },
+      output: isSsrBuild
+        ? {}
+        : {
+            manualChunks(id: string) {
+              if (id.includes('node_modules') && id.includes('effect')) {
+                return 'vendor-effect';
+              }
+              return undefined;
+            },
+          },
     },
   },
-});
+}));

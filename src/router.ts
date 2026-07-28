@@ -1,4 +1,10 @@
-import { createRouter, createWebHistory, defineRoutes } from '@effuse/router';
+import {
+  createMemoryHistory,
+  createRouter,
+  createWebHistory,
+  defineRoutes,
+  type RouterHistory,
+} from '@effuse/router';
 import { HomePage } from './pages/Home';
 import { FormDemoPage } from './pages/Form';
 import { TodosPage } from './pages/Todos';
@@ -37,7 +43,12 @@ const routes = defineRoutes([
   { path: '/[...slug]', name: 'not-found', component: NotFoundPage },
 ]);
 
-export const router = createRouter({
-  history: createWebHistory(),
-  routes,
-});
+export const createAppRouter = (history: RouterHistory) =>
+  createRouter({
+    history,
+    routes,
+  });
+
+export const router = createAppRouter(
+  typeof window === 'undefined' ? createMemoryHistory('/') : createWebHistory()
+);

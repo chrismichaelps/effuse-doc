@@ -3,8 +3,7 @@ import { App } from '../App';
 import { serverLayers } from './layers';
 
 /**
- * The application fetch handler, shared by the dev middleware, the Vercel
- * function in `api/`, and `scripts/serve.ts`.
+ * Development handler loaded by the Vite middleware for server API routes.
  *
  * Server routes are matched before the SSR fallback.
  */
