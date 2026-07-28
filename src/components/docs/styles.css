@@ -46,12 +46,14 @@
 .docs-sidebar {
   height: 100%;
   overflow-y: auto;
-  background: transparent !important;
+  background: rgba(14, 18, 22, 0.95) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
   position: relative;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
 }
 
 .docs-sidebar::after {
@@ -142,6 +144,13 @@
 .toc-sidebar-container {
   position: sticky;
   top: 2rem;
+  background: rgba(14, 18, 22, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1rem;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .toc-sidebar-title {
@@ -464,10 +473,10 @@
   position: sticky;
   top: 4.25rem;
   z-index: 10;
-  background: rgba(11, 16, 18, 0.7);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(14, 18, 22, 0.9) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 13px;
   margin: 4.5rem 1.5rem 0 1.5rem;
   padding: 0;
@@ -475,10 +484,11 @@
   display: flex;
   align-items: center;
   width: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .toc-nav.shadow-lg {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
 }
 
 .toc-nav-trigger {
@@ -486,22 +496,23 @@
   align-items: center;
   justify-content: center;
   gap: 0.625rem;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-default);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 99rem;
   height: 2.25rem;
   padding: 0 1rem;
   margin: 0 auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   max-width: fit-content;
   min-width: 120px;
   transition: all 0.2s ease;
   cursor: pointer;
+  color: #ffffff;
 }
 
 .toc-nav-trigger:hover {
-  background: var(--bg-surface);
-  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .toc-text-container {
@@ -513,7 +524,7 @@
   display: block;
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -526,11 +537,11 @@
 }
 
 .text-orange-600 {
-  color: var(--accent-mint);
+  color: #ffffff;
 }
 
 .stroke-current\/25 {
-  stroke: var(--border-default);
+  stroke: rgba(255, 255, 255, 0.2);
   opacity: 1;
 }
 
@@ -561,12 +572,12 @@
   top: calc(100% + 0.5rem);
   left: 0;
   right: 0;
-  background: rgba(11, 16, 18, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(14, 18, 22, 0.98);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 13px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
   max-height: 0;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
