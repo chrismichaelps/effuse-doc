@@ -117,7 +117,7 @@ export const searchStore = createStore('search', {
   results: [],
   setResults(data: any[]) {
     this.results.value = data;
-  }
+  },
 });
 
 // Setup a concurrent action outside the store
@@ -126,7 +126,7 @@ export const performSearch = useConcurrency({
   async action(query: string) {
     const data = await api.search(query);
     searchStore.setResults(data);
-  }
+  },
 });
 
 // Setup a debounced action
@@ -136,7 +136,7 @@ export const debouncedSearch = useConcurrency({
   async action(query: string) {
     const data = await api.search(query);
     searchStore.setResults(data);
-  }
+  },
 });
 ```
 

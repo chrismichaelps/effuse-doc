@@ -1,4 +1,4 @@
-import { define, defineProps } from '@effuse/core';
+import { define } from '@effuse/core';
 import './styles.css';
 
 interface FeatureCardProps {
@@ -7,16 +7,15 @@ interface FeatureCardProps {
   description: string;
 }
 
-export const FeatureCard = define({
-  props: defineProps<FeatureCardProps>(),
+export const FeatureCard = define<FeatureCardProps, Record<string, never>>({
   script: () => ({}),
-  template: ({ props }) => (
+  template: ({ props: { icon, title, description } }) => (
     <article class="feature-card">
       <div class="flex items-center gap-3 mb-3">
-        <img src={props.icon} alt={`${props.title} Icon`} class="w-6 h-6" />
-        <h3 class="text-lg font-medium text-white">{props.title}</h3>
+        <img src={icon} alt={`${title} Icon`} class="w-6 h-6" />
+        <h3 class="text-lg font-medium text-white">{title}</h3>
       </div>
-      <p class="text-zinc-500 text-sm leading-relaxed">{props.description}</p>
+      <p class="text-zinc-500 text-sm leading-relaxed">{description}</p>
     </article>
   ),
 });

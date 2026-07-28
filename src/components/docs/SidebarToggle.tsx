@@ -1,7 +1,8 @@
-import { define, type Signal, computed } from '@effuse/core';
+import { define, defineProps, type Signal, computed } from '@effuse/core';
 import { taggedEnum, matchTag, constant } from '../../utils/data/index.js';
 import { docsStore } from '../../store/docsUIStore.js';
-import { useIsMobile } from '../../hooks/index.js';
+import { useMediaQuery } from '@effuse/use';
+import { SidebarLayer } from '../../layers/SidebarLayer.js';
 
 type ToggleContextMobile = {
   readonly _tag: 'Mobile';
@@ -16,9 +17,7 @@ type ToggleContextCustom = {
   readonly onToggle: () => void;
 };
 type ToggleContext =
-  | ToggleContextMobile
-  | ToggleContextDesktop
-  | ToggleContextCustom;
+  ToggleContextMobile | ToggleContextDesktop | ToggleContextCustom;
 
 const Context = taggedEnum<ToggleContext>();
 
@@ -59,26 +58,32 @@ interface SidebarToggleExposed {
   ariaLabel: string;
 }
 
-export const SidebarToggle = define<SidebarToggleProps, SidebarToggleExposed>({
-  script: ({ props }) => {
-    const isMobile = useIsMobile();
+export const SidebarToggle = define({
+  props: defineProps<SidebarToggleProps>(),
+  layers: { sidebar: SidebarLayer } as const,
+  script: ({ props, useCallback, layers: { sidebar } }) => {
+    const docsUI = sidebar.services.docsUI as typeof docsStore;
+    const { matches: isMobile } = useMediaQuery({
+      query: '(max-width: 767px)',
+      initialValue: false,
+    });
 
-    const resolveContext = (): ToggleContext => {
+    const resolveContext = useCallback((): ToggleContext => {
       if (props.onToggle) {
         return Context.Custom({ onToggle: props.onToggle });
       }
       return isMobile.value
-        ? Context.Mobile({ store: docsStore })
-        : Context.Desktop({ store: docsStore });
-    };
+        ? Context.Mobile({ store: docsUI })
+        : Context.Desktop({ store: docsUI });
+    });
 
     const context = computed(resolveContext);
 
-    const handleClick = (e: MouseEvent) => {
+    const handleClick = useCallback((e: MouseEvent) => {
       e.stopPropagation();
       const action = getToggleAction(context.value);
       action();
-    };
+    });
 
     const buttonClass = computed(() => {
       const baseClass = 'sidebar-toggle-btn';
@@ -98,7 +103,7 @@ export const SidebarToggle = define<SidebarToggleProps, SidebarToggleExposed>({
       handleClick,
       buttonClass,
       ariaLabel: ariaLabel.value,
-    };
+    } satisfies SidebarToggleExposed;
   },
   template: ({ handleClick, buttonClass, ariaLabel }) => (
     <button

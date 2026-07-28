@@ -54,7 +54,7 @@ export const useToggle = defineHook<ToggleConfig, ToggleReturn>({
 | `config`        | 调用钩子时传递的配置 |
 | `signal`        | 创建响应式信号       |
 | `computed`      | 创建派生计算值       |
-| `watchEffect`        | 运行跟踪依赖的副作用 |
+| `watchEffect`   | 运行跟踪依赖的副作用 |
 | `onMount`       | 注册钩子挂载时的回调 |
 | `layers`        | 以类型安全的方式访问已声明层的 props 和服务 |
 | `scope`         | 管理清理和终结器     |
@@ -138,11 +138,11 @@ export const useClickOutside = defineHook<
   ClickOutsideReturn
 >({
   name: 'useClickOutside',
-  setup: ({ config, signal, effect }): ClickOutsideReturn => {
+  setup: ({ config, signal, watchEffect }): ClickOutsideReturn => {
     const initialized = signal(false);
     let callback: (() => void) | null = null;
 
-    effect(() => {
+    watchEffect(() => {
       if (!initialized.value) return undefined;
 
       const handleClick = (e: Event) => {
@@ -197,10 +197,10 @@ export const useTranslation = defineHook<
 
 ## 清理
 
-当组件卸载时，效果会自动清理。从 `effect` 返回清理函数：
+当组件卸载时，效果会自动清理。从 `watchEffect` 返回清理函数：
 
 ```typescript
-effect(() => {
+watchEffect(() => {
   const handler = () => {
     /* ... */
   };

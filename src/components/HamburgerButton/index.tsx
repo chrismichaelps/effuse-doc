@@ -1,12 +1,20 @@
-import { define, defineProps, computed, type Signal } from '@effuse/core';
+import { define, computed, type Signal } from '@effuse/core';
 
 interface HamburgerButtonProps {
   isOpen: Signal<boolean>;
   onToggle: () => void;
 }
 
-export const HamburgerButton = define({
-  props: defineProps<HamburgerButtonProps>(),
+interface HamburgerButtonExposed {
+  topBarStyle: Signal<Record<string, string>>;
+  middleBarStyle: Signal<Record<string, string>>;
+  bottomBarStyle: Signal<Record<string, string>>;
+}
+
+export const HamburgerButton = define<
+  HamburgerButtonProps,
+  HamburgerButtonExposed
+>({
   script: ({ props }) => {
     const topBarStyle = computed(() => ({
       display: 'block',
@@ -39,7 +47,11 @@ export const HamburgerButton = define({
         ? 'translateY(-6px) rotate(-45deg)'
         : 'none',
     }));
-    return { topBarStyle, middleBarStyle, bottomBarStyle };
+    return {
+      topBarStyle,
+      middleBarStyle,
+      bottomBarStyle,
+    };
   },
   template: ({
     props: { onToggle, isOpen },
@@ -51,7 +63,7 @@ export const HamburgerButton = define({
       onClick={onToggle}
       class="md:hidden flex flex-col justify-center items-center w-10 h-10 rounded-lg hover:bg-slate-100 transition-colors"
       aria-label="Toggle menu"
-      aria-expanded={isOpen}
+      aria-expanded={isOpen.value}
       style={{
         cursor: 'pointer',
         border: 'none',

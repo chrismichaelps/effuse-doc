@@ -1,5 +1,6 @@
 import {
   define,
+  defineProps,
   type Signal,
   For,
   computed,
@@ -56,20 +57,14 @@ const unwrapTocItems = (
   return getOrElse(toOption(), () => []);
 };
 
-const docsLayoutLayers = { sidebar: SidebarLayer } as const;
-
-export const DocsLayout = define<
-  DocsLayoutProps,
-  DocsLayoutExposed,
-  typeof docsLayoutLayers
->({
-  layers: docsLayoutLayers,
+export const DocsLayout = define({
+  props: defineProps<DocsLayoutProps>(),
+  layers: { sidebar: SidebarLayer } as const,
   script: ({ props, onMount, layers: { sidebar } }) => {
     const { t } = useTranslation();
-
     const isMobile = useIsMobile();
 
-    const docsStore = sidebar.service('docsUI') as typeof DocsStoreType;
+    const docsStore = (sidebar.services.docsUI ?? sidebar.service('docsUI')) as typeof DocsStoreType;
 
     const normalizedTocItems = computed(() => unwrapTocItems(props.tocItems));
 
@@ -123,8 +118,8 @@ export const DocsLayout = define<
     };
 
     const sidebarClass = computed(() => {
-      const open = sidebar.prop('isOpen').value;
-      const collapsed = sidebar.prop('isCollapsed').value;
+      const open = sidebar.props.isOpen.value;
+      const collapsed = sidebar.props.isCollapsed.value;
       const className = `sidebar-desktop-wrapper ${open ? 'sidebar-mobile-open' : 'sidebar-mobile-closed'} ${collapsed ? 'collapsed' : ''}`;
       return className;
     });
@@ -142,11 +137,11 @@ export const DocsLayout = define<
       handleTocClick,
       normalizedTocItems,
       t,
-      isCollapsed: sidebar.prop('isCollapsed'),
-      isOpen: sidebar.prop('isOpen'),
+      isCollapsed: sidebar.props.isCollapsed,
+      isOpen: sidebar.props.isOpen,
       sidebarClass,
       isMobile,
-    };
+    } satisfies DocsLayoutExposed;
   },
   template: ({
     docsStore,

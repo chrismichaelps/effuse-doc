@@ -87,7 +87,7 @@ const TodosPage = define({
 
     // Sync server data to store
     watchEffect(() => {
-      const pages = todosQuery.allPagesData.value;
+      const pages = todosQuery.data.value?.pages ?? [];
       if (pages && pages.length > syncedPageCount.value) {
         if (syncedPageCount.value === 0) {
           todosStore.setTodos(pages.flat());

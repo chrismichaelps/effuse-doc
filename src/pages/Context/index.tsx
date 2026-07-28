@@ -1,6 +1,5 @@
 import {
   define,
-  defineProps,
   signal,
   computed,
   useHead,
@@ -67,10 +66,16 @@ interface ThemeCardProps {
   theme: ReadonlySignal<ThemeMode>;
 }
 
-const ThemeCard = define({
-  props: defineProps<ThemeCardProps>(),
-  script: () => ({}),
-  template: ({ props: { label, theme } }) => (
+interface ThemeCardExposed {
+  label: string | undefined;
+  theme: ReadonlySignal<ThemeMode>;
+}
+
+const ThemeCard = define<ThemeCardProps, ThemeCardExposed>({
+  script: ({ props }) => {
+    return { label: props.label, theme: props.theme };
+  },
+  template: ({ exposed: { label, theme } }) => (
     <article
       class="context-theme-card"
       style={() => ({

@@ -6,6 +6,9 @@ title: Routing
 
 Effuse Router provides type-safe, declarative routing.
 
+This page covers browser navigation. HTTP API routes, server middleware, SSR
+dispatch, and runtime adapters are documented in [Server & APIs](/docs/server).
+
 ## Setup
 
 ```typescript

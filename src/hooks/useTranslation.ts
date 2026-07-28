@@ -43,3 +43,4 @@ export const useTranslation = defineHook<
     return { t, locale, isLoading };
   },
 });
+

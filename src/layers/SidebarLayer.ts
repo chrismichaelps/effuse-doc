@@ -1,7 +1,7 @@
 import { defineLayer, signal, computed } from '@effuse/core';
+import { docsStore } from '../store/docsUIStore';
 import { Sidebar } from '../components/docs/Sidebar';
 import { SidebarToggle } from '../components/docs/SidebarToggle';
-import { docsStore } from '../store/docsUIStore';
 
 export const SidebarLayer = defineLayer({
   name: 'sidebar',

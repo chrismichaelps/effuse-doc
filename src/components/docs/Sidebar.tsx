@@ -15,8 +15,9 @@ import {
 import { SidebarToggle } from './SidebarToggle.js';
 import { SidebarVersions } from './SidebarVersions.js';
 import { docsStore } from '../../store/docsUIStore.js';
-import { i18nStore } from '../../store/appI18n';
+import { i18nStore } from '../../store/appI18n.js';
 import { NAV_SECTIONS } from '../../content/docs/nav.js';
+import { SidebarLayer } from '../../layers/SidebarLayer.js';
 
 interface NavItem {
   label: string;
@@ -38,6 +39,8 @@ interface SidebarProps {
 
 interface SidebarExposed {
   sectionStates: SectionState[];
+  isSidebarOpen?: ReadonlySignal<boolean>;
+  toggleSidebar?: () => void;
 }
 
 const ChevronIcon = define({
@@ -93,9 +96,10 @@ const createSectionStates = (): SectionState[] =>
     };
   });
 
-
-export const Sidebar = define<SidebarProps, SidebarExposed>({
-  script: ({ onMount }) => {
+export const Sidebar = define({
+  props: defineProps<SidebarProps>(),
+  layers: { sidebar: SidebarLayer } as const,
+  script: ({ onMount, layers: { sidebar } }) => {
     onMount(() => {
       requestAnimationFrame(() => {
         const links = document.querySelectorAll('.sidebar-link');
@@ -106,7 +110,13 @@ export const Sidebar = define<SidebarProps, SidebarExposed>({
       return undefined;
     });
 
-    return { sectionStates: createSectionStates() };
+    return {
+      sectionStates: createSectionStates(),
+      isSidebarOpen: sidebar.props.isOpen,
+      toggleSidebar: () => {
+        sidebar.props.isOpen.value = !sidebar.props.isOpen.value;
+      },
+    } satisfies SidebarExposed;
   },
 
   template: ({ sectionStates }) => (
