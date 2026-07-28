@@ -1,22 +1,26 @@
 .feature-card {
-  padding: 1.5rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  background: rgba(16, 20, 24, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   transition: all 0.3s var(--ease-spring);
   position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .feature-card::before {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: 1px;
   background: linear-gradient(
     135deg,
-    transparent 0%,
-    var(--accent-mint) 50%,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
     transparent 100%
   );
   -webkit-mask:
@@ -33,27 +37,28 @@
 
 .feature-card:hover {
   border-color: var(--border-strong);
-  background: var(--bg-elevated);
-  transform: translateY(-3px);
+  background: var(--bg-surface);
+  transform: translateY(-4px) scale(1.02);
   box-shadow:
-    0 8px 30px rgba(0, 0, 0, 0.3),
-    0 0 40px rgba(141, 240, 204, 0.05);
+    0 16px 40px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(255, 255, 255, 0.08);
 }
 
 .feature-card:hover::before {
-  opacity: 0.5;
+  opacity: 1;
 }
 
 .feature-icon-box {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 0.75rem;
-  color: var(--accent-mint);
-  background: rgba(141, 240, 204, 0.1);
-  border-radius: var(--radius-sm);
+  margin-bottom: 1rem;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
 }
 
 .w-6 {
