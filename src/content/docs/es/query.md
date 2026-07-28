@@ -70,7 +70,7 @@ const { mutate, isPending } = useMutation({
 | `staleTime` | `number`            | Time in ms before data is considered stale |
 | `cacheTime` | `number`            | Time in ms to keep unused data in cache    |
 | `enabled`   | `Signal<boolean>`   | Whether the query should run automatically |
-| `retry`     | `number \| boolean` | Retry behavior on failure                  |
+| `retry`     | `number &#124; boolean` | Retry behavior on failure                  |
 
 ## useInfiniteQuery
 

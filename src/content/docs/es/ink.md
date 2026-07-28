@@ -34,7 +34,7 @@ export default define({
 
 | Prop         | Type                          | Description                                            |
 | :----------- | :---------------------------- | :----------------------------------------------------- |
-| `content`    | `string \| { value: string }` | The markdown content to render. Can be a signal value. |
+| `content`    | `string &#124; { value: string }` | The markdown content to render. Can be a signal value. |
 | `components` | `InkComponents`               | Custom component mapping (see below).                  |
 | `class`      | `string`                      | Optional CSS class for the wrapper element.            |
 

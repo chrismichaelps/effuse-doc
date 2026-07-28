@@ -1053,14 +1053,14 @@
 }
 
 .prose table {
-  min-width: 100%;
-  width: max-content;
+  width: 100%;
+  max-width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   margin-bottom: 0;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow-x: auto;
   background: rgba(255, 255, 255, 0.01);
 }
 

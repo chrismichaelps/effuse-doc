@@ -60,8 +60,8 @@ watchEffect(
 | :--------- | :--------------------------------------------------------------------------- | :----------------------------------------- |
 | `debounce` | `{ wait: number, leading?: boolean, trailing?: boolean }`                    | デバウンス設定                             |
 | `timeout`  | `number`                                                                     | 実行に許可される最大時間                   |
-| `retry`    | `{ times?: number, delay?: number, strategy?: 'constant' \| 'exponential' }` | 再試行設定                                 |
-| `flush`    | `'sync' \| 'post'`                                                           | 同期的に実行するか、DOM 更新後に実行するか |
+| `retry`    | `{ times?: number, delay?: number, strategy?: 'constant' &#124; 'exponential' }` | 再試行設定                                 |
+| `flush`    | `'sync' &#124; 'post'`                                                           | 同期的に実行するか、DOM 更新後に実行するか |
 
 ## 2. Effect によるデータ同期
 

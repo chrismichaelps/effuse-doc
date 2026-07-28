@@ -33,7 +33,7 @@ const ThemeContext = createContext<ThemeConfig>({
 | Property       | Type           | Description                                |
 | -------------- | -------------- | ------------------------------------------ |
 | `id`           | `string`       | Unique identifier for the context          |
-| `defaultValue` | `T \| () => T` | Optional default value or factory function |
+| `defaultValue` | `T &#124; () => T` | Optional default value or factory function |
 | `displayName`  | `string`       | Human-readable name for debugging          |
 
 ## Using Context Values

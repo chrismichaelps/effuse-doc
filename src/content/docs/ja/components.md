@@ -437,6 +437,6 @@ const App = define({
 
 | Prop       | 型                                                                | 説明                                   |
 | ---------- | ----------------------------------------------------------------- | -------------------------------------- |
-| `fallback` | `EffuseChild \| ((err: Error, reset: () => void) => EffuseChild)` | エラーを受け取るレンダリング関数       |
+| `fallback` | `EffuseChild &#124; ((err: Error, reset: () => void) => EffuseChild)` | エラーを受け取るレンダリング関数       |
 | `children` | `EffuseChild`                                                     | エラーを監視するコンテンツ             |
 | `onError`  | `(err: Error) => void`                                            | エラーがキャッチされた時のコールバック |

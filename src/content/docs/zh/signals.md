@@ -138,8 +138,8 @@ effect(
 | :--------- | :-------------------------- | :--------------------- |
 | `debounce` | `number`                    | 延迟执行直到延迟之后   |
 | `timeout`  | `number`                    | 允许执行的最大时间     |
-| `retry`    | `number \| RetryOptions`    | 重试失败效果的策略     |
-| `flush`    | `'pre' \| 'post' \| 'sync'` | 相对于渲染何时运行效果 |
+| `retry`    | `number &#124; RetryOptions`    | 重试失败效果的策略     |
+| `flush`    | `'pre' &#124; 'post' &#124; 'sync'` | 相对于渲染何时运行效果 |
 
 ### 监视多个信号
 
