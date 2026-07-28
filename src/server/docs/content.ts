@@ -1,34 +1,16 @@
 import { parseSync } from '@effuse/ink';
 import type { BlockNode, DocumentNode, InlineNode } from '@effuse/ink';
 import { createHeadingSlugger } from './slug.js';
+import {
+  DEFAULT_LOCALE,
+  type Locale,
+} from '../../content/docs/constants.js';
+import type { Doc, TocEntry } from '../../content/docs/types.js';
 
-export const LOCALES = ['en', 'es', 'ja', 'zh'] as const;
-export type Locale = (typeof LOCALES)[number];
+export { DEFAULT_LOCALE, DEFAULT_SLUG, LOCALES, isLocale } from '../../content/docs/constants.js';
+export type { Locale } from '../../content/docs/constants.js';
+export type { Doc, TocEntry } from '../../content/docs/types.js';
 
-export const DEFAULT_LOCALE: Locale = 'en';
-export const DEFAULT_SLUG = 'getting-started';
-
-export const isLocale = (value: string): value is Locale =>
-  (LOCALES as readonly string[]).includes(value);
-
-export type TocEntry = {
-  readonly id: string;
-  readonly title: string;
-  readonly level: number;
-};
-
-export type DocRef = {
-  readonly slug: string;
-  readonly title: string;
-};
-
-export type Doc = {
-  readonly slug: string;
-  readonly locale: Locale;
-  readonly title: string;
-  readonly content: string;
-  readonly toc: readonly TocEntry[];
-};
 
 /** Lazy: one chunk per document, so a request loads only what it serves. */
 const documents = import.meta.glob('../../content/docs/*/*.md', {
