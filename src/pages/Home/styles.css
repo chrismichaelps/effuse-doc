@@ -341,6 +341,12 @@
   gap: 1.25rem;
 }
 
+.features-grid > article {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 @media (min-width: 768px) {
   .features-grid {
     grid-template-columns: repeat(3, 1fr);
