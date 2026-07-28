@@ -1,6 +1,6 @@
 import { createHandler, createResponseCache } from '@effuse/core/server';
 import { App } from '../App';
-import { appLayers } from '../layers';
+import { serverLayers } from './layers';
 
 /**
  * The application fetch handler, shared by the dev middleware, the Vercel
@@ -15,7 +15,7 @@ const responseCache = createResponseCache({ maxEntries: 500 });
 export const createDocsHandler = (): ((request: Request) => Promise<Response>) =>
   createHandler({
     root: App,
-    layers: appLayers,
+    layers: serverLayers,
     // Non-streaming: streaming defers late <head> into the hydration payload,
     // which a non-executing crawler never sees.
     onError: (error, request) => {
