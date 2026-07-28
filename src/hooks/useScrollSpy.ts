@@ -109,6 +109,10 @@ export const useScrollSpy = defineHook<ScrollSpyConfig, ScrollSpyReturn>({
         const tocItems = items.value;
         if (tocItems.length === 0) return;
 
+        // Get the container's top edge so we can measure heading positions
+        // relative to the scroll container rather than the viewport.
+        const containerTop = container.getBoundingClientRect().top;
+
         let foundId = '';
         for (const item of tocItems) {
           let el = document.getElementById(item.id);
@@ -123,16 +127,19 @@ export const useScrollSpy = defineHook<ScrollSpyConfig, ScrollSpyReturn>({
           }
           if (el) {
             const rect = el.getBoundingClientRect();
-            if (rect.top < config.threshold) {
+            // Position relative to the scroll container's visible area
+            const relativeTop = rect.top - containerTop;
+            if (relativeTop < config.threshold) {
               foundId = item.id;
             }
           }
         }
 
-        const scrollTop = window.scrollY || document.documentElement.scrollTop;
-        const scrollHeight = document.documentElement.scrollHeight;
-        const clientHeight = window.innerHeight;
-        if (scrollTop + clientHeight >= scrollHeight) {
+        // Use the scroll container's own metrics for bottom-of-page detection
+        const scrollTop = container.scrollTop;
+        const scrollHeight = container.scrollHeight;
+        const clientHeight = container.clientHeight;
+        if (scrollTop + clientHeight >= scrollHeight - 2) {
           foundId = tocItems[tocItems.length - 1]?.id || foundId;
         }
 
