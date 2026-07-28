@@ -33,7 +33,7 @@ const ThemeContext = createContext<ThemeConfig>({
 | 属性           | 类型           | 描述                   |
 | -------------- | -------------- | ---------------------- |
 | `id`           | `string`       | 上下文的唯一标识符     |
-| `defaultValue` | `T \| () => T` | 可选的默认值或工厂函数 |
+| `defaultValue` | `T &#124; () => T` | 可选的默认值或工厂函数 |
 | `displayName`  | `string`       | 用于调试的可读名称     |
 
 ## 使用上下文值

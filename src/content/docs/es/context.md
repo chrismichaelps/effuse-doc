@@ -33,7 +33,7 @@ const ThemeContext = createContext<ThemeConfig>({
 | Propiedad      | Tipo           | Descripción                                        |
 | -------------- | -------------- | -------------------------------------------------- |
 | `id`           | `string`       | Identificador único para el contexto               |
-| `defaultValue` | `T \| () => T` | Valor predeterminado opcional o función de fábrica |
+| `defaultValue` | `T &#124; () => T` | Valor predeterminado opcional o función de fábrica |
 | `displayName`  | `string`       | Nombre legible para depuración                     |
 
 ## Usando Valores de Contexto

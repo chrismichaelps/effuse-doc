@@ -60,8 +60,8 @@ watchEffect(
 | :--------- | :--------------------------------------------------------------------------- | :------------------------------ |
 | `debounce` | `{ wait: number, leading?: boolean, trailing?: boolean }`                    | 防抖配置                        |
 | `timeout`  | `number`                                                                     | 允许执行的最大时间              |
-| `retry`    | `{ times?: number, delay?: number, strategy?: 'constant' \| 'exponential' }` | 重试配置                        |
-| `flush`    | `'sync' \| 'post'`                                                           | 是同步运行还是在 DOM 更新后运行 |
+| `retry`    | `{ times?: number, delay?: number, strategy?: 'constant' &#124; 'exponential' }` | 重试配置                        |
+| `flush`    | `'sync' &#124; 'post'`                                                           | 是同步运行还是在 DOM 更新后运行 |
 
 ## 2. 使用 Effect 同步数据
 

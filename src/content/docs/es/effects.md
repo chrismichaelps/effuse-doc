@@ -60,8 +60,8 @@ watchEffect(
 | :--------- | :--------------------------------------------------------------------------- | :----------------------------------------------------- |
 | `debounce` | `{ wait: number, leading?: boolean, trailing?: boolean }`                    | Configuración de debounce                              |
 | `timeout`  | `number`                                                                     | Tiempo máximo permitido para ejecución                 |
-| `retry`    | `{ times?: number, delay?: number, strategy?: 'constant' \| 'exponential' }` | Configuración de reintento                             |
-| `flush`    | `'sync' \| 'post'`                                                           | Si ejecutar síncronamente o después de actualizaciones |
+| `retry`    | `{ times?: number, delay?: number, strategy?: 'constant' &#124; 'exponential' }` | Configuración de reintento                             |
+| `flush`    | `'sync' &#124; 'post'`                                                           | Si ejecutar síncronamente o después de actualizaciones |
 
 ## 2. Sincronizando Datos con Efectos
 

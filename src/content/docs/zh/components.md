@@ -437,6 +437,6 @@ const App = define({
 
 | Prop       | 类型                                                              | 描述                 |
 | ---------- | ----------------------------------------------------------------- | -------------------- |
-| `fallback` | `EffuseChild \| ((err: Error, reset: () => void) => EffuseChild)` | 接收错误的渲染函数   |
+| `fallback` | `EffuseChild &#124; ((err: Error, reset: () => void) => EffuseChild)` | 接收错误的渲染函数   |
 | `children` | `EffuseChild`                                                     | 监控错误的内容       |
 | `onError`  | `(err: Error) => void`                                            | 捕获错误时的可选回调 |
