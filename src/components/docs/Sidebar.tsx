@@ -112,7 +112,7 @@ export const Sidebar = define({
 
     return {
       sectionStates: createSectionStates(),
-      isSidebarOpen: sidebar.props.isOpen,
+      isSidebarOpen: sidebar.props.isOpen as ReadonlySignal<boolean>,
       toggleSidebar: () => {
         sidebar.props.isOpen.value = !sidebar.props.isOpen.value;
       },

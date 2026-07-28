@@ -13,7 +13,6 @@ import {
   animateStaggerChildren,
 } from '../../utils/motion';
 import { useAnimatedDropdown, useTranslation } from '../../hooks/index.js';
-import type { docsStore as DocsStoreType } from '../../store/docsUIStore.js';
 import { SidebarLayer } from '../../layers/SidebarLayer.js';
 import { SidebarToggle } from './SidebarToggle.js';
 
@@ -37,11 +36,9 @@ interface DocsHeaderExposed {
   toggleDropdown: () => void;
   activeSectionId: Signal<string>;
   activeSectionTitle: ReadonlySignal<string>;
-  docsStore: typeof DocsStoreType;
   handleTocItemClick: (e: Event, id: string, title: string) => void;
   onThisPageText: ReadonlySignal<string>;
   dropdownRef: Signal<HTMLElement | null>;
-  isSidebarOpen: Signal<unknown>;
 }
 
 const TocChevron = define({
@@ -63,10 +60,8 @@ const TocChevron = define({
 export const DocsHeader = define({
   props: defineProps<DocsHeaderProps>(),
   layers: { sidebar: SidebarLayer } as const,
-  script: ({ props, onMount, layers: { sidebar } }) => {
+  script: ({ props, onMount }) => {
     const { t } = useTranslation();
-
-    const docsStore = (sidebar.services.docsUI ?? sidebar.service('docsUI')) as typeof DocsStoreType;
 
     const pageTitle = computed(() => props.pageTitle as string);
 
@@ -158,11 +153,9 @@ export const DocsHeader = define({
       toggleDropdown: dropdown.toggle,
       activeSectionId,
       activeSectionTitle,
-      docsStore,
       handleTocItemClick,
       onThisPageText,
       dropdownRef: dropdown.ref,
-      isSidebarOpen: sidebar.props.isOpen,
     } satisfies DocsHeaderExposed;
   },
   template: ({
@@ -170,11 +163,9 @@ export const DocsHeader = define({
     toggleDropdown,
     activeSectionId,
     activeSectionTitle,
-    docsStore,
     handleTocItemClick,
     onThisPageText,
     dropdownRef,
-    isSidebarOpen,
     props,
     exposed: { tocItems },
   }) => (
