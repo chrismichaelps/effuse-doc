@@ -1,6 +1,8 @@
 import { define, useHead } from '@effuse/core';
 import { Link } from '@effuse/router';
+import gsap from 'gsap';
 import { FeatureCard } from '../../components/FeatureCard';
+import { HeroCanvas } from '../../components/HeroCanvas';
 import { useScrollReveal } from '../../utils/ui';
 import './styles.css';
 
@@ -45,6 +47,32 @@ export const HomePage = define({
         } as any,
       ],
     });
+
+    onMount(() => {
+      gsap.from('.hero-heading', {
+        y: 40,
+        opacity: 0,
+        duration: 1,
+        ease: 'power3.out',
+        delay: 0.1,
+      });
+      gsap.from('.hero-subtext', {
+        y: 30,
+        opacity: 0,
+        duration: 0.9,
+        ease: 'power3.out',
+        delay: 0.25,
+      });
+      gsap.from('.hero-ctas', {
+        y: 20,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        delay: 0.4,
+      });
+      return undefined;
+    });
+
     useScrollReveal(onMount);
     return {};
   },
@@ -57,7 +85,8 @@ export const HomePage = define({
 
       {/* Hero Section */}
       <section class="hero-section">
-        <div class="hero-container reveal-on-scroll">
+        <HeroCanvas />
+        <div class="hero-container">
           <h1 class="hero-heading">
             A modern approach to
             <br />
