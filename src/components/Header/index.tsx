@@ -9,7 +9,8 @@ import { HamburgerButton } from '../HamburgerButton';
 import { LanguageSelector } from '../docs/LanguageSelector';
 import { SearchTrigger } from '../SearchTrigger';
 import { SearchModal } from '../SearchModal';
-import { useToggle, useIsMobile } from '../../hooks/index.js';
+import { useToggle } from '../../hooks/index.js';
+import { useMediaQuery } from '@effuse/use';
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
 import './styles.css';
 
@@ -38,7 +39,10 @@ const LOCALIZED_SECTIONS = [
 export const Header = define<Record<string, never>, HeaderExposed>({
   script: ({ useStore }) => {
     const i18nStore = useStore('i18n') as typeof I18nStoreType;
-    const isMobile = useIsMobile();
+    const { matches: isMobile } = useMediaQuery({
+      query: '(max-width: 767px)',
+      initialValue: false,
+    });
 
     const mobileMenu = useToggle({ initial: false });
 

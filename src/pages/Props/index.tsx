@@ -17,10 +17,7 @@ import '../../styles/examples.css';
 interface DisplayProps {
   label: string | ReadonlySignal<string>;
   value:
-    | string
-    | number
-    | Signal<string | number>
-    | ReadonlySignal<string | number>;
+    string | number | Signal<string | number> | ReadonlySignal<string | number>;
   color?: string | Signal<string>;
   onAction?: () => void;
 }

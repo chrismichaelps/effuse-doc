@@ -23,7 +23,7 @@ export const submitForm = useConcurrency({
         console.error('Submission failed:', error.message);
       }
     }
-  }
+  },
 });
 ```
 

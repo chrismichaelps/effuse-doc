@@ -8,10 +8,10 @@ Effuse proporciona funciones específicas para manejar efectos secundarios y obs
 
 ## 1. watchEffect
 
-La función `effect` se ejecuta inmediatamente y se vuelve a ejecutar cada vez que sus señales rastreadas cambian.
+La función `watchEffect` se ejecuta inmediatamente y se vuelve a ejecutar cada vez que sus señales rastreadas cambian.
 
 ```tsx
-import { define, signal, effect } from '@effuse/core';
+import { define, signal, watchEffect } from '@effuse/core';
 
 const DataFetcher = define({
   script: () => {
@@ -19,7 +19,7 @@ const DataFetcher = define({
     const userData = signal<any>(null);
 
     // Se ejecuta automáticamente cuando 'userId' cambia
-    effect(() => {
+    watchEffect(() => {
       fetch(`/api/users/${userId.value}`)
         .then((res) => res.json())
         .then((data) => {
@@ -40,10 +40,10 @@ const DataFetcher = define({
 
 ### Opciones de Effect
 
-La función `effect` (y `watch`) acepta un objeto opcional `EffectOptions` para controlar su comportamiento:
+La función `watchEffect` (y `watch`) acepta un objeto opcional `EffectOptions` para controlar su comportamiento:
 
 ```typescript
-effect(
+watchEffect(
   () => {
     console.log('Ejecutando efecto');
   },
@@ -68,7 +68,7 @@ effect(
 Un patrón común es sincronizar datos externos con el estado del store:
 
 ```tsx
-import { define, signal, effect } from '@effuse/core';
+import { define, signal, watchEffect } from '@effuse/core';
 import { useInfiniteQuery } from '@effuse/query';
 import { todosStore } from '../store/todosStore';
 
@@ -86,8 +86,8 @@ const TodosPage = define({
     const syncedPageCount = signal(0);
 
     // Sincronizar datos del servidor al store
-    effect(() => {
-      const pages = todosQuery.allPagesData.value;
+    watchEffect(() => {
+      const pages = todosQuery.data.value?.pages ?? [];
       if (pages && pages.length > syncedPageCount.value) {
         if (syncedPageCount.value === 0) {
           todosStore.setTodos(pages.flat());
@@ -155,7 +155,7 @@ const Analytics = define({
 
 ## Mejores Prácticas
 
-1. **Usa effect para efectos secundarios reactivos** que deben volver a ejecutarse cuando las dependencias cambien
+1. **Usa watchEffect para efectos secundarios reactivos** que deben volver a ejecutarse cuando las dependencias cambien
 2. **Usa watch para señales específicas** cuando solo te importa que un valor cambie
 3. **Usa onMount para inicialización** que debe ocurrir solo una vez
 4. **Retorna funciones de limpieza** desde onMount para prevenir fugas de memoria

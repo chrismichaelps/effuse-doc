@@ -1,5 +1,6 @@
 import {
   define,
+  defineProps,
   computed,
   signal,
   useOnClickOutside,
@@ -9,9 +10,13 @@ import {
 } from '@effuse/core';
 import { useToggle, useTranslation } from '../../hooks/index.js';
 import type { Locale } from '../../store/appI18n';
+<<<<<<< HEAD
 import { I18nLayer } from '../../layers/I18nLayer';
 
 const languageSelectorLayers = { i18n: I18nLayer } as const;
+=======
+import { I18nLayer } from '../../layers/I18nLayer.js';
+>>>>>>> origin/main
 
 interface LanguageSelectorProps {
   isMobile?: boolean;
@@ -33,6 +38,7 @@ interface LanguageSelectorExposed {
   rootRef: Signal<Element | null>;
 }
 
+<<<<<<< HEAD
 export const LanguageSelector = define<
   LanguageSelectorProps,
   LanguageSelectorExposed,
@@ -40,17 +46,27 @@ export const LanguageSelector = define<
 >({
   layers: languageSelectorLayers,
   script: ({ props, layers: { i18n } }) => {
+=======
+export const LanguageSelector = define({
+  props: defineProps<LanguageSelectorProps>(),
+  layers: { i18n: I18nLayer } as const,
+  script: ({ useCallback, props, layers: { i18n }, onMount }) => {
+>>>>>>> origin/main
     const { t } = useTranslation();
 
     const toggle = useToggle({ initial: false });
     const rootRef = signal<Element | null>(null);
 
+<<<<<<< HEAD
     useOnClickOutside(
       () => rootRef.value,
       () => toggle.setOff()
     );
 
     const currentLocale = i18n.prop('locale') as Signal<Locale>;
+=======
+    const currentLocale = i18n.props.locale as Signal<Locale>;
+>>>>>>> origin/main
 
     const availableLanguages = computed<LanguageOption[]>(() => [
       { locale: 'en', label: t('language.english', ''), flag: '' },
@@ -66,9 +82,13 @@ export const LanguageSelector = define<
 
     const handleSelect = (e: MouseEvent, loc: Locale) => {
       e.stopPropagation();
+<<<<<<< HEAD
       (i18n.service('i18n') as { setLocale: (l: Locale) => void }).setLocale(
         loc
       );
+=======
+      i18n.services.i18n.setLocale(loc);
+>>>>>>> origin/main
       toggle.setOff();
     };
 
@@ -82,8 +102,12 @@ export const LanguageSelector = define<
       handleSelect,
       availableLanguages,
       dropdownClass,
+<<<<<<< HEAD
       rootRef,
     };
+=======
+    } satisfies LanguageSelectorExposed;
+>>>>>>> origin/main
   },
   template: ({
     currentLocale,

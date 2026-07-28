@@ -1,5 +1,6 @@
 import {
   define,
+  defineProps,
   computed,
   signal,
   type Signal,
@@ -15,8 +16,6 @@ import { useAnimatedDropdown, useTranslation } from '../../hooks/index.js';
 import type { docsStore as DocsStoreType } from '../../store/docsUIStore.js';
 import { SidebarLayer } from '../../layers/SidebarLayer.js';
 import { SidebarToggle } from './SidebarToggle.js';
-
-const docsHeaderLayers = { sidebar: SidebarLayer } as const;
 
 export interface TocItem {
   id: string;
@@ -45,10 +44,8 @@ interface DocsHeaderExposed {
   isSidebarOpen: Signal<unknown>;
 }
 
-const TocChevron = define<
-  { isOpen: Signal<boolean> },
-  { getClass: () => string }
->({
+const TocChevron = define({
+  props: defineProps<{ isOpen: Signal<boolean> }>(),
   script: ({ props }) => ({
     getClass: () => `toc-chevron ${props.isOpen.value ? 'open' : ''}`,
   }),
@@ -63,16 +60,13 @@ const TocChevron = define<
   ),
 });
 
-export const DocsHeader = define<
-  DocsHeaderProps,
-  DocsHeaderExposed,
-  typeof docsHeaderLayers
->({
-  layers: docsHeaderLayers,
+export const DocsHeader = define({
+  props: defineProps<DocsHeaderProps>(),
+  layers: { sidebar: SidebarLayer } as const,
   script: ({ props, onMount, layers: { sidebar } }) => {
     const { t } = useTranslation();
 
-    const docsStore = sidebar.service('docsUI') as typeof DocsStoreType;
+    const docsStore = (sidebar.services.docsUI ?? sidebar.service('docsUI')) as typeof DocsStoreType;
 
     const pageTitle = computed(() => props.pageTitle as string);
 
@@ -168,11 +162,10 @@ export const DocsHeader = define<
       handleTocItemClick,
       onThisPageText,
       dropdownRef: dropdown.ref,
-      isSidebarOpen: sidebar.prop('isOpen'),
-    };
+      isSidebarOpen: sidebar.props.isOpen,
+    } satisfies DocsHeaderExposed;
   },
   template: ({
-    exposed: { tocItems },
     dropdownOpen,
     toggleDropdown,
     activeSectionId,
@@ -183,53 +176,62 @@ export const DocsHeader = define<
     dropdownRef,
     isSidebarOpen,
     props,
+    exposed: { tocItems },
   }) => (
     <header
-      class={() => `toc-nav shadow-lg ${props.class || ''}`}
+      class={() => `toc-nav shadow-lg ${props.class ?? ''}`}
       id="nd-tocnav"
     >
       <div class="flex items-center w-full h-full relative px-2">
         <div class="w-9 flex-shrink-0">
-          {!isSidebarOpen.value && (
-            <SidebarToggle
-              class="md:hidden"
-              onToggle={docsStore.toggleSidebarMobile}
-            />
-          )}
+          <SidebarToggle class="p-1" />
         </div>
-        <div class="flex-1 flex justify-center overflow-hidden">
+
+        <div class="flex-1 flex justify-center items-center overflow-hidden">
           <button
-            class="toc-nav-trigger"
+            type="button"
+            class="toc-trigger flex items-center justify-center space-x-2 py-1 px-3 rounded-lg hover:bg-white/5 transition-colors focus:outline-none"
             onClick={toggleDropdown}
-            aria-expanded={() => dropdownOpen.value}
+            aria-expanded={dropdownOpen.value}
+            aria-label="Table of contents"
           >
-            <div class="toc-text-container">
-              <span class="toc-text">{activeSectionTitle}</span>
-            </div>
+            <span class="font-bold text-sm tracking-wide text-gray-200 hover:text-white truncate transition-colors">
+              {activeSectionTitle.value}
+            </span>
             <TocChevron isOpen={dropdownOpen} />
           </button>
         </div>
+
+        <div class="w-9 flex-shrink-0" />
       </div>
+
       <div
-        class={() => `toc-dropdown ${dropdownOpen.value ? 'open' : ''}`}
         ref={(el: unknown) => {
           dropdownRef.value = el as HTMLElement;
         }}
+        class="toc-popover bg-[#111113]/95 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-4"
         style="display: none;"
       >
-        <nav class="toc-dropdown-nav">
-          <div class="toc-dropdown-header">
-            <img src="/icons/list.svg" width="14" height="14" alt="List" />
-            {onThisPageText}
-          </div>
-          <ul class="toc-items list-none p-0 m-0">
+        <div class="toc-header text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-2">
+          {onThisPageText.value}
+        </div>
+        <nav class="toc-list-container max-h-[60vh] overflow-y-auto custom-scrollbar">
+          <ul class="space-y-1 p-0 m-0 list-none">
             <For each={tocItems} keyExtractor={(item: TocItem) => item.id}>
               {(itemSignal: ReadonlySignal<TocItem>) => (
-                <li class="p-0 m-0">
+                <li
+                  class={() =>
+                    `toc-item m-0 ${itemSignal.value.level === 3 ? 'pl-4' : ''}`
+                  }
+                >
                   <a
                     href={`#${itemSignal.value.id}`}
                     class={() =>
-                      `toc-item block px-4 py-2 hover:bg-white/5 transition-colors ${activeSectionId.value === itemSignal.value.id ? 'active bg-white/5 text-mint font-medium' : ''}`
+                      `block py-1.5 px-3 rounded-lg text-xs transition-all duration-200 ${
+                        activeSectionId.value === itemSignal.value.id
+                          ? 'bg-gradient-to-r from-[#2dd4bf]/20 to-[#a855f7]/20 text-[#2dd4bf] font-medium shadow-sm'
+                          : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+                      }`
                     }
                     onClick={(e: Event) =>
                       handleTocItemClick(

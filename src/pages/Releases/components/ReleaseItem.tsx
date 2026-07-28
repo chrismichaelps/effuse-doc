@@ -1,4 +1,4 @@
-import { define, defineProps } from '@effuse/core';
+import { define, computed } from '@effuse/core';
 import { Ink } from '@effuse/ink';
 import type { GitHubRelease } from '../../../store/releaseStore.js';
 
@@ -7,12 +7,10 @@ interface ReleaseItemProps {
   formatDate: (date: string) => string;
 }
 
-export const ReleaseItem = define({
-  props: defineProps<ReleaseItemProps>(),
+export const ReleaseItem = define<ReleaseItemProps, Record<string, never>>({
   script: () => ({}),
-  template: ({ props }) => {
-    const { formatDate } = props;
-    const r = props.release;
+  template: ({ props: { release, formatDate } }) => {
+    const r = release;
     if (!r || !r.name) {
       return null;
     }
@@ -31,7 +29,7 @@ export const ReleaseItem = define({
             </span>
           </div>
           <time class="text-sm text-white/40 font-medium">
-            {() => formatDate(r.published_at)}
+            {computed(() => formatDate(r.published_at))}
           </time>
         </div>
 

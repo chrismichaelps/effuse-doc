@@ -33,6 +33,9 @@ interface AppTranslations {
     lifecycle: string;
     advancedTitle: string;
     routing: string;
+    server: string;
+    cli: string;
+    utilityHooks: string;
     stateManagement: string;
     seoHead: string;
     internationalization: string;
