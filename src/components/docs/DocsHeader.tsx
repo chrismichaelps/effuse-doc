@@ -187,7 +187,7 @@ export const DocsHeader = define({
             aria-label="Table of contents"
           >
             <span class="font-bold text-sm tracking-wide text-gray-200 hover:text-white truncate transition-colors">
-              {activeSectionTitle.value}
+              {() => activeSectionTitle.value || props.pageTitle || 'On this page'}
             </span>
             <TocChevron isOpen={dropdownOpen} />
           </button>
@@ -200,7 +200,7 @@ export const DocsHeader = define({
         ref={(el: unknown) => {
           dropdownRef.value = el as HTMLElement;
         }}
-        class="toc-popover bg-[#111113]/95 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-4"
+        class="toc-popover absolute top-full left-0 right-0 mt-2 bg-[#111113]/95 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-4 z-50"
         style="display: none;"
       >
         <div class="toc-header text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-2">

@@ -181,13 +181,13 @@ export const DocsLayout = define({
           }
         />
 
-        {isMobile.value && (
+        <div class="lg:hidden block">
           <DocsHeader
             pageTitle={props.pageTitle}
             tocItems={normalizedTocItems}
             activeId={activeSectionId}
           />
-        )}
+        </div>
         <div class="docs-content-wrapper">
           <div class="docs-content">{children}</div>
 
