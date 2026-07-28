@@ -56,8 +56,7 @@ export const useToggle = defineHook<ToggleConfig, ToggleReturn>({
 | `computed`      | 派生計算値を作成                               |
 | `watchEffect`        | 依存関係を追跡する副作用を実行                 |
 | `onMount`       | フックがマウントされたときのコールバックを登録 |
-| `layer`         | 名前でレイヤーの props にアクセス              |
-| `layerProvider` | レイヤーサービスにアクセス                     |
+| `layers`        | 宣言したレイヤーの props とサービスへの型付きアクセス |
 | `scope`         | クリーンアップとファイナライザーを管理         |
 
 ## 組み込みユーティリティフック
@@ -175,16 +174,19 @@ export const useClickOutside = defineHook<
 
 ```typescript
 import { defineHook } from '@effuse/core';
+import { I18nLayer } from './layers/I18nLayer';
+
+const layers = { i18n: I18nLayer } as const;
 
 export const useTranslation = defineHook<
   undefined,
-  { t: (key: string) => string }
+  { t: (key: string) => string },
+  typeof layers
 >({
   name: 'useTranslation',
-  deps: ['i18n'],
-  setup: ({ layer }) => {
-    const i18n = layer('i18n');
-    const translations = i18n.translations;
+  layers,
+  setup: ({ layers: { i18n } }) => {
+    const translations = i18n.prop('translations');
 
     return {
       t: (key: string) => translations.value?.[key] ?? key,

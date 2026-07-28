@@ -56,8 +56,7 @@ The `setup` function receives a context object with these utilities:
 | `computed`      | Create derived computed values                  |
 | `watchEffect`        | Run side effects that track dependencies        |
 | `onMount`       | Register callbacks for when the hook is mounted |
-| `layer`         | Access layer props by name                      |
-| `layerProvider` | Access layer services                           |
+| `layers`        | Typed access to declared layers' props and services |
 | `scope`         | Manage cleanup and finalizers                   |
 
 ## Built-in Utility Hooks
@@ -200,16 +199,19 @@ Hooks can access layer state and services:
 
 ```typescript
 import { defineHook } from '@effuse/core';
+import { I18nLayer } from './layers/I18nLayer';
+
+const layers = { i18n: I18nLayer } as const;
 
 export const useTranslation = defineHook<
   undefined,
-  { t: (key: string) => string }
+  { t: (key: string) => string },
+  typeof layers
 >({
   name: 'useTranslation',
-  deps: ['i18n'],
-  setup: ({ layer }) => {
-    const i18n = layer('i18n');
-    const translations = i18n.translations;
+  layers,
+  setup: ({ layers: { i18n } }) => {
+    const translations = i18n.prop('translations');
 
     return {
       t: (key: string) => translations.value?.[key] ?? key,

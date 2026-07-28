@@ -56,8 +56,7 @@ La función `setup` recibe un objeto de contexto con estas utilidades:
 | `computed`      | Crear valores derivados computados                     |
 | `watchEffect`        | Ejecutar efectos secundarios que rastrean dependencias |
 | `onMount`       | Registrar callbacks para cuando el hook se monta       |
-| `layer`         | Acceder a props de capas por nombre                    |
-| `layerProvider` | Acceder a servicios de capas                           |
+| `layers`        | Acceso tipado a las props y servicios de las capas declaradas |
 | `scope`         | Gestionar limpieza y finalizadores                     |
 
 ## Hooks Utilitarios Incorporados
@@ -175,16 +174,19 @@ Los hooks pueden acceder al estado y servicios de las capas:
 
 ```typescript
 import { defineHook } from '@effuse/core';
+import { I18nLayer } from './layers/I18nLayer';
+
+const layers = { i18n: I18nLayer } as const;
 
 export const useTranslation = defineHook<
   undefined,
-  { t: (key: string) => string }
+  { t: (key: string) => string },
+  typeof layers
 >({
   name: 'useTranslation',
-  deps: ['i18n'],
-  setup: ({ layer }) => {
-    const i18n = layer('i18n');
-    const translations = i18n.translations;
+  layers,
+  setup: ({ layers: { i18n } }) => {
+    const translations = i18n.prop('translations');
 
     return {
       t: (key: string) => translations.value?.[key] ?? key,
