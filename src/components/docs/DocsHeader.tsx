@@ -30,8 +30,8 @@ interface DocsHeaderProps {
 }
 
 interface DocsHeaderExposed {
-  pageTitle: ReadonlySignal<string>;
-  tocItems: ReadonlySignal<TocItem[]>;
+  resolvedPageTitle: ReadonlySignal<string>;
+  normalizedTocItems: ReadonlySignal<TocItem[]>;
   dropdownOpen: Signal<boolean>;
   toggleDropdown: () => void;
   activeSectionId: Signal<string>;
@@ -63,9 +63,9 @@ export const DocsHeader = define({
   script: ({ props, onMount }) => {
     const { t } = useTranslation();
 
-    const pageTitle = computed(() => props.pageTitle as string);
+    const resolvedPageTitle = computed(() => props.pageTitle as string);
 
-    const tocItems = computed<TocItem[]>(() => {
+    const normalizedTocItems = computed<TocItem[]>(() => {
       const items = props.tocItems;
       if (!items) return [];
       if (Array.isArray(items)) return items;
@@ -88,10 +88,10 @@ export const DocsHeader = define({
     const activeSectionId = props.activeId ?? signal('');
 
     const activeSectionTitle = computed(() => {
-      const items = tocItems.value;
+      const items = normalizedTocItems.value;
       const activeId = activeSectionId.value;
       const found = items.find((item) => item.id === activeId);
-      return found ? found.title : pageTitle.value;
+      return found ? found.title : resolvedPageTitle.value;
     });
 
     const onThisPageText = computed(() => t('toc.onThisPage', ''));
@@ -147,8 +147,8 @@ export const DocsHeader = define({
     };
 
     return {
-      pageTitle,
-      tocItems,
+      resolvedPageTitle,
+      normalizedTocItems,
       dropdownOpen: dropdown.isOpen,
       toggleDropdown: dropdown.toggle,
       activeSectionId,
@@ -166,8 +166,8 @@ export const DocsHeader = define({
     handleTocItemClick,
     onThisPageText,
     dropdownRef,
+    normalizedTocItems,
     props,
-    exposed: { tocItems },
   }) => (
     <header
       class={() => `toc-nav shadow-lg ${props.class ?? ''}`}
@@ -208,7 +208,7 @@ export const DocsHeader = define({
         </div>
         <nav class="toc-list-container max-h-[60vh] overflow-y-auto custom-scrollbar">
           <ul class="space-y-1 p-0 m-0 list-none">
-            <For each={tocItems} keyExtractor={(item: TocItem) => item.id}>
+            <For each={normalizedTocItems} keyExtractor={(item: TocItem) => item.id}>
               {(itemSignal: ReadonlySignal<TocItem>) => (
                 <li
                   class={() =>
