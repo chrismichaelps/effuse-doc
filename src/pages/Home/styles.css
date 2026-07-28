@@ -190,6 +190,7 @@
   z-index: 1;
   padding: 6rem 0;
   border-top: 1px solid var(--border-subtle);
+  perspective: 1200px;
 }
 
 .features-container {
@@ -221,6 +222,7 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
+  perspective: 1200px;
 }
 
 @media (min-width: 768px) {
