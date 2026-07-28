@@ -1,8 +1,15 @@
 {
+  "buildCommand": "pnpm build",
+  "outputDirectory": "dist/client",
+  "functions": {
+    "api/index.ts": {
+      "includeFiles": "dist/**"
+    }
+  },
   "rewrites": [
     {
       "source": "/((?!.*\\.).*)",
-      "destination": "/index.html"
+      "destination": "/api/index"
     }
   ]
 }

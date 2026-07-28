@@ -9,29 +9,29 @@ importers:
   .:
     dependencies:
       '@effuse/core':
-        specifier: 2.0.1
-        version: 2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
+        specifier: 2.0.2
+        version: 2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
       '@effuse/i18n':
-        specifier: 1.1.1
-        version: 1.1.1(@effuse/core@2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))
+        specifier: 1.1.2
+        version: 1.1.2(@effuse/core@2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))
       '@effuse/ink':
-        specifier: 1.2.1
-        version: 1.2.1(@effuse/core@2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))
+        specifier: 1.2.2
+        version: 1.2.2(@effuse/core@2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))
       '@effuse/query':
-        specifier: 2.0.1
-        version: 2.0.1(@effuse/core@2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))
+        specifier: 2.0.2
+        version: 2.0.2(@effuse/core@2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))
       '@effuse/router':
-        specifier: 1.2.1
-        version: 1.2.1(@effuse/core@2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))
+        specifier: 1.2.2
+        version: 1.2.2(@effuse/core@2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))
       '@effuse/server':
-        specifier: 1.0.1
-        version: 1.0.1(@effuse/core@2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))
+        specifier: 1.0.2
+        version: 1.0.2(@effuse/core@2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))
       '@effuse/store':
-        specifier: 1.1.1
-        version: 1.1.1(@effuse/core@2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))
+        specifier: 1.1.2
+        version: 1.1.2(@effuse/core@2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))
       '@effuse/use':
-        specifier: 1.2.1
-        version: 1.2.1(@effuse/core@2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))
+        specifier: 1.2.2
+        version: 1.2.2(@effuse/core@2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))
       gsap:
         specifier: ^3.15.0
         version: 3.15.0
@@ -136,51 +136,51 @@ packages:
       vite:
         optional: true
 
-  '@effuse/core@2.0.1':
-    resolution: {integrity: sha512-UIpUjZx1bmk00toJJSC2Hx+el/ehAR9BGTnkiDBCPmCV7Y4sCy/z/0ZH3mELyZyqLIYGpgP/WXl92odgh3AOKw==}
+  '@effuse/core@2.0.2':
+    resolution: {integrity: sha512-IOGuzohCSUBjjLL0ehdBBOz93/sC3eT0f2BmiaB59yVLWIntmiFH+YwvELztEA9a7j6D6FX+AfbPMokii5Zahg==}
     engines: {node: '>=22.14.0'}
 
-  '@effuse/i18n@1.1.1':
-    resolution: {integrity: sha512-JR5Lz0Mwljj/WG8g2Zz6mey+tRQ4Ismvc5eiWCAiHSIH5Tv7m4fttzwLtH+n1EEsG/x10mLD/tiPeM/Ua/XPPg==}
+  '@effuse/i18n@1.1.2':
+    resolution: {integrity: sha512-PFWi9RNbdx3lQEXl1W37xlQ/VgzsYThrgYyjUoIJ+WdPNuGzzzFiMBXD0ts6Qv4vdeF23TvcvIv9UsZ/11byLQ==}
     engines: {node: '>=22.14.0'}
     peerDependencies:
-      '@effuse/core': 2.0.1
+      '@effuse/core': 2.0.2
 
-  '@effuse/ink@1.2.1':
-    resolution: {integrity: sha512-QsFt2yYb/wm6ZvIlFJhNUT9wr0QX4tU/ih0XJHZ3XRpX/uFOmj6lcH2czQTyzyiBqQB5h/UGFp34MIVArkgz2g==}
+  '@effuse/ink@1.2.2':
+    resolution: {integrity: sha512-c5IrOWsQbPVTZNMghOMFOzhOk7PK/VotF6QY8KTQQJtCsZGjaHfYlEYes4MCNnQjWshFkoSOYqjp3/M4jqXmgg==}
     engines: {node: '>=22.14.0'}
     peerDependencies:
-      '@effuse/core': 2.0.1
+      '@effuse/core': 2.0.2
 
-  '@effuse/query@2.0.1':
-    resolution: {integrity: sha512-you1HBi0jMU/IxfS+G+kBQNC9GZLDxHiHs7X0htsGXM0F49rRmBirg5R9AiKXRa/NJuH2qEEUuSxUMvUXdTzkQ==}
+  '@effuse/query@2.0.2':
+    resolution: {integrity: sha512-xkXhisT3PGfc07WSbkYiM0uHDHYJB+soWKj40xzI6CCjXeGaFXa8+nCrMGW9OUequEWRh6NsXoAUl7E/EON8cA==}
     engines: {node: '>=22.14.0'}
     peerDependencies:
-      '@effuse/core': 2.0.1
+      '@effuse/core': 2.0.2
 
-  '@effuse/router@1.2.1':
-    resolution: {integrity: sha512-Tcsfn2iRsdyG5Jzytfcknjlb5EgfrWD7d85FcmzrsS/BdOC4FCHns6JFRh7CJ4LcAM/tLEkuFe6pY2wP61T69g==}
+  '@effuse/router@1.2.2':
+    resolution: {integrity: sha512-AYs2AovzE4FXPmXGTYw4oibhX5Qkho438bKPMyzRkNMGlS6gha88OzXWfe62tyByXZQwfWTHUrQRz4RB8b6nXw==}
     engines: {node: '>=22.14.0'}
     peerDependencies:
-      '@effuse/core': 2.0.1
+      '@effuse/core': 2.0.2
 
-  '@effuse/server@1.0.1':
-    resolution: {integrity: sha512-K1dFxBrKm/5P6o/Oipf/l2Pg5PMLLUxdg3wXfzE1UQnarTDFPoygmaeFkSLngrpbgZIYO0OE2xl+D9tbSHe3sw==}
+  '@effuse/server@1.0.2':
+    resolution: {integrity: sha512-ojHwObERcSz8M1UpjIydSsQR1I7EjgK3/AIg9HxjJ/cYksjVosFYxF8Yyk8zowzJzR8e7EuG8n4q5SPkokO2rQ==}
     engines: {node: '>=22.14.0'}
     peerDependencies:
-      '@effuse/core': 2.0.1
+      '@effuse/core': 2.0.2
 
-  '@effuse/store@1.1.1':
-    resolution: {integrity: sha512-VnTjxjDW+qxnpgljrQntwuqc10DHZu51x0acMe0m8X0uB8/HT9R/s0gS3VurZuY3AI+FR9qwfk6Fp+uCJbkLKA==}
+  '@effuse/store@1.1.2':
+    resolution: {integrity: sha512-vRCSOSawZCFABIoBnyYNkSMugheuQlfomFsPbt3p+GSP5EC/O+vfkBPL++05dxJJcfY5ntjC0yJYYeea4gytSQ==}
     engines: {node: '>=22.14.0'}
     peerDependencies:
-      '@effuse/core': 2.0.1
+      '@effuse/core': 2.0.2
 
-  '@effuse/use@1.2.1':
-    resolution: {integrity: sha512-W7IAABvXrNoCoEluMyenMT7Hx5H+1XnbVL7OO19UcZ04HbuUp2iOi3nEB6kCEJZeS8I2CnvETqpgSLNaReXMgg==}
+  '@effuse/use@1.2.2':
+    resolution: {integrity: sha512-lVXYCCdbCHEdSJZs8mfPv8n3kn55Ulw/kIyn0prGBkeN7ab1QH1AUsTOWWxwomKWy066oDFeDKVBVHiY04828w==}
     engines: {node: '>=22.14.0'}
     peerDependencies:
-      '@effuse/core': 2.0.1
+      '@effuse/core': 2.0.2
 
   '@emnapi/core@1.11.1':
     resolution: {integrity: sha512-RSvbQmHzdKzNsLYa/wHrbc3KN4sYLKAdPZxqiM2HATqv/SBk2/ENSHpvXGaLOMcsAyz0poEGqkmmKYG3OWiJEQ==}
@@ -1024,7 +1024,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@effuse/core@2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)':
+  '@effuse/core@2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)':
     dependencies:
       '@effect/opentelemetry': 0.63.0(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/api@1.9.0)(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-web@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)(effect@3.22.0)
       '@opentelemetry/api': 1.9.0
@@ -1039,39 +1039,39 @@ snapshots:
       - '@opentelemetry/sdk-trace-node'
       - '@opentelemetry/semantic-conventions'
 
-  '@effuse/i18n@1.1.1(@effuse/core@2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))':
+  '@effuse/i18n@1.1.2(@effuse/core@2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))':
     dependencies:
-      '@effuse/core': 2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
+      '@effuse/core': 2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
       effect: 3.22.0
 
-  '@effuse/ink@1.2.1(@effuse/core@2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))':
+  '@effuse/ink@1.2.2(@effuse/core@2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))':
     dependencies:
-      '@effuse/core': 2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
+      '@effuse/core': 2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
       effect: 3.22.0
 
-  '@effuse/query@2.0.1(@effuse/core@2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))':
+  '@effuse/query@2.0.2(@effuse/core@2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))':
     dependencies:
-      '@effuse/core': 2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
+      '@effuse/core': 2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
       effect: 3.22.0
 
-  '@effuse/router@1.2.1(@effuse/core@2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))':
+  '@effuse/router@1.2.2(@effuse/core@2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))':
     dependencies:
-      '@effuse/core': 2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
+      '@effuse/core': 2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
       effect: 3.22.0
 
-  '@effuse/server@1.0.1(@effuse/core@2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))':
+  '@effuse/server@1.0.2(@effuse/core@2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))':
     dependencies:
-      '@effuse/core': 2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
+      '@effuse/core': 2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
       effect: 3.22.0
 
-  '@effuse/store@1.1.1(@effuse/core@2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))':
+  '@effuse/store@1.1.2(@effuse/core@2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))':
     dependencies:
-      '@effuse/core': 2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
+      '@effuse/core': 2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
       effect: 3.22.0
 
-  '@effuse/use@1.2.1(@effuse/core@2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))':
+  '@effuse/use@1.2.2(@effuse/core@2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0))':
     dependencies:
-      '@effuse/core': 2.0.1(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
+      '@effuse/core': 2.0.2(@effect/platform@0.96.3(effect@3.22.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-logs@0.221.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-node@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.43.0)
       '@opentelemetry/api': 1.9.0
       effect: 3.22.0
 

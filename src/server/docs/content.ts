@@ -1,16 +1,17 @@
 import { parseSync } from '@effuse/ink';
 import type { BlockNode, DocumentNode, InlineNode } from '@effuse/ink';
 import { createHeadingSlugger } from './slug.js';
-import {
-  DEFAULT_LOCALE,
-  type Locale,
-} from '../../content/docs/constants.js';
+import { DEFAULT_LOCALE, type Locale } from '../../content/docs/constants.js';
 import type { Doc, TocEntry } from '../../content/docs/types.js';
 
-export { DEFAULT_LOCALE, DEFAULT_SLUG, LOCALES, isLocale } from '../../content/docs/constants.js';
+export {
+  DEFAULT_LOCALE,
+  DEFAULT_SLUG,
+  LOCALES,
+  isLocale,
+} from '../../content/docs/constants.js';
 export type { Locale } from '../../content/docs/constants.js';
 export type { Doc, TocEntry } from '../../content/docs/types.js';
-
 
 /** Lazy: one chunk per document, so a request loads only what it serves. */
 const documents = import.meta.glob('../../content/docs/*/*.md', {

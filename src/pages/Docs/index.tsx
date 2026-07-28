@@ -34,7 +34,9 @@ export const DocsPage = define<Record<string, never>, DocsPageExposed>({
     const slug = computed(() => toSlug(route.params.slug));
     const locale = computed(() => i18nStore.locale.value);
 
-    const doc = signal<Doc | undefined>(undefined);
+    const doc = signal<Doc | undefined>(
+      queryClient.getQueryData<Doc>(['docs', locale.value, slug.value])
+    );
 
     // ensureQueryData gives the shared cache and request de-duplication while
     // leaving the key free to change with locale and slug, which useQuery's
@@ -54,7 +56,7 @@ export const DocsPage = define<Record<string, never>, DocsPageExposed>({
           }
           return (await response.json()) as Doc;
         },
-        { client: queryClient }
+        { client: queryClient, staleTime: Number.POSITIVE_INFINITY }
       )
         .then((data) => {
           // A slower response for a page the reader already navigated away

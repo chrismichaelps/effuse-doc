@@ -125,6 +125,8 @@ export const SearchModal = define({
     });
 
     watchEffect(() => {
+      if (typeof document === 'undefined') return;
+
       const isOpen = matchTag(store?.modalState.value, {
         Closed: () => false,
         Opening: () => true,
@@ -142,6 +144,8 @@ export const SearchModal = define({
     });
 
     watchEffect(() => {
+      if (typeof document === 'undefined') return;
+
       const idx = store?.selectedIndex.value;
       if (idx !== undefined && idx >= 0) {
         const element = document.querySelector(

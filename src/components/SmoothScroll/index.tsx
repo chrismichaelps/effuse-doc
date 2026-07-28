@@ -10,6 +10,8 @@ declare global {
 export const SmoothScroll = define({
   script: ({ onMount }) => {
     onMount(() => {
+      if (typeof document === 'undefined') return undefined;
+
       const lenis = new Lenis({
         duration: 1.2,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
