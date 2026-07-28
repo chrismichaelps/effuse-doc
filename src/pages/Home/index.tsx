@@ -1,4 +1,4 @@
-import { define, useHead, signal } from '@effuse/core';
+import { define, useHead, signal, computed } from '@effuse/core';
 import { Link } from '@effuse/router';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -54,8 +54,36 @@ export const HomePage = define({
     const activeTab = signal<'counter' | 'signals' | 'server'>('counter');
     const copied = signal(false);
 
+    const isCopied = computed(() => copied.value);
+
     const copyCommand = () => {
-      navigator.clipboard.writeText('pnpm add @effuse/core');
+      const textToCopy = 'pnpm add @effuse/core';
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(textToCopy).catch(() => {
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+          });
+        } else {
+          const textarea = document.createElement('textarea');
+          textarea.value = textToCopy;
+          textarea.style.position = 'fixed';
+          textarea.style.left = '-9999px';
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+        }
+      } catch {
+        // Fallback catch
+      }
+
       copied.value = true;
       setTimeout(() => {
         copied.value = false;
@@ -155,11 +183,11 @@ export const HomePage = define({
 
     return {
       activeTab,
-      copied,
+      isCopied,
       copyCommand,
     };
   },
-  template: ({ activeTab, copied, copyCommand }) => (
+  template: ({ activeTab, isCopied, copyCommand }) => (
     <main class="home-page">
       <HeroCanvas />
       <div class="vibrant-bg" aria-hidden="true">
@@ -216,8 +244,37 @@ export const HomePage = define({
             <button type="button" class="command-pill" onClick={copyCommand}>
               <span class="command-prefix">$</span>
               <code class="command-code">pnpm add @effuse/core</code>
-              <span class="command-icon">
-                {() => (copied.value ? '✓' : '📋')}
+              <span class="command-icon flex items-center justify-center">
+                {computed(() =>
+                  isCopied.value ? (
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#27c93f"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  ) : (
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                  )
+                )}
               </span>
             </button>
 
