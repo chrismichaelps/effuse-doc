@@ -18,6 +18,5 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": "."
   },
-  "include": ["src", "src/types"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "api", "vite.config.ts"]
 }

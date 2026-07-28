@@ -30,6 +30,7 @@ let handlerPromise: Promise<FetchHandler> | undefined;
 
 const loadHandler = async (): Promise<FetchHandler> => {
   const entry = (await import(
+    // @ts-ignore
     /* @vite-ignore */ '../dist/server/entry-server.js'
   )) as {
     createFetchHandler: (options: {
