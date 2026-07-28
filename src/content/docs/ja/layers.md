@@ -12,9 +12,9 @@ title: レイヤー
 
 | 概念            | 目的                                     | コンポーネントでのアクセス                     |
 | --------------- | ---------------------------------------- | ---------------------------------------------- |
-| **store**       | リアクティブな状態コンテナ（signals）    | `deriveProps` 経由 → `useLayerProps`           |
-| **deriveProps** | storeからコンポーネント用のsignalsを抽出 | `useLayerProps('名前')`                        |
-| **provides**    | 依存性注入用のサービス/ファクトリー      | `useStore('キー')` または `useService('キー')` |
+| **store**       | リアクティブな状態コンテナ（signals）    | `deriveProps` 経由 → `layers.<alias>.props`           |
+| **deriveProps** | storeからコンポーネント用のsignalsを抽出 | `layers.<alias>.props`                        |
+| **services**    | 依存性注入用のサービス/ファクトリー      | `layers.<alias>.service('キー')` |
 
 ## レイヤーの作成
 
@@ -54,7 +54,7 @@ export const ThemeLayer = defineLayer({
   }),
 
   // 依存性注入を通じて公開されるサービス
-  provides: {
+  services: {
     theme: () => themeStore,
   },
 
@@ -134,7 +134,7 @@ interface EffuseLayer<P, D, S> {
 | -------------------- | ---------------------------- | ------------------------------------- |
 | **目的**             | レイヤーのリアクティブ状態   | 依存性注入サービス                    |
 | **保持するもの**     | `createStore()` インスタンス | ファクトリー関数 `{ キー: () => 値 }` |
-| **使用場所**         | `deriveProps(store)` → props | コンポーネントで `useStore('キー')`   |
+| **使用場所**         | `deriveProps(store)` → props | コンポーネントで `layers.<alias>.service('キー')`   |
 | **リアクティビティ** | 組み込みのsignals            | 返すもの次第                          |
 
 ### store
@@ -169,14 +169,15 @@ defineLayer({
 ```typescript
 defineLayer({
   name: 'router',
-  provides: {
+  services: {
     router: () => routerInstance, // ファクトリー関数
   },
 });
 
 // コンポーネント内:
-script: ({ useStore }) => {
-  const router = useStore('router'); // routerを取得
+layers: { router: RouterLayer } as const,
+script: ({ layers }) => {
+  const router = layers.router.service('router'); // routerを取得
 };
 ```
 
@@ -188,12 +189,12 @@ script: ({ useStore }) => {
 import { define, computed } from '@effuse/core';
 
 const ThemeToggle = define({
-  script: ({ useLayerProps, useStore }) => {
+  script: ({ layers: { theme } }) => {
     // derivePropからリアクティブなpropsを取得
-    const themeProps = useLayerProps('theme');
+    const themeProps = theme.props;
 
     // providesからサービスを取得
-    const themeStore = useStore('theme');
+    const themeStore = theme.service('theme');
 
     const buttonText = computed(() =>
       themeProps?.mode.value === 'dark' ? 'ライト' : 'ダーク'
@@ -223,10 +224,10 @@ export const useTheme = defineHook<
   { mode: Signal<string>; toggle: () => void }
 >({
   name: 'useTheme',
-  deps: ['theme'] as const,
-  setup: ({ layer }) => {
+  layers: { theme: ThemeLayer } as const,
+  setup: ({ layers: { theme } }) => {
     // layer() は deriveProps の結果を返す
-    const themeProps = layer('theme');
+    const themeProps = theme.props;
 
     return {
       mode: themeProps.mode,
@@ -272,14 +273,14 @@ declare module '@effuse/core' {
         mode: Signal<'light' | 'dark'>;
         accentColor: Signal<string>;
       };
-      provides: { theme: typeof themeStore };
+      services: { theme: typeof themeStore };
     };
     i18n: {
       props: {
         locale: Signal<string>;
         translations: Signal<Record<string, string> | null>;
       };
-      provides: { i18n: typeof i18nStore };
+      services: { i18n: typeof i18nStore };
     };
   }
 }
@@ -290,7 +291,7 @@ export {};
 これにより型推論が有効になります:
 
 ```typescript
-const { mode } = useLayerProps('theme')!;
+const { mode } = layers.theme.props;
 //      ^? Signal<'light' | 'dark'>
 ```
 
@@ -312,7 +313,7 @@ export const I18nLayer = defineLayer({
     translations: store.translations,
   }),
 
-  provides: {
+  services: {
     i18n: () => i18nStore,
   },
 

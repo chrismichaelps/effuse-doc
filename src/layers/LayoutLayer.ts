@@ -25,6 +25,12 @@ export const LayoutLayer = defineLayer({
     const s = ctx as unknown as {
       props: { isDarkMode: Signal<boolean>; isMobileMenuOpen: Signal<boolean> };
     };
+
+    // Layer setup runs on the server too, where there is no colour-scheme
+    // preference to read. The server renders the declared default and the
+    // client picks up the real preference when it hydrates.
+    if (typeof window === 'undefined') return undefined;
+
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     s.props.isDarkMode.value = mediaQuery.matches;
 

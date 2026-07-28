@@ -1,5 +1,5 @@
 import { defineLayer, signal, computed } from '@effuse/core';
-import { docsStore } from '../store/docsUIStore';
+import { docsStore } from '../store/docsUIStore.js';
 
 export const SidebarLayer = defineLayer({
   name: 'sidebar',
@@ -13,7 +13,7 @@ export const SidebarLayer = defineLayer({
       isCollapsed: computed(() => s.isSidebarCollapsed()),
     };
   },
-  provides: {
+  services: {
     docsUI: () => docsStore,
   },
 });

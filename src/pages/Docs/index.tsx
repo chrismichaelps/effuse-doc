@@ -1,36 +1,29 @@
 import {
   define,
-  signal,
   computed,
   watchEffect,
   useHead,
-  type Signal,
   type ReadonlySignal,
 } from '@effuse/core';
+import { useRoute } from '@effuse/router';
 import { Ink } from '@effuse/ink';
 import { DocsLayout } from '../../components/docs/DocsLayout.js';
-import { currentDocsRegistry, docsRegistry } from '../../content/docs';
+import { currentDocsRegistry, docsRegistry } from '../../content/docs/index.js';
 import type { TocItem } from '../../components/docs/DocsHeader.js';
 
 interface DocsPageExposed {
   content: ReadonlySignal<string>;
-  currentSlug: Signal<string>;
+  currentSlug: ReadonlySignal<string>;
   pageTitle: ReadonlySignal<string>;
   tocItems: ReadonlySignal<TocItem[]>;
 }
 
-const getSlugFromPath = (): string => {
-  const path = window.location.pathname;
-  const match = path.match(/\/docs\/(.+)/);
-  return match ? match[1] : 'getting-started';
-};
-
 const extractTocItems = (markdown: string): TocItem[] => {
+  if (!markdown) return [];
   const headingRegex = /^(#{1,3})\s+(.+)$/gm;
   const items: TocItem[] = [];
   const usedIds = new Set<string>();
   let match;
-  let index = 0;
 
   while ((match = headingRegex.exec(markdown)) !== null) {
     const level = match[1].length;
@@ -56,21 +49,26 @@ const extractTocItems = (markdown: string): TocItem[] => {
     usedIds.add(id);
 
     items.push({ id, title, level });
-    index++;
   }
   return items;
 };
 
 export const DocsPage = define<{}, DocsPageExposed>({
-  script: ({ onMount }) => {
-    const currentSlug = signal(getSlugFromPath());
+  script: () => {
+    const route = useRoute();
+
+    const currentSlug = computed(() => {
+      const path = route.path;
+      const match = path.match(/\/docs\/(.+)/);
+      return match ? match[1] : 'getting-started';
+    });
 
     const content = computed(() => {
       const registry = currentDocsRegistry.value;
       const slug = currentSlug.value;
       const doc =
         registry[slug] ?? docsRegistry[slug] ?? docsRegistry['getting-started'];
-      return doc.content;
+      return doc ? doc.content : '';
     });
 
     const pageTitle = computed(() => {
@@ -78,7 +76,7 @@ export const DocsPage = define<{}, DocsPageExposed>({
       const slug = currentSlug.value;
       const doc =
         registry[slug] ?? docsRegistry[slug] ?? docsRegistry['getting-started'];
-      return doc.title;
+      return doc ? doc.title : 'Documentation';
     });
 
     watchEffect(() => {
@@ -104,16 +102,6 @@ export const DocsPage = define<{}, DocsPageExposed>({
       return extractTocItems(content.value);
     });
 
-    onMount(() => {
-      const handlePopState = () => {
-        currentSlug.value = getSlugFromPath();
-      };
-      window.addEventListener('popstate', handlePopState);
-      currentSlug.value = getSlugFromPath();
-      return () => {
-        window.removeEventListener('popstate', handlePopState);
-      };
-    });
     return { content, currentSlug, pageTitle, tocItems };
   },
   template: ({ content, currentSlug, pageTitle, tocItems }) => (
