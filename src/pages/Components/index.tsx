@@ -292,14 +292,18 @@ const DynamicStyleDemo = define({
 
       <article
         class="demo-result demo-color-box"
-        style={() => ({
-          backgroundColor: `var(--accent-${currentColor.value})`,
-          color: 'white',
-          padding: '2rem',
-          borderRadius: '0.5rem',
-          textAlign: 'center',
-          transition: 'background-color 0.3s ease',
-        })}
+        style={() => {
+          const isWhiteBg = currentColor.value === 'mint';
+          return {
+            backgroundColor: `var(--accent-${currentColor.value})`,
+            color: isWhiteBg ? '#080808' : '#ffffff',
+            padding: '2rem',
+            borderRadius: '0.5rem',
+            textAlign: 'center',
+            transition: 'all 0.3s ease',
+            border: isWhiteBg ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid transparent',
+          };
+        }}
       >
         {() => t.value?.dynamic.current}: {currentColor.value}
       </article>
