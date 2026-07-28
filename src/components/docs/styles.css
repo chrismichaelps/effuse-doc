@@ -1004,6 +1004,8 @@
   font-size: 0.875rem;
   line-height: 1.65;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .prose pre code {
@@ -1029,6 +1031,7 @@
 .prose .table-wrapper {
   width: 100%;
   overflow-x: auto;
+  margin-top: 1.75rem;
   margin-bottom: 2rem;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
@@ -1057,7 +1060,8 @@
   max-width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  margin-bottom: 0;
+  margin-top: 1.75rem;
+  margin-bottom: 2rem;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   overflow-x: auto;
@@ -1065,6 +1069,7 @@
 }
 
 .prose > table {
+  margin-top: 1.75rem;
   margin-bottom: 2rem;
 }
 
