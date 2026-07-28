@@ -92,7 +92,7 @@ import { CustomLink, CodeBlock } from './components';
 
 export const GlobalMarkdownLayer = defineLayer({
   name: 'GlobalMarkdown',
-  provides: InkLayer,
+  services: InkLayer,
   setup() {
     return {
       components: {

@@ -12,9 +12,9 @@ The layer system consists of three key concepts:
 
 | Concept         | Purpose                                     | Access In Components                     |
 | --------------- | ------------------------------------------- | ---------------------------------------- |
-| **store**       | Reactive state container (signals)          | Via `deriveProps` → `useLayerProps`      |
-| **deriveProps** | Extract signals from store for components   | `useLayerProps('name')`                  |
-| **provides**    | Services/factories for dependency injection | `useStore('key')` or `useService('key')` |
+| **store**       | Reactive state container (signals)          | Via `deriveProps` → `layers.<alias>.props`      |
+| **deriveProps** | Extract signals from store for components   | `layers.<alias>.props`                  |
+| **services**    | Services/factories for dependency injection | `layers.<alias>.service('key')` |
 
 ## Creating a Layer
 
@@ -54,7 +54,7 @@ export const ThemeLayer = defineLayer({
   }),
 
   // Services exposed via dependency injection
-  provides: {
+  services: {
     theme: () => themeStore,
   },
 
@@ -134,7 +134,7 @@ interface EffuseLayer<P, D, S> {
 | ----------------- | ---------------------------- | ---------------------------------------- |
 | **Purpose**       | Layer's reactive state       | Dependency injection services            |
 | **What it holds** | `createStore()` instance     | Factory functions `{ key: () => value }` |
-| **Used in**       | `deriveProps(store)` → props | Components via `useStore('key')`         |
+| **Used in**       | `deriveProps(store)` → props | Components via `layers.<alias>.service('key')`         |
 | **Reactivity**    | Built-in signals             | Whatever you return                      |
 
 ### store
@@ -167,16 +167,17 @@ defineLayer({
 **provides** exposes services for dependency injection:
 
 ```typescript
-defineLayer({
+export const RouterLayer = defineLayer({
   name: 'router',
-  provides: {
+  services: {
     router: () => routerInstance, // Factory function
   },
 });
 
 // In a component:
-script: ({ useStore }) => {
-  const router = useStore('router'); // Gets the router
+layers: { router: RouterLayer } as const,
+script: ({ layers }) => {
+  const router = layers.router.service('router');
 };
 ```
 
@@ -187,13 +188,16 @@ Access layer data and services in component scripts:
 ```tsx
 import { define, computed } from '@effuse/core';
 
-const ThemeToggle = define({
-  script: ({ useLayerProps, useStore }) => {
-    // Get reactive props from deriveProps
-    const themeProps = useLayerProps('theme');
+const themeLayers = { theme: ThemeLayer } as const;
 
-    // Get service from provides
-    const themeStore = useStore('theme');
+const ThemeToggle = define({
+  layers: themeLayers,
+  script: ({ layers: { theme } }) => {
+    // Reactive props from deriveProps
+    const themeProps = theme.props;
+
+    // Service from services
+    const themeStore = theme.service('theme');
 
     const buttonText = computed(() =>
       themeProps?.mode.value === 'dark' ? 'Light' : 'Dark'
@@ -223,10 +227,10 @@ export const useTheme = defineHook<
   { mode: Signal<string>; toggle: () => void }
 >({
   name: 'useTheme',
-  deps: ['theme'] as const,
-  setup: ({ layer }) => {
+  layers: { theme: ThemeLayer } as const,
+  setup: ({ layers: { theme } }) => {
     // layer() returns deriveProps result
-    const themeProps = layer('theme');
+    const themeProps = theme.props;
 
     return {
       mode: themeProps.mode,
@@ -272,14 +276,14 @@ declare module '@effuse/core' {
         mode: Signal<'light' | 'dark'>;
         accentColor: Signal<string>;
       };
-      provides: { theme: typeof themeStore };
+      services: { theme: typeof themeStore };
     };
     i18n: {
       props: {
         locale: Signal<string>;
         translations: Signal<Record<string, string> | null>;
       };
-      provides: { i18n: typeof i18nStore };
+      services: { i18n: typeof i18nStore };
     };
   }
 }
@@ -290,7 +294,7 @@ export {};
 This enables type inference:
 
 ```typescript
-const { mode } = useLayerProps('theme')!;
+const { mode } = layers.theme.props;
 //      ^? Signal<'light' | 'dark'>
 ```
 
@@ -312,7 +316,7 @@ export const I18nLayer = defineLayer({
     translations: store.translations,
   }),
 
-  provides: {
+  services: {
     i18n: () => i18nStore,
   },
 

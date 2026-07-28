@@ -135,7 +135,7 @@ La función `script` recibe un objeto `ScriptContext` con utilidades:
 | `useLayer`        | `(name) => LayerContext`     | Acceder al contexto de una capa.                                  |
 | `useStore`        | `(key) => Store`             | Acceso tipado a stores globales.                                  |
 | `useService`      | `(key) => Service`           | Acceso a servicios inyectados por capas.                          |
-| `useLayerProps`   | `(name) => Props`            | Acceder a props de una capa.                                      |
+| `layers`          | `Record<alias, LayerEntry>`            | Acceder a props de una capa.                                      |
 
 ## Próximos Pasos
 
