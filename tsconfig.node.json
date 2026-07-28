@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "composite": true,
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
+    "noEmit": true,
     "baseUrl": ".",
     "paths": {
       "@effuse/compiler": ["../packages/compiler/src/index.ts"],
