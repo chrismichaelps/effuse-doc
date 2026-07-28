@@ -1,4 +1,4 @@
-import { define, useHead } from '@effuse/core';
+import { define, useHead, signal } from '@effuse/core';
 import { Link } from '@effuse/router';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -8,8 +8,60 @@ import './styles.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const CODE_EXAMPLES = {
+  counter: {
+    filename: 'Counter.tsx',
+    code: `import { define, signal } from '@effuse/core';
+
+export const Counter = define({
+  script: () => {
+    const count = signal(0);
+    return { count, increment: () => count.value++ };
+  },
+  template: ({ count, increment }) => (
+    <button onClick={increment} class="btn-primary">
+      Count is: {count}
+    </button>
+  ),
+});`,
+  },
+  signals: {
+    filename: 'Reactivity.ts',
+    code: `import { signal, computed, watchEffect } from '@effuse/core';
+
+const price = signal(100);
+const quantity = signal(2);
+const total = computed(() => price.value * quantity.value);
+
+watchEffect(() => {
+  console.log(\`Order Total: \${total.value}\`);
+});`,
+  },
+  server: {
+    filename: 'ServerAPI.ts',
+    code: `import { defineServerHandler, json } from '@effuse/server';
+
+export const handler = defineServerHandler({
+  async GET(req) {
+    return json({ status: 'ok', version: '2.0.0' });
+  },
+});`,
+  },
+};
+
 export const HomePage = define({
   script: ({ onMount }) => {
+    const activeTab = signal<'counter' | 'signals' | 'server'>('counter');
+    const copied = signal(false);
+
+    const copyCommand = () => {
+      navigator.clipboard.writeText('pnpm add @effuse/core');
+      copied.value = true;
+      setTimeout(() => {
+        copied.value = false;
+      }, 2000);
+    };
+
     useHead({
       title:
         'Effuse - Modern Reactive UI Framework | High-Performance Reactive Web Development',
@@ -51,15 +103,17 @@ export const HomePage = define({
     });
 
     onMount(() => {
-      // 1. Initial Hero Entrance Animation
+      // Hero Entrance Animation
       const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
       heroTl
-        .from('.hero-heading', { y: 45, opacity: 0, duration: 1 })
-        .from('.hero-subtext', { y: 30, opacity: 0, duration: 0.85 }, '-=0.6')
-        .from('.hero-ctas', { y: 25, opacity: 0, duration: 0.75 }, '-=0.5');
+        .from('.hero-badge', { y: 20, opacity: 0, duration: 0.6 })
+        .from('.hero-heading', { y: 40, opacity: 0, duration: 0.85 }, '-=0.4')
+        .from('.hero-subtext', { y: 25, opacity: 0, duration: 0.75 }, '-=0.5')
+        .from('.hero-ctas', { y: 20, opacity: 0, duration: 0.65 }, '-=0.4')
+        .from('.hero-stats-grid', { y: 20, opacity: 0, duration: 0.65 }, '-=0.3');
 
-      // 2. Hero Parallax Fade Out on Scroll
+      // Hero Scroll Scale-Down & Fade Out
       gsap.to('.hero-container', {
         scrollTrigger: {
           trigger: '.hero-section',
@@ -68,12 +122,12 @@ export const HomePage = define({
           scrub: 0.6,
         },
         scale: 0.95,
-        opacity: 0.3,
-        y: -30,
+        opacity: 0.35,
+        y: -25,
         ease: 'none',
       });
 
-      // 3. Background Parallax Shift
+      // Background Aurora Parallax Shift
       gsap.to('.blob-1', {
         scrollTrigger: {
           trigger: '.home-page',
@@ -81,7 +135,7 @@ export const HomePage = define({
           end: 'bottom bottom',
           scrub: 1,
         },
-        y: 250,
+        y: 300,
       });
 
       gsap.to('.blob-2', {
@@ -91,7 +145,7 @@ export const HomePage = define({
           end: 'bottom bottom',
           scrub: 1,
         },
-        y: -200,
+        y: -250,
       });
 
       return () => {
@@ -99,9 +153,13 @@ export const HomePage = define({
       };
     });
 
-    return {};
+    return {
+      activeTab,
+      copied,
+      copyCommand,
+    };
   },
-  template: () => (
+  template: ({ activeTab, copied, copyCommand }) => (
     <main class="home-page">
       <HeroCanvas />
       <div class="vibrant-bg" aria-hidden="true">
@@ -112,14 +170,31 @@ export const HomePage = define({
       {/* Hero Section */}
       <section class="hero-section">
         <div class="hero-container">
+          <Link to="/docs/getting-started" class="hero-badge">
+            <span class="hero-badge-pill">v2.0 Released</span>
+            <span class="hero-badge-text">Explore Effuse Server & Signals</span>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              class="hero-badge-arrow"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </Link>
+
           <h1 class="hero-heading">
             A modern approach to
             <br />
             <span class="hero-gradient">Web Development</span>
           </h1>
+
           <p class="hero-subtext">
-            Build reactive applications with fine-grained signals, type-safe
-            components, and an Effect-powered architecture.
+            Build high-performance reactive applications with fine-grained signals,
+            type-safe components, and an Effect-powered architecture.
           </p>
 
           <div class="hero-ctas">
@@ -137,6 +212,15 @@ export const HomePage = define({
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </Link>
+
+            <button type="button" class="command-pill" onClick={copyCommand}>
+              <span class="command-prefix">$</span>
+              <code class="command-code">pnpm add @effuse/core</code>
+              <span class="command-icon">
+                {() => (copied.value ? '✓' : '📋')}
+              </span>
+            </button>
+
             <a
               href="https://github.com/chrismichaelps/effuse"
               target="_blank"
@@ -146,12 +230,32 @@ export const HomePage = define({
               <img
                 src="/icons/github.svg"
                 alt="GitHub"
-                width="20"
-                height="20"
+                width="18"
+                height="18"
                 class="github-icon"
               />
-              View on GitHub
+              GitHub
             </a>
+          </div>
+
+          {/* Key Metrics / Highlights Bar */}
+          <div class="hero-stats-grid">
+            <div class="stat-card">
+              <span class="stat-number">&lt; 3kb</span>
+              <span class="stat-label">Gzipped Core</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">100%</span>
+              <span class="stat-label">Fine-Grained Signals</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">Effect</span>
+              <span class="stat-label">Concurrency & Fibers</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number">0 DOM</span>
+              <span class="stat-label">Virtual DOM Overhead</span>
+            </div>
           </div>
         </div>
       </section>
@@ -161,90 +265,136 @@ export const HomePage = define({
         <div class="features-container">
           <div class="features-header">
             <h2 id="features-title" class="features-title">
-              Everything you need
+              Built for Speed & Scalability
             </h2>
             <p class="features-subtitle">
-              Build modern, reactive applications with confidence.
+              Everything you need to write clean, type-safe reactive web apps.
             </p>
           </div>
+
           <div class="features-grid">
             <article>
               <FeatureCard
                 icon="/logo/signals.svg"
-                title="Signals"
-                description="Fine-grained reactivity. Only update what changes."
+                title="Fine-Grained Signals"
+                description="Automatic dependency tracking. Only update DOM nodes that actually change."
               />
             </article>
             <article>
               <FeatureCard
                 icon="/logo/components.svg"
-                title="Components"
-                description="Type-safe components with script and template."
+                title="Type-Safe Components"
+                description="Clean script and template separation with complete TypeScript inference."
               />
             </article>
             <article>
               <FeatureCard
                 icon="/logo/efficient.svg"
-                title="Efficient"
-                description="Optimized for performance and small bundle size."
+                title="Effect-Powered Engine"
+                description="Built-in structured concurrency, fibers, and resilient error management."
+              />
+            </article>
+            <article>
+              <FeatureCard
+                icon="/icons/list.svg"
+                title="Effuse Router & SSR"
+                description="Seamless client SPA routing with server API route rendering handlers."
+              />
+            </article>
+            <article>
+              <FeatureCard
+                icon="/logo/signals.svg"
+                title="Effuse Ink & CLI"
+                description="Declarative terminal UI framework for rich interactive CLI tools."
+              />
+            </article>
+            <article>
+              <FeatureCard
+                icon="/logo/components.svg"
+                title="i18n & Global State"
+                description="Integrated reactive internationalization and state store layers."
               />
             </article>
           </div>
         </div>
       </section>
 
-      {/* Code Example */}
+      {/* Code Interactive Showcase */}
       <section class="code-section" aria-label="Code example">
         <div class="code-container">
-          <figure class="code-window">
+          <div class="code-window">
             <figcaption class="code-header">
-              <div class="code-dots" aria-hidden="true">
-                <span class="code-dot"></span>
-                <span class="code-dot"></span>
-                <span class="code-dot"></span>
+              <div class="code-header-left">
+                <div class="code-dots" aria-hidden="true">
+                  <span class="code-dot red"></span>
+                  <span class="code-dot yellow"></span>
+                  <span class="code-dot green"></span>
+                </div>
+                <div class="code-tabs">
+                  <button
+                    type="button"
+                    class={() => `code-tab ${activeTab.value === 'counter' ? 'active' : ''}`}
+                    onClick={() => {
+                      activeTab.value = 'counter';
+                    }}
+                  >
+                    Counter.tsx
+                  </button>
+                  <button
+                    type="button"
+                    class={() => `code-tab ${activeTab.value === 'signals' ? 'active' : ''}`}
+                    onClick={() => {
+                      activeTab.value = 'signals';
+                    }}
+                  >
+                    Reactivity.ts
+                  </button>
+                  <button
+                    type="button"
+                    class={() => `code-tab ${activeTab.value === 'server' ? 'active' : ''}`}
+                    onClick={() => {
+                      activeTab.value = 'server';
+                    }}
+                  >
+                    ServerAPI.ts
+                  </button>
+                </div>
               </div>
-              <span class="code-filename">Counter.tsx</span>
+              <span class="code-filename">
+                {() => CODE_EXAMPLES[activeTab.value].filename}
+              </span>
             </figcaption>
+
             <pre class="code-body">
-              <code>{`import { define, signal } from '@effuse/core';
-							
-const Counter = define({
-  script: () => {
-    const count = signal(0);
-    return { count, increment: () => count.value++ };
-  },
-  template: ({ count, increment }) => (
-    <button onClick={increment}>
-      Count: {count}
-    </button>
-  ),
-});`}</code>
+              <code>{() => CODE_EXAMPLES[activeTab.value].code}</code>
             </pre>
-          </figure>
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
       <section class="cta-section">
         <div class="cta-container">
-          <h2 class="cta-title">Ready to start?</h2>
+          <h2 class="cta-title">Ready to build with Effuse?</h2>
           <p class="cta-subtitle">
-            Read the documentation and build your first app.
+            Explore the docs, build your first component, and experience fine-grained reactivity.
           </p>
-          <Link to="/docs/getting-started" class="cta-primary">
-            Read the Documentation
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            >
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </Link>
+          <div class="cta-buttons">
+            <Link to="/docs/getting-started" class="cta-primary">
+              Read Documentation
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
         </div>
       </section>
     </main>
