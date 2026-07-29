@@ -72,6 +72,7 @@ export const DocsLayout = define({
     const scrollSpy = useScrollSpy({
       containerSelector: '.docs-main',
       threshold: 150,
+      items: normalizedTocItems,
     });
 
     const smoothScroll = useSmoothScroll({
@@ -126,7 +127,6 @@ export const DocsLayout = define({
     });
 
     onMount(() => {
-      scrollSpy.setItems(normalizedTocItems.value);
       scrollSpy.init();
       smoothScroll.init();
       return undefined;
