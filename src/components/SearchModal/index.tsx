@@ -375,9 +375,57 @@ export const SearchModal = define({
                       </span>
                     </div>
                     {result.value.matchedIn === 'code' ? (
-                      <pre class="search-result-text code-match">
-                        {computed(() => highlight(result.value.text))}
-                      </pre>
+                      result.value.code ? (
+                        <div class="search-code-preview">
+                          <div class="search-code-meta">
+                            <span class="search-code-language">
+                              {result.value.code.language ?? 'code'}
+                            </span>
+                            {result.value.code.section ? (
+                              <span class="search-code-section">
+                                {result.value.code.section}
+                              </span>
+                            ) : null}
+                            {result.value.code.additionalMatches > 0 ? (
+                              <span class="search-code-count">
+                                +{result.value.code.additionalMatches} blocks
+                              </span>
+                            ) : null}
+                          </div>
+                          <pre
+                            class="search-result-code"
+                            aria-label="Code preview"
+                          >
+                            <code>
+                              {result.value.code.truncatedBefore ? (
+                                <span class="search-code-ellipsis">…</span>
+                              ) : null}
+                              {result.value.code.lines.map(
+                                (line, lineIndex) => (
+                                  <span class="search-code-line">
+                                    <span
+                                      class="search-code-line-number"
+                                      aria-hidden="true"
+                                    >
+                                      {result.value.code!.startLine + lineIndex}
+                                    </span>
+                                    <span class="search-code-line-content">
+                                      {highlight(line)}
+                                    </span>
+                                  </span>
+                                )
+                              )}
+                              {result.value.code.truncatedAfter ? (
+                                <span class="search-code-ellipsis">…</span>
+                              ) : null}
+                            </code>
+                          </pre>
+                        </div>
+                      ) : (
+                        <pre class="search-result-text code-match">
+                          {computed(() => highlight(result.value.text))}
+                        </pre>
+                      )
                     ) : (
                       <div class="search-result-text">
                         {computed(() => highlight(result.value.text))}
