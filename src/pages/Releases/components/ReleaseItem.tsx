@@ -1,16 +1,16 @@
-import { define, computed } from '@effuse/core';
+import { define, computed, type ReadonlySignal } from '@effuse/core';
 import { Ink } from '@effuse/ink';
 import type { GitHubRelease } from '../../../store/releaseStore.js';
 
 interface ReleaseItemProps {
-  release: GitHubRelease;
+  release: ReadonlySignal<GitHubRelease>;
   formatDate: (date: string) => string;
 }
 
 export const ReleaseItem = define<ReleaseItemProps, Record<string, never>>({
   script: () => ({}),
   template: ({ props: { release, formatDate } }) => {
-    const r = release;
+    const r = release.value;
     if (!r || !r.name) {
       return null;
     }

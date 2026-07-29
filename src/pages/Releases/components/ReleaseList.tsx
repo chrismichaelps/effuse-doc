@@ -14,7 +14,7 @@ export const ReleaseList = define<ReleaseListProps, Record<string, never>>({
       <div class="space-y-16">
         <For each={() => releases} keyExtractor={(r: GitHubRelease) => r.id}>
           {(item: ReadonlySignal<GitHubRelease>) => (
-            <ReleaseItem release={item.value} formatDate={formatDate} />
+            <ReleaseItem release={item} formatDate={formatDate} />
           )}
         </For>
       </div>
