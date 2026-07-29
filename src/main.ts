@@ -1,27 +1,14 @@
-import { createApp, initHydration } from '@effuse/core';
+import { createApp } from '@effuse/core';
 import { App } from './App';
 import { clientLayers } from './layers/client-layers';
 import './styles.css';
-
-// Adopt the server-rendered head, then discard the server-rendered body.
-//
-// mount() always builds fresh DOM and has no hydration mode, so leaving the
-// server markup in place renders the whole application a second time beside
-// it -- duplicate ids, doubled layer setup, and inert event handlers on the
-// first copy. Clearing the container keeps the crawler-visible first paint
-// while the client owns a single live tree. Replace this with a real
-// hydration call once chrismichaelps/effuse#432 lands.
-initHydration();
-
-const container = document.querySelector('#app');
-if (container) container.replaceChildren();
 
 createApp(App)
   .useLayers(clientLayers)
 
   .then((app) => {
     app
-      .mount('#app', {
+      .hydrate('#app', {
         tracing: {
           enabled: import.meta.env.DEV,
           serviceName: 'effuse-app',

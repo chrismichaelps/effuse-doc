@@ -10,47 +10,6 @@ import { queryClient } from './store/queryClient';
 import { i18nStore, type Translations } from './store/appI18n';
 import type { Doc } from './content/docs/types';
 
-/**
- * Re-attaches the client entry script.
- *
- * `createHandler` strips the template's `<script type="module">` and, when a
- * manifest is supplied, emits only `<link rel="modulepreload">`. The bundle is
- * therefore fetched but never executed: the page renders, nothing hydrates,
- * and every `Link` falls back to a full document load. Tracked upstream.
- */
-const entrySrcFrom = (manifest?: AssetManifest): string | undefined => {
-  const entry = Object.values(manifest ?? {}).find((chunk) => chunk.isEntry);
-  return entry ? `/${entry.file}` : undefined;
-};
-
-const withClientEntry = async (
-  response: Response,
-  entrySrc: string
-): Promise<Response> => {
-  if (!response.headers.get('content-type')?.includes('text/html')) {
-    return response;
-  }
-
-  const html = await response.text();
-  if (html.includes(`src="${entrySrc}"`)) return response;
-
-  const tag = `<script type="module" src="${entrySrc}"></script>`;
-  const body = html.includes('</body>')
-    ? html.replace('</body>', `${tag}</body>`)
-    : html + tag;
-
-  // Carrying the original headers over would keep its Content-Length, and the
-  // response would be truncated mid-tag by exactly the bytes just added.
-  const headers = new Headers(response.headers);
-  headers.delete('content-length');
-
-  return new Response(body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers,
-  });
-};
-
 /** Matches DocsPage: `[[...slug]]` yields an array, a string, or nothing. */
 const toDocSlug = (value: unknown): string => {
   if (Array.isArray(value)) return value.join('/') || DEFAULT_SLUG;
@@ -133,17 +92,12 @@ export const createFetchHandler = (
     queryClient.setQueryData<Doc>(key, (await response.json()) as Doc);
   };
 
-  const entrySrc = entrySrcFrom(options.manifest) ?? '/src/main.ts';
-
   return async (request) => {
     const url = new URL(request.url);
     const routePath = `${url.pathname}${url.search}${url.hash}`;
     const requestRouter = createAppRouter(createMemoryHistory(routePath));
 
     await preloadDoc(requestRouter, url);
-    return withClientEntry(
-      await runWithRouter(requestRouter, () => handler(request)),
-      entrySrc
-    );
+    return runWithRouter(requestRouter, () => handler(request));
   };
 };
