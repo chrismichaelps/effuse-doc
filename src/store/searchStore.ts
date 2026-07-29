@@ -1,17 +1,16 @@
 import { createStore, connectDevTools } from '@effuse/store';
-import { watchEffect } from '@effuse/core';
+import { ensureQueryData } from '@effuse/query';
 import { i18nStore } from './appI18n.js';
-import { loadDocsIndex, type DocEntry } from '../utils/docsIndexer.js';
-import { searchDocs, type SearchResultItem } from '../utils/searchEngine.js';
+import { queryClient } from './queryClient.js';
+import type {
+  SearchResponse,
+  SearchResultItem,
+} from '../content/search/types.js';
 import {
   Option,
   some,
   none,
   getOrElse,
-  Either,
-  right,
-  tryCatch,
-  isRight,
   taggedEnum,
 } from '../utils/data/index.js';
 
@@ -19,17 +18,13 @@ const STORE_NAME = 'search';
 const MIN_QUERY_LENGTH = 2;
 const DEBOUNCE_MS = 50;
 
-let indexedLocale: string | null = null;
-let indexingPromise: Promise<void> | null = null;
+let debounceHandle: ReturnType<typeof setTimeout> | undefined;
+let latestRequest = 0;
 
 type SearchErrorQueryTooShort = {
   readonly _tag: 'QueryTooShort';
   readonly query: string;
   readonly minLength: number;
-};
-
-type SearchErrorIndexNotLoaded = {
-  readonly _tag: 'IndexNotLoaded';
 };
 
 type SearchErrorExecution = {
@@ -38,8 +33,7 @@ type SearchErrorExecution = {
   readonly query: string;
 };
 
-type SearchError =
-  SearchErrorQueryTooShort | SearchErrorIndexNotLoaded | SearchErrorExecution;
+type SearchError = SearchErrorQueryTooShort | SearchErrorExecution;
 
 type SearchModalClosed = { readonly _tag: 'Closed' };
 type SearchModalOpening = { readonly _tag: 'Opening' };
@@ -73,7 +67,6 @@ interface SearchState {
   modalState: SearchModalState;
   searchStatus: SearchStatus;
   selectedIndex: number;
-  docsIndex: readonly DocEntry[];
 }
 
 interface SearchActions {
@@ -88,25 +81,19 @@ interface SearchActions {
   selectPrevious: () => void;
   getSelected: () => SearchResultItem | null;
   init: () => void;
-  indexDocs: () => Promise<void>;
 }
 
-const performSearch = (
-  query: string,
-  docs: readonly DocEntry[]
-): Either<SearchError, readonly SearchResultItem[]> => {
-  if (query.length < MIN_QUERY_LENGTH) {
-    return right([]);
+const fetchSearchResults = async (
+  locale: string,
+  query: string
+): Promise<readonly SearchResultItem[]> => {
+  const params = new URLSearchParams({ locale, q: query });
+  const response = await fetch(`/api/search?${params.toString()}`);
+  if (!response.ok) {
+    throw new Error(`Search request failed with status ${response.status}`);
   }
-
-  return tryCatch<readonly SearchResultItem[], SearchError>(
-    () => searchDocs(docs, query),
-    (err): SearchErrorExecution => ({
-      _tag: 'Execution',
-      message: err instanceof Error ? err.message : 'Unknown search error',
-      query,
-    })
-  );
+  const payload = (await response.json()) as SearchResponse;
+  return payload.results;
 };
 
 const safeGetSelected = (
@@ -124,7 +111,6 @@ export const searchStore = createStore<SearchState & SearchActions>(
     modalState: ModalState.Closed({}),
     searchStatus: SearchStatusState.Idle({}),
     selectedIndex: 0,
-    docsIndex: [],
 
     setQuery(query: string) {
       this.query.value = query;
@@ -134,6 +120,12 @@ export const searchStore = createStore<SearchState & SearchActions>(
     search(query: string) {
       this.query.value = query;
       this.selectedIndex.value = 0;
+      const requestId = ++latestRequest;
+
+      if (debounceHandle !== undefined) {
+        clearTimeout(debounceHandle);
+        debounceHandle = undefined;
+      }
 
       if (query.length < MIN_QUERY_LENGTH) {
         const newStatus = SearchStatusState.Idle({});
@@ -145,34 +137,55 @@ export const searchStore = createStore<SearchState & SearchActions>(
       this.searchStatus.value = newStatus;
 
       const locale = i18nStore.locale.value || 'en';
-      if (indexedLocale !== locale) {
-        void this.indexDocs().then(() => {
-          if (this.query.value === query) {
-            this.search.value(query);
-          }
-        });
-        return;
-      }
-
-      setTimeout(() => {
-        const result = performSearch(query, this.docsIndex.value);
-
-        if (isRight(result)) {
-          const successStatus = SearchStatusState.Results({
-            query,
-            results: result.right,
+      const normalizedQuery = query.trim();
+      const store = this;
+      debounceHandle = setTimeout(() => {
+        debounceHandle = undefined;
+        void ensureQueryData(
+          ['search', locale, normalizedQuery],
+          () => fetchSearchResults(locale, normalizedQuery),
+          { client: queryClient, staleTime: Infinity }
+        )
+          .then((results) => {
+            if (
+              requestId !== latestRequest ||
+              store.query.value !== query ||
+              (i18nStore.locale.value || 'en') !== locale
+            ) {
+              return;
+            }
+            store.searchStatus.value = SearchStatusState.Results({
+              query,
+              results,
+            });
+          })
+          .catch((error: unknown) => {
+            if (
+              requestId !== latestRequest ||
+              store.query.value !== query ||
+              (i18nStore.locale.value || 'en') !== locale
+            ) {
+              return;
+            }
+            const executionError: SearchErrorExecution = {
+              _tag: 'Execution',
+              message:
+                error instanceof Error ? error.message : 'Unknown search error',
+              query,
+            };
+            store.searchStatus.value = SearchStatusState.Error({
+              error: executionError,
+            });
           });
-          this.searchStatus.value = successStatus;
-        } else {
-          const errorStatus = SearchStatusState.Error({
-            error: result.left,
-          });
-          this.searchStatus.value = errorStatus;
-        }
       }, DEBOUNCE_MS);
     },
 
     clearResults() {
+      latestRequest += 1;
+      if (debounceHandle !== undefined) {
+        clearTimeout(debounceHandle);
+        debounceHandle = undefined;
+      }
       this.query.value = '';
       const newStatus = SearchStatusState.Idle({});
       this.searchStatus.value = newStatus;
@@ -277,50 +290,8 @@ export const searchStore = createStore<SearchState & SearchActions>(
       );
     },
 
-    async indexDocs() {
-      const locale = i18nStore.locale.value || 'en';
-      if (indexedLocale === locale) return;
-
-      if (indexingPromise) {
-        await indexingPromise;
-        if (indexedLocale === locale) return;
-      }
-
-      const store = this;
-      const request = loadDocsIndex(locale).then((docs) => {
-        if (i18nStore.locale.value === locale) {
-          store.docsIndex.value = docs;
-          indexedLocale = locale;
-        }
-      });
-
-      indexingPromise = request;
-      try {
-        await request;
-      } finally {
-        if (indexingPromise === request) {
-          indexingPromise = null;
-        }
-      }
-    },
-
     init() {
       if (typeof window !== 'undefined') {
-        watchEffect(() => {
-          const locale = i18nStore.locale.value;
-          const modalState = this.modalState.value;
-          const shouldIndex = ModalState.$match<boolean>(modalState, {
-            Closed: () => false,
-            Opening: () => true,
-            Open: () => true,
-            Closing: () => false,
-          });
-
-          if (locale && shouldIndex && indexedLocale !== locale) {
-            void this.indexDocs();
-          }
-        });
-
         const handleKeyDown = (e: KeyboardEvent) => {
           if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
             e.preventDefault();

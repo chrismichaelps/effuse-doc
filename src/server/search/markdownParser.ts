@@ -1,4 +1,4 @@
-import { Option, some, none, getOrElse } from './data/index.js';
+import { Option, some, none, getOrElse } from '../../utils/data/index.js';
 
 export interface DocHeading {
   text: string;
