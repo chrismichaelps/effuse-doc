@@ -1,5 +1,6 @@
 import type { DocEntry } from './markdownParser.js';
 import { tokenize, tokenizeQuery } from './tokenizer.js';
+import { findClosestTerms, isCodeQuery } from './fuzzySearch.js';
 import { Option, some, none } from '../../utils/data/index.js';
 
 export interface IndexEntry {
@@ -36,6 +37,52 @@ const FIELD_WEIGHTS = {
 const EXACT_TITLE_BONUS = 100;
 const TITLE_CONTAINS_BONUS = 50;
 const EXACT_HEADING_BONUS = 30;
+const CODE_LITERAL_BONUS = 120;
+const CODE_FIELD_MULTIPLIER = 4;
+const CODE_PROSE_MULTIPLIER = 0.2;
+const PREFIX_SCAN_LIMIT = 2000;
+const PREFIX_RESULT_LIMIT = 8;
+
+interface ExpandedTerm {
+  readonly indexedTerm: string;
+  readonly queryTerm: string;
+  readonly weight: number;
+}
+
+const expandQueryTerm = (
+  index: InvertedIndex,
+  queryTerm: string
+): readonly ExpandedTerm[] => {
+  if (index.terms.has(queryTerm)) {
+    return [{ indexedTerm: queryTerm, queryTerm, weight: 1 }];
+  }
+
+  const prefixes: string[] = [];
+  let scanned = 0;
+  for (const term of index.terms.keys()) {
+    if (++scanned > PREFIX_SCAN_LIMIT) break;
+    if (term.startsWith(queryTerm)) prefixes.push(term);
+  }
+
+  if (prefixes.length > 0) {
+    return prefixes
+      .sort((left, right) =>
+        left.length === right.length
+          ? left.localeCompare(right)
+          : left.length - right.length
+      )
+      .slice(0, PREFIX_RESULT_LIMIT)
+      .map((indexedTerm) => ({ indexedTerm, queryTerm, weight: 0.75 }));
+  }
+
+  return findClosestTerms(index.terms.keys(), queryTerm).map(
+    ({ term, score }) => ({
+      indexedTerm: term,
+      queryTerm,
+      weight: score * 0.65,
+    })
+  );
+};
 
 const indexField = (
   index: InvertedIndex,
@@ -152,79 +199,140 @@ export const searchIndex = (
   maxResults = 10
 ): SearchMatch[] => {
   const queryTerms = tokenizeQuery(query);
-  if (queryTerms.length === 0) return [];
+  const codeQuery = isCodeQuery(query);
+  const normalizedCodeQuery = query.trim().toLowerCase();
 
   const docScores = new Map<
     string,
     {
       bm25Score: number;
-      matchedTerms: Set<string>;
+      matchedQueryTerms: Set<string>;
+      snippetTerms: Set<string>;
       fieldScores: Map<string, number>;
       titleBonus: number;
       headingBonus: number;
+      codeLiteralBonus: number;
     }
   >();
 
-  for (const term of queryTerms) {
-    const entries = index.terms.get(term);
-    if (!entries) continue;
+  for (const queryTerm of queryTerms) {
+    for (const expanded of expandQueryTerm(index, queryTerm)) {
+      const entries = index.terms.get(expanded.indexedTerm);
+      if (!entries) continue;
 
-    const docFreq = entries.length;
+      const docFreq = entries.length;
 
-    for (const entry of entries) {
-      const doc = index.docs.get(entry.docId);
-      if (!doc) continue;
+      for (const entry of entries) {
+        const doc = index.docs.get(entry.docId);
+        if (!doc) continue;
 
-      const docLength =
-        doc.title.length + doc.text.length + doc.codeContent.length;
-      const bm25 = calculateBM25(
-        entry.frequency,
-        docFreq,
-        index.docCount,
-        docLength,
-        index.avgDocLength
-      );
-      const fieldWeight = FIELD_WEIGHTS[entry.field];
-      const termScore = bm25 * fieldWeight;
+        const docLength =
+          doc.title.length + doc.text.length + doc.codeContent.length;
+        const bm25 = calculateBM25(
+          entry.frequency,
+          docFreq,
+          index.docCount,
+          docLength,
+          index.avgDocLength
+        );
+        const fieldWeight =
+          FIELD_WEIGHTS[entry.field] *
+          (codeQuery
+            ? entry.field === 'code'
+              ? CODE_FIELD_MULTIPLIER
+              : CODE_PROSE_MULTIPLIER
+            : 1);
+        const termScore = bm25 * fieldWeight * expanded.weight;
 
-      const existing = docScores.get(entry.docId) ?? {
+        const existing = docScores.get(entry.docId) ?? {
+          bm25Score: 0,
+          matchedQueryTerms: new Set<string>(),
+          snippetTerms: new Set<string>(),
+          fieldScores: new Map<string, number>(),
+          titleBonus: 0,
+          headingBonus: 0,
+          codeLiteralBonus: 0,
+        };
+
+        existing.bm25Score += termScore;
+        existing.matchedQueryTerms.add(expanded.queryTerm);
+        existing.snippetTerms.add(expanded.indexedTerm);
+
+        const currentFieldScore = existing.fieldScores.get(entry.field) ?? 0;
+        existing.fieldScores.set(entry.field, currentFieldScore + termScore);
+
+        docScores.set(entry.docId, existing);
+      }
+    }
+  }
+
+  if (codeQuery && normalizedCodeQuery) {
+    for (const [docId, doc] of index.docs) {
+      if (!doc.codeContent.toLowerCase().includes(normalizedCodeQuery))
+        continue;
+
+      const existing = docScores.get(docId) ?? {
         bm25Score: 0,
-        matchedTerms: new Set<string>(),
+        matchedQueryTerms: new Set<string>(),
+        snippetTerms: new Set<string>(),
         fieldScores: new Map<string, number>(),
         titleBonus: 0,
         headingBonus: 0,
+        codeLiteralBonus: 0,
       };
-
-      existing.bm25Score += termScore;
-      existing.matchedTerms.add(term);
-
-      const currentFieldScore = existing.fieldScores.get(entry.field) ?? 0;
-      existing.fieldScores.set(entry.field, currentFieldScore + termScore);
-
-      docScores.set(entry.docId, existing);
+      existing.codeLiteralBonus = CODE_LITERAL_BONUS;
+      existing.matchedQueryTerms.add(normalizedCodeQuery);
+      existing.snippetTerms.add(query.trim());
+      existing.fieldScores.set('code', CODE_LITERAL_BONUS);
+      docScores.set(docId, existing);
     }
   }
+
+  if (docScores.size === 0) return [];
 
   for (const [docId, data] of docScores) {
     const doc = index.docs.get(docId);
     if (!doc) continue;
 
-    data.titleBonus = checkTitleMatch(doc.title, query);
-    data.headingBonus = checkHeadingMatch(doc.headings, query);
+    const expandedTerms = [...data.snippetTerms];
+    data.titleBonus =
+      Math.max(
+        checkTitleMatch(doc.title, query),
+        ...expandedTerms.map((term) => checkTitleMatch(doc.title, term) * 0.65)
+      ) * (codeQuery ? CODE_PROSE_MULTIPLIER : 1);
+    data.headingBonus =
+      Math.max(
+        checkHeadingMatch(doc.headings, query),
+        ...expandedTerms.map(
+          (term) => checkHeadingMatch(doc.headings, term) * 0.65
+        )
+      ) * (codeQuery ? CODE_PROSE_MULTIPLIER : 1);
   }
 
   const results: SearchMatch[] = [];
 
   for (const [docId, data] of docScores) {
-    const coverage = data.matchedTerms.size / queryTerms.length;
+    const coverage =
+      queryTerms.length > 0
+        ? Math.min(1, data.matchedQueryTerms.size / queryTerms.length)
+        : 1;
 
     const finalScore =
-      data.titleBonus + data.headingBonus + data.bm25Score * coverage;
+      data.codeLiteralBonus +
+      data.titleBonus +
+      data.headingBonus +
+      data.bm25Score * coverage;
 
     let bestField: 'title' | 'text' | 'code' | 'heading' = 'text';
     let bestFieldScore = 0;
 
-    if (data.titleBonus > 0) {
+    if (data.codeLiteralBonus > 0) {
+      bestField = 'code';
+      bestFieldScore = data.codeLiteralBonus;
+    } else if (codeQuery && (data.fieldScores.get('code') ?? 0) > 0) {
+      bestField = 'code';
+      bestFieldScore = data.fieldScores.get('code') ?? 0;
+    } else if (data.titleBonus > 0) {
       bestField = 'title';
       bestFieldScore = data.titleBonus;
     } else if (data.headingBonus > 0) {
@@ -242,12 +350,16 @@ export const searchIndex = (
     results.push({
       docId,
       score: finalScore,
-      matchedTerms: [...data.matchedTerms],
+      matchedTerms:
+        data.codeLiteralBonus > 0 ? [query.trim()] : [...data.snippetTerms],
       bestField,
     });
   }
 
-  results.sort((a, b) => b.score - a.score);
+  results.sort(
+    (left, right) =>
+      right.score - left.score || left.docId.localeCompare(right.docId)
+  );
 
   return results.slice(0, maxResults);
 };

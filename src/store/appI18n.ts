@@ -1,4 +1,7 @@
-import { createI18n } from '@effuse/i18n';
+import {
+  createI18n,
+  type Translations as EffuseTranslations,
+} from '@effuse/i18n';
 import { signal, type Signal } from '@effuse/core';
 import { Either, right, left, isRight } from '../utils/data/index.js';
 import { I18nError } from '../errors/index.js';
@@ -371,18 +374,15 @@ interface AppTranslations {
 
 export type Translations = AppTranslations;
 
-const i18n = createI18n({
-  defaultLocale: LOCALES.EN,
-  fallbackLocale: LOCALES.EN,
-  detectLocale: true,
-  persistLocale: true,
-});
-
 type TranslationResult = Either<Error, AppTranslations>;
 
 const translations = signal<AppTranslations | null>(null);
+const translationCache = new Map<string, AppTranslations>();
 
 const loadTranslations = async (locale: string): Promise<TranslationResult> => {
+  const cached = translationCache.get(locale);
+  if (cached) return right(cached);
+
   try {
     const response = await fetch(`${LOCALES_PATH}/${locale}.json`);
     if (!response.ok) {
@@ -394,6 +394,7 @@ const loadTranslations = async (locale: string): Promise<TranslationResult> => {
       );
     }
     const data: AppTranslations = await response.json();
+    translationCache.set(locale, data);
     return right(data);
   } catch (error) {
     return left(
@@ -404,6 +405,18 @@ const loadTranslations = async (locale: string): Promise<TranslationResult> => {
     );
   }
 };
+
+const i18n = createI18n({
+  defaultLocale: LOCALES.EN,
+  fallbackLocale: LOCALES.EN,
+  detectLocale: true,
+  persistLocale: true,
+  loader: async (locale) => {
+    const result = await loadTranslations(locale);
+    if (!isRight(result)) throw result.left;
+    return result.right as unknown as EffuseTranslations;
+  },
+});
 
 export const i18nStore = {
   locale: i18n.locale as Signal<Locale>,

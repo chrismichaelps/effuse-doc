@@ -42,7 +42,7 @@
 
 .search-modal {
   width: 100%;
-  max-width: 600px;
+  max-width: 760px;
   background: rgba(18, 24, 28, 0.98);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
@@ -116,7 +116,7 @@
 }
 
 .search-results {
-  max-height: 400px;
+  max-height: min(540px, 65vh);
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0.5rem;
@@ -217,6 +217,93 @@ pre.search-result-text.code-match {
   margin: 0;
   overflow: hidden;
   max-height: 100px;
+}
+
+.search-code-preview {
+  overflow: hidden;
+  margin-top: 0.25rem;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 9px;
+  background: rgba(13, 17, 23, 0.92);
+}
+
+.search-code-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 28px;
+  padding: 0.25rem 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  color: var(--text-muted);
+  font-size: 0.6875rem;
+}
+
+.search-code-language {
+  color: #ffb86c;
+  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+  text-transform: uppercase;
+}
+
+.search-code-section {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-code-count {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--accent-mint);
+}
+
+.search-result-code {
+  margin: 0;
+  padding: 0.5rem 0;
+  overflow-x: auto;
+  color: #e2e8f0;
+  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+  font-size: 0.75rem;
+  line-height: 1.55;
+  tab-size: 2;
+}
+
+.search-result-code code {
+  display: block;
+  min-width: max-content;
+}
+
+.search-code-line {
+  display: flex;
+  min-height: 1.55em;
+  padding-right: 1rem;
+}
+
+.search-code-line-number {
+  width: 3.25rem;
+  flex-shrink: 0;
+  padding-right: 0.75rem;
+  color: #56606f;
+  text-align: right;
+  user-select: none;
+}
+
+.search-code-line-content {
+  white-space: pre;
+}
+
+.search-code-ellipsis {
+  display: block;
+  padding-left: 2.55rem;
+  color: #56606f;
+  line-height: 1;
+}
+
+.search-result-item:not(.selected) .search-code-line:nth-of-type(n + 5) {
+  display: none;
+}
+
+.search-result-item.selected .search-code-preview {
+  border-color: rgba(141, 240, 204, 0.5);
 }
 
 pre.search-result-text.code-match code {
@@ -339,4 +426,19 @@ pre.search-result-text.code-match code {
   width: 14px;
   height: 14px;
   opacity: 0.8;
+}
+
+@media (max-width: 640px) {
+  .search-modal-backdrop {
+    padding: 0.75rem;
+    padding-top: 8vh;
+  }
+
+  .search-result-item {
+    padding: 0.875rem;
+  }
+
+  .search-footer-powered {
+    display: none;
+  }
 }
