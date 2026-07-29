@@ -7,7 +7,10 @@ import {
   type SearchMatch,
 } from './invertedIndex.js';
 import { isSome } from '../../utils/data/index.js';
-import type { SearchResultItem } from '../../content/search/types.js';
+import type {
+  SearchCodePreview,
+  SearchResultItem,
+} from '../../content/search/types.js';
 import {
   SEARCH_MAX_QUERY_LENGTH,
   SEARCH_MAX_RESULTS,
@@ -28,6 +31,64 @@ const DEFAULT_CONFIG: SearchEngineConfig = {
   maxResults: SEARCH_MAX_RESULTS,
   snippetLength: 150,
   snippetContext: 60,
+};
+
+const CODE_PREVIEW_LINES = 7;
+const CODE_PREVIEW_LINE_LENGTH = 240;
+
+const findMatchIndex = (text: string, terms: readonly string[]): number => {
+  const lower = text.toLowerCase();
+  let bestIndex = -1;
+
+  for (const term of terms) {
+    const index = lower.indexOf(term.toLowerCase());
+    if (index !== -1 && (bestIndex === -1 || index < bestIndex)) {
+      bestIndex = index;
+    }
+  }
+
+  return bestIndex;
+};
+
+const createCodePreview = (
+  doc: DocEntry,
+  matchedTerms: readonly string[]
+): { preview: SearchCodePreview; anchor?: string } | undefined => {
+  const matchingBlocks = doc.codeBlocks
+    .map((block) => ({
+      block,
+      matchIndex: findMatchIndex(block.code, matchedTerms),
+    }))
+    .filter(({ matchIndex }) => matchIndex >= 0);
+  const selected = matchingBlocks[0];
+  if (!selected) return undefined;
+
+  const allLines = selected.block.code.split('\n');
+  const matchLine = selected.block.code
+    .slice(0, selected.matchIndex)
+    .split('\n').length;
+  const start = Math.max(
+    0,
+    Math.min(matchLine - 3, allLines.length - CODE_PREVIEW_LINES)
+  );
+  const end = Math.min(allLines.length, start + CODE_PREVIEW_LINES);
+
+  return {
+    preview: {
+      ...(selected.block.language ? { language: selected.block.language } : {}),
+      ...(selected.block.headingText
+        ? { section: selected.block.headingText }
+        : {}),
+      lines: allLines
+        .slice(start, end)
+        .map((line) => line.slice(0, CODE_PREVIEW_LINE_LENGTH)),
+      startLine: start + 1,
+      truncatedBefore: start > 0,
+      truncatedAfter: end < allLines.length,
+      additionalMatches: matchingBlocks.length - 1,
+    },
+    anchor: selected.block.headingId,
+  };
 };
 
 const createSnippet = (
@@ -107,16 +168,24 @@ const convertMatch = (
         : match.bestField === 'title'
           ? 'title'
           : 'content';
+  const structuredCode =
+    matchedIn === 'code'
+      ? createCodePreview(doc, match.matchedTerms)
+      : undefined;
+  const text = structuredCode
+    ? structuredCode.preview.lines.join('\n')
+    : createSnippet(fieldText, match.matchedTerms, config);
 
   return {
     id: `${doc.id}-${matchedIn}`,
     documentId: doc.id,
-    text: createSnippet(fieldText, match.matchedTerms, config),
+    text,
     score: Math.min(1, match.score / 10),
     heading: doc.title,
     filePath: doc.path,
-    anchor: getAnchorForDoc(doc, match.matchedTerms),
+    anchor: structuredCode?.anchor ?? getAnchorForDoc(doc, match.matchedTerms),
     matchedIn,
+    ...(structuredCode ? { code: structuredCode.preview } : {}),
   };
 };
 

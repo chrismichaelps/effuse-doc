@@ -6,6 +6,10 @@ export const request = defineServerRequest({
   query: SearchQuerySchema,
 });
 
+export const metadata = {
+  cache: { revalidate: 300, tags: ['search', 'docs'] },
+};
+
 export const GET = defineServerFileHandler(
   '/api/search',
   request,
