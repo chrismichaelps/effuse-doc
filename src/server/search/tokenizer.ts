@@ -1,5 +1,13 @@
 import { isString, isNumber, isRecord } from '../../utils/data/index.js';
 
+export const MAX_INDEX_TOKENS_PER_FIELD = 4096;
+export const MAX_QUERY_TOKENS = 16;
+
+const MAX_CODE_IDENTIFIERS = 512;
+const WORD_PATTERN = /[\p{L}\p{N}_$'-]+/gu;
+const CJK_PATTERN =
+  /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u;
+
 export interface Token {
   term: string;
   position: number;
@@ -53,8 +61,10 @@ const extractCodeIdentifiers = (text: string): string[] => {
       const id = match[1];
       if (id && id.length > 1) {
         identifiers.push(id.toLowerCase());
+        if (identifiers.length >= MAX_CODE_IDENTIFIERS) break;
       }
     }
+    if (identifiers.length >= MAX_CODE_IDENTIFIERS) break;
   }
 
   return [...new Set(identifiers)];
@@ -62,11 +72,11 @@ const extractCodeIdentifiers = (text: string): string[] => {
 
 const generateNgrams = (str: string, minLen = 3, maxLen = 8): string[] => {
   const ngrams: string[] = [];
-  const lower = str.toLowerCase();
+  const characters = Array.from(str.toLowerCase());
 
-  for (let len = minLen; len <= Math.min(maxLen, lower.length); len++) {
-    for (let i = 0; i <= lower.length - len; i++) {
-      ngrams.push(lower.slice(i, i + len));
+  for (let len = minLen; len <= Math.min(maxLen, characters.length); len++) {
+    for (let i = 0; i <= characters.length - len; i++) {
+      ngrams.push(characters.slice(i, i + len).join(''));
     }
   }
 
@@ -75,71 +85,83 @@ const generateNgrams = (str: string, minLen = 3, maxLen = 8): string[] => {
 
 export const tokenize = (text: string, includeNgrams = false): Token[] => {
   const tokens: Token[] = [];
+  const seen = new Set<string>();
   let position = 0;
 
-  const normalizedText = normalize(text);
-  const words = normalizedText
-    .replace(/[^\w\s'-]/g, ' ')
-    .split(/\s+/)
-    .filter((w) => w.length > 1);
+  const add = (term: string, type: Token['type']): void => {
+    const normalized = normalize(term);
+    if (
+      normalized.length < 2 ||
+      seen.has(normalized) ||
+      tokens.length >= MAX_INDEX_TOKENS_PER_FIELD
+    ) {
+      return;
+    }
+    seen.add(normalized);
+    tokens.push({ term: normalized, position: position++, type });
+  };
+
+  const words = text.match(WORD_PATTERN) ?? [];
 
   for (const word of words) {
-    const term = normalize(word);
-    tokens.push({ term, position: position++, type: 'word' });
+    add(word, 'word');
 
-    if (/[A-Z]/.test(text)) {
+    if (/[A-Z]/.test(word)) {
       for (const part of splitCamelCase(word)) {
-        tokens.push({ term: part, position: position++, type: 'word' });
+        add(part, 'word');
       }
     }
 
     if (word.includes('_') || word.includes('-')) {
       for (const part of splitSnakeCase(word)) {
-        tokens.push({ term: part, position: position++, type: 'word' });
+        add(part, 'word');
       }
+    }
+
+    if (CJK_PATTERN.test(word)) {
+      for (const ngram of generateNgrams(word, 2, 3)) add(ngram, 'ngram');
     }
   }
 
   const codeIds = extractCodeIdentifiers(text);
   for (const id of codeIds) {
-    tokens.push({ term: id, position: position++, type: 'code' });
+    add(id, 'code');
 
     for (const part of splitCamelCase(id)) {
-      if (!tokens.some((t) => t.term === part)) {
-        tokens.push({ term: part, position: position++, type: 'code' });
-      }
+      add(part, 'code');
     }
   }
 
   if (includeNgrams) {
-    const fullText = text.toLowerCase().replace(/[^\w]/g, '');
-    for (const ngram of generateNgrams(fullText, 3, 6)) {
-      tokens.push({ term: ngram, position: position++, type: 'ngram' });
+    for (const identifier of codeIds) {
+      for (const ngram of generateNgrams(identifier, 3, 6)) {
+        add(ngram, 'ngram');
+      }
     }
   }
 
-  const seen = new Set<string>();
-  return tokens.filter((t) => {
-    if (seen.has(t.term)) return false;
-    seen.add(t.term);
-    return true;
-  });
+  return tokens;
 };
 
 export const tokenizeQuery = (query: string): string[] => {
-  const terms: string[] = [];
+  const terms = new Set<string>();
+  const add = (term: string): void => {
+    const normalized = normalize(term);
+    if (normalized.length >= 2 && terms.size < MAX_QUERY_TOKENS) {
+      terms.add(normalized);
+    }
+  };
 
-  const cleaned = normalize(query).replace(/['"()[\]{}]/g, ' ');
-  const words = cleaned.split(/\s+/).filter((w) => w.length > 1);
-  terms.push(...words);
-
-  const codeIds = extractCodeIdentifiers(query);
-  terms.push(...codeIds);
-
+  const words = query.match(WORD_PATTERN) ?? [];
   for (const word of words) {
-    terms.push(...splitCamelCase(word));
-    terms.push(...splitSnakeCase(word));
+    add(word);
+    if (CJK_PATTERN.test(word)) {
+      for (const ngram of generateNgrams(word, 2, 3)) add(ngram);
+    }
   }
 
-  return [...new Set(terms)];
+  const codeIds = extractCodeIdentifiers(query);
+  for (const identifier of codeIds) add(identifier);
+
+  return [...terms];
 };
