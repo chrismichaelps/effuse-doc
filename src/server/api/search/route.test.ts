@@ -3,6 +3,7 @@ import { createInProcessRouteFetch } from '@effuse/core/server';
 import type { SearchResponse } from '../../../content/search/types.js';
 import { AppServerLayer } from '../../../layers/AppServerLayer.js';
 import { SEARCH_MAX_QUERY_LENGTH } from '../../../content/search/config.js';
+import { metadata } from './route.js';
 
 const EXPECTED_RANKINGS = {
   signals: [
@@ -45,6 +46,12 @@ const EXPECTED_RANKINGS = {
 describe('GET /api/search', () => {
   const routeFetch = createInProcessRouteFetch([AppServerLayer]);
 
+  it('declares a shared five-minute response cache policy', () => {
+    expect(metadata).toEqual({
+      cache: { revalidate: 300, tags: ['search', 'docs'] },
+    });
+  });
+
   it.each(Object.entries(EXPECTED_RANKINGS))(
     'keeps deterministic rankings for %s',
     async (query, expectedIds) => {
@@ -80,6 +87,8 @@ describe('GET /api/search', () => {
 
     expect(payload.results[0]?.matchedIn).toBe('code');
     expect(payload.results[0]?.text).toContain('define(');
+    expect(payload.results[0]?.code?.lines.length).toBeGreaterThan(0);
+    expect(payload.results[0]?.code?.lines.length).toBeLessThanOrEqual(7);
   });
 
   it('rejects a request without a query', async () => {

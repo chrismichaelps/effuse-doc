@@ -15,14 +15,29 @@ const doc = (
   text = '',
   heading?: string,
   codeContent = ''
-): DocEntry => ({
-  id,
-  title,
-  text,
-  codeContent,
-  path: `en/${id}.md`,
-  headings: heading ? [{ text: heading, id: 'section', level: 2 }] : [],
-});
+): DocEntry => {
+  const headings = heading ? [{ text: heading, id: 'section', level: 2 }] : [];
+  return {
+    id,
+    title,
+    text,
+    codeContent,
+    codeBlocks: codeContent
+      ? [
+          {
+            id: `${id}-code-1`,
+            language: 'ts',
+            code: codeContent,
+            headingId: headings[0]?.id,
+            headingText: headings[0]?.text,
+            startLine: 1,
+          },
+        ]
+      : [],
+    path: `en/${id}.md`,
+    headings,
+  };
+};
 
 describe('production search engine', () => {
   const engine = createSearchEngine([
@@ -61,8 +76,35 @@ describe('production search engine', () => {
       expect(result?.documentId).toBe('example');
       expect(result?.matchedIn).toBe('code');
       expect(result?.text.toLowerCase()).toContain(query.toLowerCase());
+      expect(result?.code).toMatchObject({
+        language: 'ts',
+        startLine: 1,
+      });
+      expect(result?.code?.lines.length).toBeLessThanOrEqual(7);
     }
   );
+
+  it('returns a bounded code window linked to its documentation section', () => {
+    const code = Array.from({ length: 20 }, (_, index) =>
+      index === 10
+        ? 'const view = define({});'
+        : `const line${index} = ${index};`
+    ).join('\n');
+    const result = createSearchEngine([
+      doc('component', 'Component API', '', 'Define a component', code),
+    ]).search('define(')[0];
+
+    expect(result?.anchor).toBe('section');
+    expect(result?.code).toMatchObject({
+      language: 'ts',
+      section: 'Define a component',
+      truncatedBefore: true,
+      truncatedAfter: true,
+      additionalMatches: 0,
+    });
+    expect(result?.code?.lines).toHaveLength(7);
+    expect(result?.text).toContain('define(');
+  });
 
   it('indexes Japanese and Chinese search terms', () => {
     const translated = createSearchEngine([

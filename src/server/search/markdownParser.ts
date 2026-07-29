@@ -6,11 +6,21 @@ export interface DocHeading {
   level: number;
 }
 
+export interface DocCodeBlock {
+  id: string;
+  language?: string;
+  code: string;
+  headingId?: string;
+  headingText?: string;
+  startLine: number;
+}
+
 export interface DocEntry {
   id: string;
   title: string;
   text: string;
   codeContent: string;
+  codeBlocks: DocCodeBlock[];
   path: string;
   headings: DocHeading[];
 }
@@ -34,8 +44,13 @@ const extractTitle = (content: string, fileName: string): Option<string> => {
   return fallback ? some(fallback) : none();
 };
 
-const extractHeadings = (content: string): DocHeading[] => {
-  const headings: DocHeading[] = [];
+interface PositionedHeading {
+  heading: DocHeading;
+  offset: number;
+}
+
+const extractPositionedHeadings = (content: string): PositionedHeading[] => {
+  const headings: PositionedHeading[] = [];
   const headingRegex = /^(#{1,6})\s+(.+)$/gm;
   let match;
 
@@ -54,14 +69,65 @@ const extractHeadings = (content: string): DocHeading[] => {
     const baseId = id || `section-${headings.length + 1}`;
     let uniqueId = baseId;
     let counter = 1;
-    while (headings.some((h) => h.id === uniqueId)) {
+    while (headings.some(({ heading }) => heading.id === uniqueId)) {
       uniqueId = `${baseId}-${++counter}`;
     }
 
-    headings.push({ text, id: uniqueId, level });
+    headings.push({
+      heading: { text, id: uniqueId, level },
+      offset: match.index,
+    });
   }
 
   return headings;
+};
+
+const MAX_CODE_BLOCKS = 128;
+const MAX_CODE_BLOCK_LENGTH = 12_000;
+
+const extractCodeBlocks = (
+  fileName: string,
+  content: string,
+  headings: readonly PositionedHeading[]
+): DocCodeBlock[] => {
+  const blocks: DocCodeBlock[] = [];
+  const fencedRegex = /^```([^\n`]*)\n([\s\S]*?)^```[ \t]*$/gm;
+  let match: RegExpExecArray | null;
+  let headingIndex = -1;
+
+  while (
+    blocks.length < MAX_CODE_BLOCKS &&
+    (match = fencedRegex.exec(content)) !== null
+  ) {
+    while (
+      headingIndex + 1 < headings.length &&
+      headings[headingIndex + 1].offset < match.index
+    ) {
+      headingIndex += 1;
+    }
+
+    const code = match[2].replace(/\n$/, '').slice(0, MAX_CODE_BLOCK_LENGTH);
+    if (!code.trim()) continue;
+
+    const info = match[1].trim().split(/\s+/, 1)[0];
+    const nearestHeading = headings[headingIndex]?.heading;
+    const fenceLine = content.slice(0, match.index).split('\n').length;
+
+    blocks.push({
+      id: `${fileName}-code-${blocks.length + 1}`,
+      ...(info ? { language: info } : {}),
+      code,
+      ...(nearestHeading
+        ? {
+            headingId: nearestHeading.id,
+            headingText: nearestHeading.text,
+          }
+        : {}),
+      startLine: fenceLine + 1,
+    });
+  }
+
+  return blocks;
 };
 
 const extractCodeContent = (content: string): string => {
@@ -126,9 +192,11 @@ export const parseMarkdownContent = (
   if (!fileName) return none();
 
   const title = getOrElse(extractTitle(content, fileName), () => '');
-  const headings = extractHeadings(content);
+  const positionedHeadings = extractPositionedHeadings(content);
+  const headings = positionedHeadings.map(({ heading }) => heading);
   const text = extractPlainText(content);
   const codeContent = extractCodeContent(content);
+  const codeBlocks = extractCodeBlocks(fileName, content, positionedHeadings);
 
   if (!isValidEntry(title, text, codeContent, headings)) return none();
 
@@ -137,6 +205,7 @@ export const parseMarkdownContent = (
     title,
     text,
     codeContent,
+    codeBlocks,
     path: `${lang}/${fileName}.md`,
     headings,
   });
