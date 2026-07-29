@@ -19,6 +19,15 @@ export const request = defineServerRequest({
  * Falls back to English when a translation is missing, so a reader asking for a
  * page that only exists in English reads it rather than meeting a 404.
  */
+/**
+ * Immutable for the lifetime of a deploy. `revalidate` declares that the
+ * response *may* be cached, which compiles to Cache-Control and cache tags for
+ * a CDN; the origin still runs unless a response cache is also supplied.
+ */
+export const metadata = {
+  cache: { revalidate: 3600, tags: ['docs'] },
+};
+
 export const GET = defineServerFileHandler(
   '/api/docs/[locale]/[slug]',
   request,

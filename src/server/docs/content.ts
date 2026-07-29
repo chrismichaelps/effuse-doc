@@ -1,3 +1,4 @@
+import { createDataCache } from '@effuse/core/server';
 import { parseSync } from '@effuse/ink';
 import type { BlockNode, DocumentNode, InlineNode } from '@effuse/ink';
 import { createHeadingSlugger } from './slug.js';
@@ -89,24 +90,48 @@ const load = async (locale: Locale, slug: string): Promise<string | null> => {
   return loader();
 };
 
+/**
+ * Documents are immutable for the lifetime of a deploy, so parsing is memoised
+ * rather than repeated per request. Tagged per locale so a content change can
+ * drop one language without clearing the rest.
+ */
+const docCache = createDataCache({ maxEntries: 256 });
+
+const readDoc = docCache.cached(
+  async (locale: Locale, slug: string): Promise<Doc | null> => {
+    const raw = await load(locale, slug);
+    if (raw === null) return null;
+
+    const parsed = splitFrontmatter(raw);
+    const content = parsed.body.trim();
+
+    return {
+      slug,
+      locale,
+      title: resolveTitle(parsed, slug),
+      content,
+      toc: buildToc(parseSync(content)),
+    };
+  },
+  {
+    life: { stale: 3600, expire: 86_400 },
+    tags: (locale) => [`docs:${locale}`],
+  }
+);
+
 /** Resolves one document, or `null` when the locale has no such slug. */
-export const getDoc = async (
+export const getDoc = (
   locale: Locale,
   slug: string
-): Promise<Doc | null> => {
-  const raw = await load(locale, slug);
-  if (raw === null) return null;
+): Promise<Doc | null> => readDoc(locale, slug);
 
-  const parsed = splitFrontmatter(raw);
-  const content = parsed.body.trim();
-
-  return {
-    slug,
-    locale,
-    title: resolveTitle(parsed, slug),
-    content,
-    toc: buildToc(parseSync(content)),
-  };
+/** Drops memoised documents for a locale, or all of them. */
+export const invalidateDocs = (locale?: Locale): void => {
+  if (locale) {
+    docCache.invalidateTags([`docs:${locale}`]);
+    return;
+  }
+  docCache.clear();
 };
 
 /** Resolves a document, falling back to English when untranslated. */

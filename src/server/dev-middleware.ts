@@ -1,18 +1,27 @@
-import type { Connect, ViteDevServer } from 'vite';
-import type { IncomingMessage, ServerResponse } from 'node:http';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import type { IncomingMessage } from 'node:http';
+import type { Plugin, ViteDevServer } from 'vite';
 
 /**
- * Serves the Effuse server routes over HTTP in dev by bridging Node's req/res
- * to a Web `Request`.
+ * Runs the production request handler in development.
  *
- * The handler is reloaded via `ssrLoadModule` per request so route edits apply
- * without a restart.
+ * Development previously served only `/api/*` through a separate handler while
+ * pages fell through to Vite's static shell, so server rendering was exercised
+ * for the first time at build. This registers after Vite's own middlewares and
+ * serves every remaining request through `createFetchHandler` — the same entry
+ * `api/` and `scripts/serve.mjs` use — so dev, preview and production run one
+ * code path.
+ *
+ * `ssrLoadModule` reloads the entry per request, so route, layer and content
+ * edits apply without restarting.
  */
 
-const HANDLED_PREFIXES = ['/api/', '/_effuse/'] as const;
+type FetchHandler = (request: Request) => Promise<Response>;
 
-const isHandled = (url: string): boolean =>
-  HANDLED_PREFIXES.some((prefix) => url.startsWith(prefix));
+interface ServerEntry {
+  createFetchHandler: (options: { template: string }) => FetchHandler;
+}
 
 const readBody = async (req: IncomingMessage): Promise<Buffer | undefined> => {
   if (req.method === 'GET' || req.method === 'HEAD') return undefined;
@@ -25,57 +34,52 @@ const toWebRequest = (
   req: IncomingMessage,
   url: string,
   body: Buffer | undefined
-): Request => {
-  const origin = `http://${req.headers.host ?? 'localhost'}`;
-  return new Request(new URL(url, origin), {
+): Request =>
+  new Request(new URL(url, `http://${req.headers.host ?? 'localhost'}`), {
     method: req.method,
     headers: req.headers as Record<string, string>,
     ...(body ? { body: new Uint8Array(body) } : {}),
   });
-};
 
-export const effuseDevApi = (): {
-  name: string;
-  configureServer: (server: ViteDevServer) => void;
-} => ({
-  name: 'effuse-dev-api',
+export const effuseDevApi = (): Plugin => ({
+  name: 'effuse-dev-ssr',
+  // Returning a function defers registration until after Vite's own
+  // middlewares, so module, asset and HMR requests are served normally and
+  // only what remains reaches the renderer.
   configureServer(server: ViteDevServer) {
-    const handle: Connect.NextHandleFunction = (req, res, next) => {
-      const url = req.originalUrl ?? req.url ?? '';
+    return () => {
+      server.middlewares.use((req, res, next) => {
+        const url = req.originalUrl ?? req.url ?? '/';
 
-      if (!isHandled(url)) {
-        next();
-        return;
-      }
+        void (async () => {
+          try {
+            const entry = (await server.ssrLoadModule(
+              '/src/entry-server.ts'
+            )) as unknown as ServerEntry;
 
-      void (async () => {
-        try {
-          const module = await server.ssrLoadModule('/src/server/handler.ts');
-          const fetchHandler = module.createDocsHandler() as (
-            request: Request
-          ) => Promise<Response>;
+            // transformIndexHtml injects the HMR client and Vite's module
+            // preamble, which the built template already carries.
+            const template = await server.transformIndexHtml(
+              url,
+              await readFile(
+                path.resolve(server.config.root, 'index.html'),
+                'utf8'
+              )
+            );
 
-          const body = await readBody(req);
-          const response = await fetchHandler(toWebRequest(req, url, body));
+            const response = await entry.createFetchHandler({ template })(
+              toWebRequest(req, url, await readBody(req))
+            );
 
-          res.statusCode = response.status;
-          response.headers.forEach((value, key) => res.setHeader(key, value));
-          res.end(Buffer.from(await response.arrayBuffer()));
-        } catch (error) {
-          server.ssrFixStacktrace(error as Error);
-          res.statusCode = 500;
-          res.setHeader('content-type', 'application/json');
-          res.end(JSON.stringify({ error: String(error) }));
-        }
-      })();
+            res.statusCode = response.status;
+            response.headers.forEach((value, key) => res.setHeader(key, value));
+            res.end(Buffer.from(await response.arrayBuffer()));
+          } catch (error) {
+            server.ssrFixStacktrace(error as Error);
+            next(error);
+          }
+        })();
+      });
     };
-
-    server.middlewares.use(
-      handle as (
-        req: IncomingMessage,
-        res: ServerResponse,
-        next: () => void
-      ) => void
-    );
   },
 });

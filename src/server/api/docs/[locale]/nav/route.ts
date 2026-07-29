@@ -23,6 +23,15 @@ export const request = defineServerRequest({
  * holds every translation bundle, so switching language stays instant and never
  * costs a second request.
  */
+/**
+ * Immutable for the lifetime of a deploy. `revalidate` declares that the
+ * response *may* be cached, which compiles to Cache-Control and cache tags for
+ * a CDN; the origin still runs unless a response cache is also supplied.
+ */
+export const metadata = {
+  cache: { revalidate: 3600, tags: ['docs'] },
+};
+
 export const GET = defineServerFileHandler(
   '/api/docs/[locale]/nav',
   request,
