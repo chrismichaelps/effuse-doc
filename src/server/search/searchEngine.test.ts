@@ -13,12 +13,13 @@ const doc = (
   id: string,
   title: string,
   text = '',
-  heading?: string
+  heading?: string,
+  codeContent = ''
 ): DocEntry => ({
   id,
   title,
   text,
-  codeContent: '',
+  codeContent,
   path: `en/${id}.md`,
   headings: heading ? [{ text: heading, id: 'section', level: 2 }] : [],
 });
@@ -40,6 +41,28 @@ describe('production search engine', () => {
     expect(engine.search('sign')[0]?.documentId).toBe('title');
     expect(engine.search('signlas')[0]?.documentId).toBe('title');
   });
+
+  it.each(['define(', 'signal.value', 'items[0]', '=>', 'use*'])(
+    'ranks and displays the literal code fragment %s',
+    (query) => {
+      const code = [
+        'const Component = define({});',
+        'const current = signal.value;',
+        'const first = items[0];',
+        'const identity = (value) => value;',
+        '// Explore use* APIs.',
+      ].join('\n');
+      const codeEngine = createSearchEngine([
+        doc('prose', 'API reference', '', 'define and signal'),
+        doc('example', 'Complete example', '', undefined, code),
+      ]);
+
+      const result = codeEngine.search(query)[0];
+      expect(result?.documentId).toBe('example');
+      expect(result?.matchedIn).toBe('code');
+      expect(result?.text.toLowerCase()).toContain(query.toLowerCase());
+    }
+  );
 
   it('indexes Japanese and Chinese search terms', () => {
     const translated = createSearchEngine([
