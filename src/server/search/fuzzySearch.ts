@@ -9,23 +9,22 @@ const levenshteinSimilarity = (str1: string, str2: string): number => {
   if (len1 === 0) return len2 === 0 ? 1 : 0;
   if (len2 === 0) return 0;
 
-  let matrix = Array.from({ length: len1 + 1 }, () => Array(len2 + 1).fill(0));
-
-  for (let i = 0; i <= len1; i++) matrix[i][0] = i;
-  for (let j = 0; j <= len2; j++) matrix[0][j] = j;
+  let previous = Array.from({ length: len2 + 1 }, (_, index) => index);
 
   for (let i = 1; i <= len1; i++) {
+    const current = [i];
     for (let j = 1; j <= len2; j++) {
       const cost = str1[i - 1] === str2[j - 1] ? 0 : 1;
-      matrix[i][j] = Math.min(
-        matrix[i - 1][j] + 1, // Deletion
-        matrix[i][j - 1] + 1, // Insertion
-        matrix[i - 1][j - 1] + cost // Substitution
+      current[j] = Math.min(
+        previous[j] + 1,
+        current[j - 1] + 1,
+        previous[j - 1] + cost
       );
     }
+    previous = current;
   }
 
-  const distance = matrix[len1][len2];
+  const distance = previous[len2];
   return 1 - distance / Math.max(len1, len2);
 };
 
@@ -145,6 +144,48 @@ export const calculateScore = (
     score: finalScore,
     indices: earliestIndex !== Infinity ? [earliestIndex] : undefined,
   };
+};
+
+export interface FuzzyTermMatch {
+  readonly term: string;
+  readonly score: number;
+}
+
+const FUZZY_SCAN_LIMIT = 2000;
+const FUZZY_RESULT_LIMIT = 3;
+const FUZZY_SCORE_THRESHOLD = 0.5;
+
+/** Finds a small typo fallback without allowing an unbounded vocabulary scan. */
+export const findClosestTerms = (
+  vocabulary: Iterable<string>,
+  query: string
+): readonly FuzzyTermMatch[] => {
+  if (query.length < 4 || !/^[a-z0-9_$-]+$/i.test(query)) return [];
+
+  const matches: FuzzyTermMatch[] = [];
+  let scanned = 0;
+  const maxLengthDifference = Math.max(2, Math.floor(query.length * 0.35));
+
+  for (const term of vocabulary) {
+    if (++scanned > FUZZY_SCAN_LIMIT) break;
+    if (
+      term[0] !== query[0] ||
+      Math.abs(term.length - query.length) > maxLengthDifference
+    ) {
+      continue;
+    }
+
+    const score = calculateScore(term, query).score;
+    if (score >= FUZZY_SCORE_THRESHOLD) matches.push({ term, score });
+  }
+
+  return matches
+    .sort((left, right) =>
+      right.score === left.score
+        ? left.term.localeCompare(right.term)
+        : right.score - left.score
+    )
+    .slice(0, FUZZY_RESULT_LIMIT);
 };
 
 export const isCodeQuery = (query: string): boolean => {

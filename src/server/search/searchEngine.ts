@@ -8,6 +8,13 @@ import {
 } from './invertedIndex.js';
 import { isSome } from '../../utils/data/index.js';
 import type { SearchResultItem } from '../../content/search/types.js';
+import {
+  SEARCH_MAX_QUERY_LENGTH,
+  SEARCH_MAX_RESULTS,
+  SEARCH_MIN_QUERY_LENGTH,
+  normalizeSearchQuery,
+  searchQueryLength,
+} from '../../content/search/config.js';
 
 export type { SearchResultItem } from '../../content/search/types.js';
 
@@ -18,7 +25,7 @@ interface SearchEngineConfig {
 }
 
 const DEFAULT_CONFIG: SearchEngineConfig = {
-  maxResults: 10,
+  maxResults: SEARCH_MAX_RESULTS,
   snippetLength: 150,
   snippetContext: 60,
 };
@@ -132,9 +139,16 @@ export const createSearchEngine = (
     },
 
     search(query: string): SearchResultItem[] {
-      if (!query || query.trim().length < 2) return [];
+      const normalizedQuery = normalizeSearchQuery(query);
+      const length = searchQueryLength(normalizedQuery);
+      if (
+        length < SEARCH_MIN_QUERY_LENGTH ||
+        length > SEARCH_MAX_QUERY_LENGTH
+      ) {
+        return [];
+      }
 
-      const matches = searchIndex(index, query.trim(), config.maxResults);
+      const matches = searchIndex(index, normalizedQuery, config.maxResults);
 
       return matches
         .map((match) => {

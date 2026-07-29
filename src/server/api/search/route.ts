@@ -1,16 +1,9 @@
-import {
-  defineServerFileHandler,
-  defineServerRequest,
-  serverSchema,
-} from '@effuse/core';
-import { LOCALES } from '../../docs/content.js';
+import { defineServerFileHandler, defineServerRequest } from '@effuse/core';
 import { searchLocale } from '../../search/search.js';
+import { SearchQuerySchema } from './schema.js';
 
 export const request = defineServerRequest({
-  query: serverSchema.object({
-    locale: serverSchema.literal(...LOCALES),
-    q: serverSchema.string,
-  }),
+  query: SearchQuerySchema,
 });
 
 export const GET = defineServerFileHandler(
