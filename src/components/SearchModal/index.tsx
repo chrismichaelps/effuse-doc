@@ -15,6 +15,7 @@ import type {
 } from '../../store/searchStore';
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
 import { matchTag } from '../../utils/data/index.js';
+import { splitSearchHighlight } from '../../content/search/highlight.js';
 import './styles.css';
 import { SearchLayer } from '../../layers/SearchLayer.js';
 
@@ -242,7 +243,7 @@ export const SearchModal = define({
       t,
       highlight: (text: string) => {
         if (!store?.query.value) return <span>{text}</span>;
-        const parts = text.split(new RegExp(`(${store.query.value})`, 'gi'));
+        const parts = splitSearchHighlight(text, store.query.value);
         return (
           <span>
             {parts.map((part) =>
