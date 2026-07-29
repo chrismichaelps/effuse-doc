@@ -2,15 +2,13 @@ import { defineLayer, signal } from '@effuse/core';
 import { DocsLayout } from '../components/docs/DocsLayout';
 import { DocsHeader } from '../components/docs/DocsHeader';
 import { LanguageSelector } from '../components/docs/LanguageSelector';
-import { NAV_SECTIONS } from '../content/docs/nav';
-import { getDocWithFallback, listSlugs } from '../server/docs/content';
 
 /**
  * Documentation as a capability.
  *
- * The layer owns content resolution and exposes it as a service. The HTTP
- * endpoints that serve it are file-derived under `src/server/api` and adapted
- * by `AppServerLayer`, so a route's URL is its file path.
+ * Content resolution lives in `src/server/docs`, reached only through the
+ * file-derived endpoints under `src/server/api`. Importing it here would put
+ * the markdown glob and the server runtime into the browser bundle.
  */
 export const DocsLayer = defineLayer({
   name: 'docs',
@@ -23,12 +21,5 @@ export const DocsLayer = defineLayer({
     DocsLayout,
     DocsHeader,
     LanguageSelector,
-  },
-  services: {
-    docs: () => ({
-      getDoc: getDocWithFallback,
-      listSlugs,
-      sections: () => NAV_SECTIONS,
-    }),
   },
 });

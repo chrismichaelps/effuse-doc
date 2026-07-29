@@ -38,6 +38,12 @@ export const DocsPage = define<Record<string, never>, DocsPageExposed>({
       queryClient.getQueryData<Doc>(['docs', locale.value, slug.value])
     );
 
+    // The effect re-runs whenever locale or slug settles, which can happen more
+    // than once per navigation. Tracking the last requested key keeps that from
+    // issuing a second identical request before the first has populated the
+    // cache.
+    let requestedKey = '';
+
     // ensureQueryData gives the shared cache and request de-duplication while
     // leaving the key free to change with locale and slug, which useQuery's
     // static queryKey cannot express.
@@ -56,6 +62,10 @@ export const DocsPage = define<Record<string, never>, DocsPageExposed>({
       }
 
       if (typeof window === 'undefined') return;
+
+      const key = `${currentLocale}/${currentSlug}`;
+      if (key === requestedKey) return;
+      requestedKey = key;
 
       void ensureQueryData<Doc>(
         ['docs', currentLocale, currentSlug],
