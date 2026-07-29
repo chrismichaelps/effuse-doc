@@ -1,4 +1,4 @@
-import { isString, isNumber, isRecord } from './data/index.js';
+import { isString, isNumber, isRecord } from '../../utils/data/index.js';
 
 export interface Token {
   term: string;
