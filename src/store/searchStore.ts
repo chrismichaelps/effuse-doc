@@ -19,6 +19,9 @@ const STORE_NAME = 'search';
 const MIN_QUERY_LENGTH = 2;
 const DEBOUNCE_MS = 50;
 
+let indexedLocale: string | null = null;
+let indexingPromise: Promise<void> | null = null;
+
 type SearchErrorQueryTooShort = {
   readonly _tag: 'QueryTooShort';
   readonly query: string;
@@ -140,6 +143,16 @@ export const searchStore = createStore<SearchState & SearchActions>(
 
       const newStatus = SearchStatusState.Loading({ query });
       this.searchStatus.value = newStatus;
+
+      const locale = i18nStore.locale.value || 'en';
+      if (indexedLocale !== locale) {
+        void this.indexDocs().then(() => {
+          if (this.query.value === query) {
+            this.search.value(query);
+          }
+        });
+        return;
+      }
 
       setTimeout(() => {
         const result = performSearch(query, this.docsIndex.value);
@@ -266,18 +279,45 @@ export const searchStore = createStore<SearchState & SearchActions>(
 
     async indexDocs() {
       const locale = i18nStore.locale.value || 'en';
-      const docs = await loadDocsIndex(locale);
-      this.docsIndex.value = docs;
+      if (indexedLocale === locale) return;
+
+      if (indexingPromise) {
+        await indexingPromise;
+        if (indexedLocale === locale) return;
+      }
+
+      const store = this;
+      const request = loadDocsIndex(locale).then((docs) => {
+        if (i18nStore.locale.value === locale) {
+          store.docsIndex.value = docs;
+          indexedLocale = locale;
+        }
+      });
+
+      indexingPromise = request;
+      try {
+        await request;
+      } finally {
+        if (indexingPromise === request) {
+          indexingPromise = null;
+        }
+      }
     },
 
     init() {
       if (typeof window !== 'undefined') {
-        this.indexDocs();
-
         watchEffect(() => {
           const locale = i18nStore.locale.value;
-          if (locale) {
-            this.indexDocs();
+          const modalState = this.modalState.value;
+          const shouldIndex = ModalState.$match<boolean>(modalState, {
+            Closed: () => false,
+            Opening: () => true,
+            Open: () => true,
+            Closing: () => false,
+          });
+
+          if (locale && shouldIndex && indexedLocale !== locale) {
+            void this.indexDocs();
           }
         });
 

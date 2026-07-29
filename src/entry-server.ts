@@ -1,5 +1,4 @@
 import { createHandler, createInProcessRouteFetch } from '@effuse/core/server';
-import type { AssetManifest } from '@effuse/core/server';
 import { createMemoryHistory, runWithRouter } from '@effuse/router';
 import enTranslations from '../public/locales/en.json';
 import { App } from './App';
@@ -20,8 +19,6 @@ const toDocSlug = (value: unknown): string => {
 export interface ServerEntryOptions {
   /** The built client `index.html`, used as the document shell. */
   readonly template: string;
-  /** Parsed Vite client manifest, so asset tags match the built filenames. */
-  readonly manifest?: AssetManifest;
 }
 
 /**
@@ -48,7 +45,6 @@ export const createFetchHandler = (
     layers: serverLayers,
     options: {
       template: options.template,
-      manifest: options.manifest,
       hydrate: true,
     },
     // Documentation is immutable for the lifetime of a deploy, so a CDN may
