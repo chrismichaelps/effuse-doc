@@ -1,6 +1,6 @@
 import type { DocEntry } from './markdownParser.js';
 import { tokenize, tokenizeQuery } from './tokenizer.js';
-import { Option, some, none } from './data/index.js';
+import { Option, some, none } from '../../utils/data/index.js';
 
 export interface IndexEntry {
   docId: string;
