@@ -124,11 +124,11 @@
   font-weight: 500;
 }
 
-.hero-badge-arrow {
+.hero-badge > svg {
   transition: transform 0.2s ease;
 }
 
-.hero-badge:hover .hero-badge-arrow {
+.hero-badge:hover > svg {
   transform: translateX(3px);
 }
 
