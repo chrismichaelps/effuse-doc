@@ -7,6 +7,12 @@ import type {
   SearchResultItem,
 } from '../content/search/types.js';
 import {
+  SEARCH_MAX_QUERY_LENGTH,
+  SEARCH_MIN_QUERY_LENGTH,
+  normalizeSearchQuery,
+  searchQueryLength,
+} from '../content/search/config.js';
+import {
   Option,
   some,
   none,
@@ -15,11 +21,19 @@ import {
 } from '../utils/data/index.js';
 
 const STORE_NAME = 'search';
-const MIN_QUERY_LENGTH = 2;
 const DEBOUNCE_MS = 50;
 
 let debounceHandle: ReturnType<typeof setTimeout> | undefined;
 let latestRequest = 0;
+
+interface PendingSearch {
+  readonly controller: AbortController;
+  readonly promise: Promise<readonly SearchResultItem[]>;
+}
+
+const pendingSearches = new Map<string, PendingSearch>();
+const searchRequestKey = (locale: string, query: string): string =>
+  `${locale}:${query}`;
 
 type SearchErrorQueryTooShort = {
   readonly _tag: 'QueryTooShort';
@@ -85,15 +99,43 @@ interface SearchActions {
 
 const fetchSearchResults = async (
   locale: string,
-  query: string
+  query: string,
+  signal: AbortSignal
 ): Promise<readonly SearchResultItem[]> => {
   const params = new URLSearchParams({ locale, q: query });
-  const response = await fetch(`/api/search?${params.toString()}`);
+  const response = await fetch(`/api/search?${params.toString()}`, { signal });
   if (!response.ok) {
     throw new Error(`Search request failed with status ${response.status}`);
   }
   const payload = (await response.json()) as SearchResponse;
   return payload.results;
+};
+
+const requestSearchResults = (
+  locale: string,
+  query: string
+): Promise<readonly SearchResultItem[]> => {
+  const key = searchRequestKey(locale, query);
+  const existing = pendingSearches.get(key);
+  if (existing) return existing.promise;
+
+  const controller = new AbortController();
+  const pending: PendingSearch = {
+    controller,
+    promise: fetchSearchResults(locale, query, controller.signal).finally(
+      () => {
+        if (pendingSearches.get(key) === pending) pendingSearches.delete(key);
+      }
+    ),
+  };
+  pendingSearches.set(key, pending);
+  return pending.promise;
+};
+
+const abortPendingSearches = (exceptKey?: string): void => {
+  for (const [key, pending] of pendingSearches) {
+    if (key !== exceptKey) pending.controller.abort();
+  }
 };
 
 const safeGetSelected = (
@@ -121,15 +163,30 @@ export const searchStore = createStore<SearchState & SearchActions>(
       this.query.value = query;
       this.selectedIndex.value = 0;
       const requestId = ++latestRequest;
+      const normalizedQuery = normalizeSearchQuery(query);
+      const queryLength = searchQueryLength(normalizedQuery);
 
       if (debounceHandle !== undefined) {
         clearTimeout(debounceHandle);
         debounceHandle = undefined;
       }
 
-      if (query.length < MIN_QUERY_LENGTH) {
+      if (queryLength < SEARCH_MIN_QUERY_LENGTH) {
+        abortPendingSearches();
         const newStatus = SearchStatusState.Idle({});
         this.searchStatus.value = newStatus;
+        return;
+      }
+
+      if (queryLength > SEARCH_MAX_QUERY_LENGTH) {
+        abortPendingSearches();
+        this.searchStatus.value = SearchStatusState.Error({
+          error: {
+            _tag: 'Execution',
+            message: `Search queries are limited to ${SEARCH_MAX_QUERY_LENGTH} characters`,
+            query,
+          },
+        });
         return;
       }
 
@@ -137,13 +194,14 @@ export const searchStore = createStore<SearchState & SearchActions>(
       this.searchStatus.value = newStatus;
 
       const locale = i18nStore.locale.value || 'en';
-      const normalizedQuery = query.trim();
+      const requestKey = searchRequestKey(locale, normalizedQuery);
+      abortPendingSearches(requestKey);
       const store = this;
       debounceHandle = setTimeout(() => {
         debounceHandle = undefined;
         void ensureQueryData(
           ['search', locale, normalizedQuery],
-          () => fetchSearchResults(locale, normalizedQuery),
+          () => requestSearchResults(locale, normalizedQuery),
           { client: queryClient, staleTime: Infinity }
         )
           .then((results) => {
@@ -182,6 +240,7 @@ export const searchStore = createStore<SearchState & SearchActions>(
 
     clearResults() {
       latestRequest += 1;
+      abortPendingSearches();
       if (debounceHandle !== undefined) {
         clearTimeout(debounceHandle);
         debounceHandle = undefined;
