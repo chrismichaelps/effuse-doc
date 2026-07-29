@@ -18,14 +18,6 @@ type FetchHandler = (request: Request) => Promise<Response>;
 
 const clientDir = path.resolve(process.cwd(), 'dist/client');
 
-const readJson = async (file: string): Promise<unknown> => {
-  try {
-    return JSON.parse(await readFile(file, 'utf8')) as unknown;
-  } catch {
-    return undefined;
-  }
-};
-
 let handlerPromise: Promise<FetchHandler> | undefined;
 
 const loadHandler = async (): Promise<FetchHandler> => {
@@ -33,15 +25,11 @@ const loadHandler = async (): Promise<FetchHandler> => {
     // @ts-ignore
     /* @vite-ignore */ '../dist/server/entry-server.js'
   )) as {
-    createFetchHandler: (options: {
-      template: string;
-      manifest?: unknown;
-    }) => FetchHandler;
+    createFetchHandler: (options: { template: string }) => FetchHandler;
   };
 
   return entry.createFetchHandler({
     template: await readFile(path.join(clientDir, 'index.html'), 'utf8'),
-    manifest: await readJson(path.join(clientDir, '.vite/manifest.json')),
   });
 };
 

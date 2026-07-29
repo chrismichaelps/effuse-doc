@@ -405,17 +405,6 @@ const loadTranslations = async (locale: string): Promise<TranslationResult> => {
   }
 };
 
-const initializeI18n = async () => {
-  const locale = i18n.getLocale();
-  const result = await loadTranslations(locale);
-
-  if (isRight(result)) {
-    translations.value = result.right;
-  }
-};
-
-void initializeI18n();
-
 export const i18nStore = {
   locale: i18n.locale as Signal<Locale>,
   translations,

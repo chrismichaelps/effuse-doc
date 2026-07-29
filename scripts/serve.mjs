@@ -56,19 +56,10 @@ const serveAsset = async (request) => {
   }
 };
 
-const readJson = async (file) => {
-  try {
-    return JSON.parse(await readFile(file, 'utf8'));
-  } catch {
-    return undefined;
-  }
-};
-
 const { createFetchHandler } = await import('../dist/server/entry-server.js');
 
 const appHandler = createFetchHandler({
   template: await readFile(path.join(clientDir, 'index.html'), 'utf8'),
-  manifest: await readJson(path.join(clientDir, '.vite/manifest.json')),
 });
 
 const handler = async (request) =>
