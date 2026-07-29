@@ -6,18 +6,10 @@ import {
   type InvertedIndex,
   type SearchMatch,
 } from './invertedIndex.js';
-import { isSome } from './data/index.js';
+import { isSome } from '../../utils/data/index.js';
+import type { SearchResultItem } from '../../content/search/types.js';
 
-export interface SearchResultItem {
-  id: string;
-  documentId: string;
-  text: string;
-  score: number;
-  heading?: string;
-  filePath?: string;
-  anchor?: string;
-  matchedIn?: 'title' | 'content' | 'code' | 'heading';
-}
+export type { SearchResultItem } from '../../content/search/types.js';
 
 interface SearchEngineConfig {
   maxResults: number;
