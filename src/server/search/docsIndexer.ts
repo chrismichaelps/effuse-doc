@@ -1,7 +1,7 @@
 import { parseMarkdownContent, type DocEntry } from './markdownParser.js';
-import { isSome } from './data/index.js';
+import { isSome } from '../../utils/data/index.js';
 
-const allMarkdownModules = import.meta.glob('../content/docs/*/*.md', {
+const allMarkdownModules = import.meta.glob('../../content/docs/*/*.md', {
   query: '?raw',
   import: 'default',
   eager: false,
