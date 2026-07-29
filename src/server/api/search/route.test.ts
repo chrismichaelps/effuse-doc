@@ -72,6 +72,16 @@ describe('GET /api/search', () => {
     expect(payload.results[0]?.documentId).toBe(expectedDocument);
   });
 
+  it('returns code snippets first for a literal code query', async () => {
+    const response = await routeFetch(
+      'http://effuse.local/api/search?locale=en&q=define%28'
+    );
+    const payload = (await response.json()) as SearchResponse;
+
+    expect(payload.results[0]?.matchedIn).toBe('code');
+    expect(payload.results[0]?.text).toContain('define(');
+  });
+
   it('rejects a request without a query', async () => {
     const response = await routeFetch(
       'http://effuse.local/api/search?locale=en'
