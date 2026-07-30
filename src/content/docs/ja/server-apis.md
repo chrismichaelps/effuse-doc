@@ -242,3 +242,9 @@ export const AppServerLayer = defineLayer({
 5. fetch のパスを複製せず、マニフェストからクライアントを生成する。
 6. ファイルルートはレイヤーの入力として扱い、CI でマニフェストの診断を確認する。
 7. アップロード、永続化、認証、テレメトリーはサービスの背後に置く。
+
+## 次のステップ
+
+- [レイヤーアクセスの移行](/docs/migrating-layer-access)
+- [Props](/docs/props)
+- [なぜ Effuse なのか](/docs/why-effuse)

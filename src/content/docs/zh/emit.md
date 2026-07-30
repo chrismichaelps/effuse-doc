@@ -259,3 +259,9 @@ type EventSignal<P> = ReadonlySignal<P | undefined>;
 3. **优先使用响应式信号**：在 UI 绑定中使用 `useEventSignal`，而不是在 effect 中订阅
 4. **应用装饰器**：对高频事件（如鼠标移动或键入）使用防抖/节流
 5. **批量处理相关事件**：多个同步发送会自动批量处理以提高性能
+
+## 后续步骤
+
+- [上下文 API](/docs/context)
+- [错误处理](/docs/tagged-errors)
+- [Refs 与 DOM 访问](/docs/refs)

@@ -123,3 +123,9 @@ No disponible por el momento.
 ## Configuración de Vite
 
 No disponible por el momento.
+
+## Próximos pasos
+
+- [API de Componentes](/docs/quick-start)
+- [Componentes](/docs/components)
+- [Señales](/docs/signals)

@@ -165,3 +165,9 @@ Usa `computed` para renderizado condicional reactivo:
   );
 }
 ```
+
+## Próximos pasos
+
+- [Componentes](/docs/components)
+- [Señales](/docs/signals)
+- [Hooks](/docs/hooks)

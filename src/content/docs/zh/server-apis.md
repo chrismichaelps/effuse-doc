@@ -232,3 +232,9 @@ export const AppServerLayer = defineLayer({
 5. 从清单生成客户端，而不是重复编写 fetch 路径。
 6. 把文件路由视为层的输入，并在 CI 中检查清单诊断。
 7. 把上传、持久化、认证与遥测都放在服务背后。
+
+## 后续步骤
+
+- [迁移层访问方式](/docs/migrating-layer-access)
+- [Props](/docs/props)
+- [为什么选择 Effuse](/docs/why-effuse)

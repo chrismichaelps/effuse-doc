@@ -115,3 +115,9 @@ const Container = define({
   <h1>Hola</h1>
 </Container>;
 ```
+
+## Próximos pasos
+
+- [Por Qué Effuse](/docs/why-effuse)
+- [Primeros Pasos con Effuse](/docs/getting-started)
+- [Instalación](/docs/installation)

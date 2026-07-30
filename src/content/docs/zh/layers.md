@@ -349,3 +349,9 @@ export const I18nLayer = defineLayer({
 5. **Setup 用于初始化** - 使用 `setup` 进行初始化（localStorage、API 调用）
 6. **在 Setup 中清理** - 需要时从 `setup` 返回清理函数
 7. **类型注册表** - 使用 module augmentation 实现类型安全的层访问
+
+## 后续步骤
+
+- [Effects API](/docs/effects)
+- [表单管理 (useForm)](/docs/use-form)
+- [事件发送 (useEmits)](/docs/emit)

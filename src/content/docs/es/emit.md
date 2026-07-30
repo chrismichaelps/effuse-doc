@@ -259,3 +259,9 @@ type EventSignal<P> = ReadonlySignal<P | undefined>;
 3. **Prefiere Señales Reactivas**: Usa `useEventSignal` para enlaces de UI en lugar de suscribirse en efectos
 4. **Aplica Modificadores**: Usa debounce/throttle para eventos de alta frecuencia como movimientos del ratón o escritura
 5. **Agrupa Eventos Relacionados**: Múltiples emisiones síncronas se agrupan automáticamente por rendimiento
+
+## Próximos pasos
+
+- [API de Contexto](/docs/context)
+- [Manejo de Errores](/docs/tagged-errors)
+- [Refs y Acceso al DOM](/docs/refs)

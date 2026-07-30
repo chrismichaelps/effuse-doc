@@ -173,3 +173,9 @@ const TimestampContext = createContext({
 3. **Mantén los contextos enfocados**: Un contexto por concepto (tema, auth, i18n)
 4. **Tipea tus contextos**: Siempre usa genéricos de TypeScript para seguridad de tipos
 5. **Usa displayName**: Ayuda con la depuración y devtools
+
+## Próximos pasos
+
+- [Manejo de Errores](/docs/tagged-errors)
+- [Refs y Acceso al DOM](/docs/refs)
+- [Data Fetching](/docs/query)

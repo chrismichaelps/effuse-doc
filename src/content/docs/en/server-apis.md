@@ -238,3 +238,9 @@ sink failures do not replace the application response.
 5. Generate clients from manifests rather than duplicating fetch paths.
 6. Treat file routes as layer inputs and inspect manifest diagnostics in CI.
 7. Keep uploads, persistence, authentication, and telemetry behind services.
+
+## Next Steps
+
+- [Migrating Layer Access](/docs/migrating-layer-access)
+- [Props](/docs/props)
+- [Why Effuse](/docs/why-effuse)

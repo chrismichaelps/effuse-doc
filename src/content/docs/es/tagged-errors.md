@@ -59,3 +59,9 @@ Devuelve `true` si el valor es un `TaggedError` con la etiqueta específica prop
 1. **Seguridad de Tipos**: Reducción automática de las propiedades del error en bloques `if` o `switch`.
 2. **Serialización**: El `instanceof` estándar de JavaScript falla después de `JSON.parse()`, pero `_tag` es una cadena simple que sobrevive a la serialización.
 3. **Experiencia del Desarrollador**: Define claramente el "contrato" de los posibles errores que una función podría devolver.
+
+## Próximos pasos
+
+- [Refs y Acceso al DOM](/docs/refs)
+- [Data Fetching](/docs/query)
+- [Markdown Rendering](/docs/ink)

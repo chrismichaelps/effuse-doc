@@ -219,3 +219,9 @@ todosStore.setFilter('completed');
 2. **Actions for Mutations**: Use action methods instead of direct mutation for clarity
 3. **DevTools Integration**: Enable devtools for debugging state changes
 4. **Computed for Derived State**: Create computed values in components, not stores
+
+## Next Steps
+
+- [SEO & Head Management](/docs/seo)
+- [Internationalization](/docs/i18n)
+- [Server APIs And Actions](/docs/server-apis)

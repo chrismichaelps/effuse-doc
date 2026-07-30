@@ -159,3 +159,9 @@ const Analytics = define({
 2. **Usa watch para señales específicas** cuando solo te importa que un valor cambie
 3. **Usa onMount para inicialización** que debe ocurrir solo una vez
 4. **Retorna funciones de limpieza** desde onMount para prevenir fugas de memoria
+
+## Próximos pasos
+
+- [Gestión de Formularios (useForm)](/docs/use-form)
+- [Emisión de Eventos (useEmits)](/docs/emit)
+- [API de Contexto](/docs/context)

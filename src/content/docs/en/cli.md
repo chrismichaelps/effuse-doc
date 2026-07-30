@@ -65,3 +65,9 @@ pnpm effuse build --preset node
 Run application tests before the build and exercise the generated server fetch
 handler in process. A successful client-only build is not evidence that server
 routes, middleware, or adapters are valid.
+
+## Next Steps
+
+- [Utility Hooks](/docs/utility-hooks)
+- [State Management](/docs/state)
+- [SEO & Head Management](/docs/seo)

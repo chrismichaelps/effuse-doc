@@ -69,3 +69,9 @@ const handleInputRef: RefCallback<HTMLInputElement> = (el) => {
 
 - **Avoid declarative overuse**: Only use refs for imperative actions (focus, scroll, media playback) or measurements.
 - **Cleanup**: If you attach event listeners or observers in a ref callback or subscription, ensure you clean them up (e.g., in `onUnmount` or by returning a cleanup function if using an effect-like pattern, though `subscribe` itself is a simple list of callbacks).
+
+## Next Steps
+
+- [Data Fetching](/docs/query)
+- [Markdown Rendering](/docs/ink)
+- [Routing](/docs/routing)

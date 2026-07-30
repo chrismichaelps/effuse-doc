@@ -84,3 +84,9 @@ commands; use `@effuse/query` for shared remote data and cache policy.
 - Treat online state as a hint, never proof that a request will succeed.
 - Stop timers and event listeners through the hook API or component unmount.
 - Handle denied permissions and unavailable APIs as normal states.
+
+## Next Steps
+
+- [State Management](/docs/state)
+- [SEO & Head Management](/docs/seo)
+- [Internationalization](/docs/i18n)
