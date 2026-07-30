@@ -96,3 +96,9 @@ const ProfileButton = define({
 - Effuse は、サーバーのルートをアプリケーションの機能とは別のシステムにしません。
 
 目標は、より小さな表面積から、より強力なアプリケーションモデルを組み立てることです。
+
+## 次のステップ
+
+- [Effuse を始める](/docs/getting-started)
+- [インストール](/docs/installation)
+- [コンポーネント API](/docs/quick-start)

@@ -6,12 +6,7 @@ import { SEARCH_MAX_QUERY_LENGTH } from '../../../content/search/config.js';
 import { metadata } from './route.js';
 
 const EXPECTED_RANKINGS = {
-  signals: [
-    'signals-title',
-    'props-code',
-    'state-code',
-    'getting-started-content',
-  ],
+  signals: ['signals-title', 'props-code', 'state-code'],
   server: [
     'server-title',
     'server-apis-title',

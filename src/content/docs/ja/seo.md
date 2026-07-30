@@ -160,3 +160,9 @@ const DocsPage = define({
 3. **説明を簡潔に** — 検索結果のため約 155 文字に制限
 4. **スクリプトの早い段階で呼び出す** — スクリプト関数の先頭で `useHead` を呼び出す
 5. **Open Graph を使用** — より良いソーシャルメディアプレビューのため OG タグを追加
+
+## 次のステップ
+
+- [国際化](/docs/i18n)
+- [サーバー API とアクション](/docs/server-apis)
+- [レイヤーアクセスの移行](/docs/migrating-layer-access)

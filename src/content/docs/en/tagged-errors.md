@@ -34,3 +34,9 @@ Under the hood, Effuse uses a strongly-typed `mapEffuseErrors` pipeline during R
 1. **Standardization**: Predictable Javascript structures that serialize safely across JSON borders.
 2. **Type Safety**: Native narrow down via standard JS prototype chains.
 3. **Developer Experience**: Eliminates verbose `(FiberFailure)` stack traces from frontend consoles.
+
+## Next Steps
+
+- [Refs & DOM Access](/docs/refs)
+- [Data Fetching](/docs/query)
+- [Markdown Rendering](/docs/ink)

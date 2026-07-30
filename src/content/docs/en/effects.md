@@ -159,3 +159,9 @@ const Analytics = define({
 2. **Use watch for specific signals** when you only care about one value changing
 3. **Use onMount for initialization** that should only happen once
 4. **Return cleanup functions** from onMount to prevent memory leaks
+
+## Next Steps
+
+- [Form Management (useForm)](/docs/use-form)
+- [Event Emission (useEmits)](/docs/emit)
+- [Context API](/docs/context)

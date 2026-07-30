@@ -83,3 +83,9 @@ const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
   getNextPageParam: (lastPage) => lastPage.nextPage,
 });
 ```
+
+## Próximos pasos
+
+- [Markdown Rendering](/docs/ink)
+- [Enrutamiento](/docs/routing)
+- [Gestión de Estado](/docs/state)

@@ -136,3 +136,9 @@ El hook `useForm` retorna un objeto conteniendo:
 - **`reset()`**: Resetea campos a valores iniciales y limpia errores/estados touched.
 - **`setFieldValue(name, value)`**: Helper para establecer valor de campo.
 - **`setFieldError(name, error)`**: Helper para establecer un error manualmente.
+
+## Próximos pasos
+
+- [Emisión de Eventos (useEmits)](/docs/emit)
+- [API de Contexto](/docs/context)
+- [Manejo de Errores](/docs/tagged-errors)

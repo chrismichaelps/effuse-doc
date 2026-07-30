@@ -95,3 +95,9 @@ component syntax readable.
 
 The goal is a smaller surface that composes into a more powerful application
 model.
+
+## Next Steps
+
+- [Getting Started with Effuse](/docs/getting-started)
+- [Installation](/docs/installation)
+- [Component API](/docs/quick-start)

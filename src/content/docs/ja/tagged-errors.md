@@ -59,3 +59,9 @@ Effuse は、タグ付きエラーを操作するための 2 つの主要なユ�
 1. **型安全性**: `if` や `switch` ブロック内でのエラープロパティの自動絞り込み。
 2. **シリアライゼーション**: 標準的な JS の `instanceof` は `JSON.parse()` 後に失敗しますが、`_tag` はただの文字列なのでシリアライズ後も保持されます。
 3. **開発者体験**: 関数が返す可能性のあるエラーの「契約」を明確に定義できます。
+
+## 次のステップ
+
+- [RefsとDOMアクセス](/docs/refs)
+- [Data Fetching](/docs/query)
+- [Markdown Rendering](/docs/ink)

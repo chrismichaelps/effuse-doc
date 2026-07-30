@@ -69,3 +69,9 @@ const handleInputRef: RefCallback<HTMLInputElement> = (el) => {
 
 - **Evita el uso excesivo**: Usa refs solo para acciones imperativas (enfoque, scroll, reproducción) o mediciones.
 - **Limpieza**: Si adjuntas event listeners u observadores en un callback de ref o suscripción, asegúrate de limpiarlos adecuadamente.
+
+## Próximos pasos
+
+- [Data Fetching](/docs/query)
+- [Markdown Rendering](/docs/ink)
+- [Enrutamiento](/docs/routing)

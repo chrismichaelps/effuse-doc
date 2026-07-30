@@ -259,3 +259,9 @@ type EventSignal<P> = ReadonlySignal<P | undefined>;
 3. **Prefer Reactive Signals**: Use `useEventSignal` for UI bindings instead of subscribing in effects
 4. **Apply Modifiers**: Use debounce/throttle for high-frequency events like mouse moves or typing
 5. **Batch Related Events**: Multiple synchronous emits are batched automatically for performance
+
+## Next Steps
+
+- [Context API](/docs/context)
+- [Error Handling](/docs/tagged-errors)
+- [Refs & DOM Access](/docs/refs)

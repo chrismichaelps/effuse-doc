@@ -144,3 +144,9 @@ export { installRouter };
 - **[安装](/docs/installation)** — 在项目中设置 Effuse
 - **[快速开始](/docs/quick-start)** — 构建你的第一个应用
 - **[信号](/docs/signals)** — 掌握响应式系统
+
+## 后续步骤
+
+- [安装指南](/docs/installation)
+- [组件 API](/docs/quick-start)
+- [组件](/docs/components)

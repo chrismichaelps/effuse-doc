@@ -132,3 +132,9 @@ binding is missing.
 - [ ] Server APIs/actions are owned by layers or adapted into them.
 - [ ] The same layer graph is passed to client, SSR, handler, and manifest setup.
 - [ ] Typecheck, focused tests, and lazy-route integration probes pass.
+
+## Next Steps
+
+- [Props](/docs/props)
+- [Why Effuse](/docs/why-effuse)
+- [Getting Started with Effuse](/docs/getting-started)

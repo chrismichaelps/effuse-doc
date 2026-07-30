@@ -87,3 +87,9 @@ const ProfileButton = define({
 - Effuse 不把服务端路由做成独立于应用能力之外的另一套系统。
 
 目标是用更小的表面积，组合出更强大的应用模型。
+
+## 后续步骤
+
+- [Effuse 入门](/docs/getting-started)
+- [安装指南](/docs/installation)
+- [组件 API](/docs/quick-start)

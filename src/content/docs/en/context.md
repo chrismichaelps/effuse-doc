@@ -206,3 +206,9 @@ function hasContextValue<T>(context: EffuseContext<T>): boolean;
 ```typescript
 function isEffuseContext(value: unknown): value is EffuseContext<unknown>;
 ```
+
+## Next Steps
+
+- [Error Handling](/docs/tagged-errors)
+- [Refs & DOM Access](/docs/refs)
+- [Data Fetching](/docs/query)

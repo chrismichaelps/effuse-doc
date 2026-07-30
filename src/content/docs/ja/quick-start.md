@@ -165,3 +165,9 @@ const Timer = define({
   );
 }
 ```
+
+## 次のステップ
+
+- [コンポーネント](/docs/components)
+- [シグナル](/docs/signals)
+- [フック](/docs/hooks)

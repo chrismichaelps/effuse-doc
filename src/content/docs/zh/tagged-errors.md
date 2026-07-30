@@ -59,3 +59,9 @@ Effuse 导出了两个主要的工具函数来处理带有标签的错误：
 1. **类型安全**: 在 `if` 或 `switch` 块中自动缩小错误属性范围。
 2. **序列化支持**: 标准的 JavaScript `instanceof` 在 `JSON.parse()` 后会失效，但 `_tag` 只是一个普通的字符串，在序列化过程中可以保留。
 3. **开发体验**: 明确定义了函数可能返回的错误“契约”。
+
+## 后续步骤
+
+- [Refs 与 DOM 访问](/docs/refs)
+- [Data Fetching](/docs/query)
+- [Markdown Rendering](/docs/ink)

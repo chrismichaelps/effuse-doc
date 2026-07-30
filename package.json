@@ -13,6 +13,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
+    "docs:next-steps": "node scripts/docs-next-steps.mjs",
+    "docs:next-steps:write": "node scripts/docs-next-steps.mjs --write",
     "format": "prettier --cache --write .",
     "format:check": "prettier --check .",
     "build:client": "vite build",
