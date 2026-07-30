@@ -217,3 +217,9 @@ Returns the router instance for programmatic control.
 | `addRoute`      | `(route: RouteRecord, parentName?: string) => void` | Dynamically add a new route.                                 |
 | `removeRoute`   | `(name: string) => void`                            | Dynamically remove a route by name.                          |
 | `getRoutes`     | `() => NormalizedRouteRecord[]`                     | Returns all normalized route records.                        |
+
+## Next Steps
+
+- [Server & APIs](/docs/server)
+- [CLI & Builds](/docs/cli)
+- [Utility Hooks](/docs/utility-hooks)

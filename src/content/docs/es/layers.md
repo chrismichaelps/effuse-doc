@@ -349,3 +349,9 @@ export const I18nLayer = defineLayer({
 5. **Setup para Init** - Usa `setup` para inicialización (localStorage, llamadas API)
 6. **Limpieza en Setup** - Retorna función de limpieza desde `setup` cuando sea necesario
 7. **Registro de Tipos** - Usa module augmentation para acceso tipado a capas
+
+## Próximos pasos
+
+- [API de Efectos](/docs/effects)
+- [Gestión de Formularios (useForm)](/docs/use-form)
+- [Emisión de Eventos (useEmits)](/docs/emit)

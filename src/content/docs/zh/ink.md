@@ -119,3 +119,9 @@ injectInkStyles();
 ```
 
 The `Ink` component is unopinionated about visual style (fonts, colors, margins) and inherits from your CSS. You should wrap it in a `prose` class (like Tailwind's `@tailwindcss/typography`) or style the standard HTML tags (`p`, `h1`, etc.) globally.
+
+## 后续步骤
+
+- [路由管理](/docs/routing)
+- [状态管理](/docs/state)
+- [SEO 与 Head 管理](/docs/seo)

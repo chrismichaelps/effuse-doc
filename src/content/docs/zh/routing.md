@@ -192,3 +192,9 @@ router.beforeEach((to, from, next) => {
 | `addRoute`      | `(route: RouteRecord, parentName?: string) => void` | 动态添加新路由。                     |
 | `removeRoute`   | `(name: string) => void`                            | 按名称动态删除路由。                 |
 | `getRoutes`     | `() => NormalizedRouteRecord[]`                     | 返回所有规范化的路由记录。           |
+
+## 后续步骤
+
+- [状态管理](/docs/state)
+- [SEO 与 Head 管理](/docs/seo)
+- [国际化](/docs/i18n)

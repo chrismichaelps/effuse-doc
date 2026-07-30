@@ -210,3 +210,9 @@ watchEffect(() => {
   return () => window.removeEventListener('resize', handler);
 });
 ```
+
+## Próximos pasos
+
+- [Capas](/docs/layers)
+- [API de Efectos](/docs/effects)
+- [Gestión de Formularios (useForm)](/docs/use-form)

@@ -179,3 +179,9 @@ const selectUserName = createSelector(selectUser, (user) => user.name);
 2. **Acciones para Mutaciones**: Usa métodos de acción en lugar de mutación directa para claridad
 3. **Integración con DevTools**: Habilita devtools para depurar cambios de estado
 4. **Computed para Estado Derivado**: Crea valores computados en componentes, no en stores
+
+## Próximos pasos
+
+- [SEO y Gestión del Head](/docs/seo)
+- [Internacionalización](/docs/i18n)
+- [APIs y Acciones de Servidor](/docs/server-apis)

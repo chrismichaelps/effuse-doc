@@ -126,3 +126,9 @@ defineHook({
 - [ ] 服务端 API 与操作由层拥有，或已适配进层。
 - [ ] 客户端、SSR、请求处理器与清单使用同一份层依赖图。
 - [ ] 类型检查、针对性测试与懒加载路由集成探针全部通过。
+
+## 后续步骤
+
+- [Props](/docs/props)
+- [为什么选择 Effuse](/docs/why-effuse)
+- [Effuse 入门](/docs/getting-started)

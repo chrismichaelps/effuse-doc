@@ -140,8 +140,6 @@ export { installRouter };
 
 ## 次のステップ
 
-準備はできましたか？次に進みましょう：
-
-- **[インストール](/docs/installation)** — プロジェクトに Effuse をセットアップ
-- **[クイックスタート](/docs/quick-start)** — 最初のアプリを構築
-- **[シグナル](/docs/signals)** — リアクティビティシステムをマスター
+- [インストール](/docs/installation)
+- [コンポーネント API](/docs/quick-start)
+- [コンポーネント](/docs/components)

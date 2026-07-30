@@ -144,3 +144,9 @@ La función `script` recibe un objeto `ScriptContext` con utilidades:
 - **[Instalación](/docs/installation)** — Configura Effuse en tu proyecto
 - **[Inicio Rápido](/docs/quick-start)** — Construye tu primera app
 - **[Señales](/docs/signals)** — Domina el sistema de reactividad
+
+## Próximos pasos
+
+- [Instalación](/docs/installation)
+- [API de Componentes](/docs/quick-start)
+- [Componentes](/docs/components)

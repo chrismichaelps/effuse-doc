@@ -349,3 +349,9 @@ export const I18nLayer = defineLayer({
 5. **初期化にはSetup** - 初期化には `setup` を使用（localStorage、API呼び出し）
 6. **Setupでクリーンアップ** - 必要に応じて `setup` からクリーンアップ関数を返す
 7. **型レジストリ** - 型安全なレイヤーアクセスにはmodule augmentationを使用
+
+## 次のステップ
+
+- [Effects API](/docs/effects)
+- [フォーム管理 (useForm)](/docs/use-form)
+- [イベントエミッション (useEmits)](/docs/emit)

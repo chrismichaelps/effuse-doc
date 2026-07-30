@@ -244,3 +244,9 @@ la aplicación.
 5. Genera clientes desde manifiestos en lugar de duplicar rutas de fetch.
 6. Trata las rutas de archivo como entradas de capa e inspecciona los diagnósticos del manifiesto en CI.
 7. Mantén subidas, persistencia, autenticación y telemetría detrás de servicios.
+
+## Próximos pasos
+
+- [Migrar el Acceso a Capas](/docs/migrating-layer-access)
+- [Props](/docs/props)
+- [Por Qué Effuse](/docs/why-effuse)

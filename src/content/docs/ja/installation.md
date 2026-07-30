@@ -123,3 +123,9 @@ export { installRouter };
 ## Vite 設定
 
 現時点では利用できません。
+
+## 次のステップ
+
+- [コンポーネント API](/docs/quick-start)
+- [コンポーネント](/docs/components)
+- [シグナル](/docs/signals)

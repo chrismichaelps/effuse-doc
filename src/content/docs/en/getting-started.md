@@ -139,8 +139,6 @@ The `script` function receives a `ScriptContext` object with useful utilities:
 
 ## Next Steps
 
-Ready to dive in? Here's where to go next:
-
-- **[Installation](/docs/installation)** — Set up Effuse in your project
-- **[Quick Start](/docs/quick-start)** — Build your first app
-- **[Signals](/docs/signals)** — Master the reactivity system
+- [Installation](/docs/installation)
+- [Component API](/docs/quick-start)
+- [Components](/docs/components)

@@ -104,3 +104,9 @@ estable el grafo de la aplicación y legible la sintaxis del componente.
 
 El objetivo es una superficie más pequeña que se componga en un modelo de
 aplicación más potente.
+
+## Próximos pasos
+
+- [Primeros Pasos con Effuse](/docs/getting-started)
+- [Instalación](/docs/installation)
+- [API de Componentes](/docs/quick-start)

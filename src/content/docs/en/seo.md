@@ -160,3 +160,9 @@ const DocsPage = define({
 3. **Keep descriptions concise** — Limit descriptions to about 155 characters for search results
 4. **Call early in script** — Call `useHead` at the top of your script function
 5. **Use Open Graph** — Add OG tags for better social media previews
+
+## Next Steps
+
+- [Internationalization](/docs/i18n)
+- [Server APIs And Actions](/docs/server-apis)
+- [Migrating Layer Access](/docs/migrating-layer-access)

@@ -160,3 +160,9 @@ const DocsPage = define({
 3. **保持描述简洁** — 搜索结果描述限制在约 155 个字符
 4. **在脚本中尽早调用** — 在脚本函数顶部调用 `useHead`
 5. **使用 Open Graph** — 添加 OG 标签以获得更好的社交媒体预览
+
+## 后续步骤
+
+- [国际化](/docs/i18n)
+- [服务端 API 与操作](/docs/server-apis)
+- [迁移层访问方式](/docs/migrating-layer-access)

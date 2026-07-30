@@ -123,3 +123,9 @@ export { installRouter };
 ## Vite 配置
 
 目前暂不可用。
+
+## 后续步骤
+
+- [组件 API](/docs/quick-start)
+- [组件](/docs/components)
+- [信号](/docs/signals)

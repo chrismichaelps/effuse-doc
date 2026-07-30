@@ -495,3 +495,9 @@ const App = define({
 | `fallback` | `EffuseChild &#124; ((err: Error, reset: () => void) => EffuseChild)` | Render function that receives the error   |
 | `children` | `EffuseChild`                                                     | The content to monitor for errors         |
 | `onError`  | `(err: Error) => void`                                            | Optional callback when an error is caught |
+
+## Next Steps
+
+- [Signals](/docs/signals)
+- [Hooks](/docs/hooks)
+- [Layers](/docs/layers)

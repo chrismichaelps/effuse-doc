@@ -210,3 +210,9 @@ watchEffect(() => {
   return () => window.removeEventListener('resize', handler);
 });
 ```
+
+## 次のステップ
+
+- [レイヤー](/docs/layers)
+- [Effects API](/docs/effects)
+- [フォーム管理 (useForm)](/docs/use-form)

@@ -224,3 +224,9 @@ script: () => {
   return { filteredItems, filter };
 };
 ```
+
+## 次のステップ
+
+- [フック](/docs/hooks)
+- [レイヤー](/docs/layers)
+- [Effects API](/docs/effects)

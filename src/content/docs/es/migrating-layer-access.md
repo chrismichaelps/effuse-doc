@@ -135,3 +135,9 @@ concreta y la corrección de registro cuando falta un binding.
 - [ ] Las APIs y acciones de servidor pertenecen a capas o están adaptadas a ellas.
 - [ ] El mismo grafo de capas se pasa al cliente, al SSR, al handler y al manifiesto.
 - [ ] Pasan el typecheck, las pruebas focalizadas y las sondas de integración de rutas perezosas.
+
+## Próximos pasos
+
+- [Props](/docs/props)
+- [Por Qué Effuse](/docs/why-effuse)
+- [Primeros Pasos con Effuse](/docs/getting-started)

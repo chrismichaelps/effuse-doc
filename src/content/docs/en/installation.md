@@ -112,3 +112,9 @@ Use the automatic JSX runtime:
 
 Keep browser code on `@effuse/core` or `@effuse/core/client`. Server entries may
 use `@effuse/core/server` when an explicit server-only boundary is useful.
+
+## Next Steps
+
+- [Component API](/docs/quick-start)
+- [Components](/docs/components)
+- [Signals](/docs/signals)

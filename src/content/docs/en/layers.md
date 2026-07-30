@@ -152,3 +152,9 @@ declare module '@effuse/core' {
 
 For new code, alias records are more portable and require less global type
 coordination.
+
+## Next Steps
+
+- [Effects API](/docs/effects)
+- [Form Management (useForm)](/docs/use-form)
+- [Event Emission (useEmits)](/docs/emit)

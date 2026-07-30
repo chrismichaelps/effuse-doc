@@ -192,3 +192,9 @@ Retorna la instancia del router para control programático.
 | `addRoute`      | `(route: RouteRecord, parentName?: string) => void` | Añade dinámicamente una nueva ruta.                               |
 | `removeRoute`   | `(name: string) => void`                            | Remueve dinámicamente una ruta por nombre.                        |
 | `getRoutes`     | `() => NormalizedRouteRecord[]`                     | Retorna todos los registros de ruta normalizados.                 |
+
+## Próximos pasos
+
+- [Gestión de Estado](/docs/state)
+- [SEO y Gestión del Head](/docs/seo)
+- [Internacionalización](/docs/i18n)

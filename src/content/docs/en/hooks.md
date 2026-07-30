@@ -239,3 +239,9 @@ watchEffect(() => {
   return () => window.removeEventListener('resize', handler);
 });
 ```
+
+## Next Steps
+
+- [Layers](/docs/layers)
+- [Effects API](/docs/effects)
+- [Form Management (useForm)](/docs/use-form)
