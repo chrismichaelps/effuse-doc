@@ -20,7 +20,7 @@ export const HamburgerButton = define<
       display: 'block',
       width: '20px',
       height: '2px',
-      backgroundColor: '#475569',
+      backgroundColor: 'var(--text-secondary)',
       transition: 'all 0.3s ease-in-out',
       transformOrigin: 'center',
       transform: props.isOpen.value ? 'translateY(6px) rotate(45deg)' : 'none',
@@ -29,7 +29,7 @@ export const HamburgerButton = define<
       display: 'block',
       width: '20px',
       height: '2px',
-      backgroundColor: '#475569',
+      backgroundColor: 'var(--text-secondary)',
       margin: '4px 0',
       transition: 'all 0.3s ease-in-out',
       transformOrigin: 'center',
@@ -40,7 +40,7 @@ export const HamburgerButton = define<
       display: 'block',
       width: '20px',
       height: '2px',
-      backgroundColor: '#475569',
+      backgroundColor: 'var(--text-secondary)',
       transition: 'all 0.3s ease-in-out',
       transformOrigin: 'center',
       transform: props.isOpen.value
@@ -61,7 +61,7 @@ export const HamburgerButton = define<
   }) => (
     <button
       onClick={onToggle}
-      class="md:hidden flex flex-col justify-center items-center w-10 h-10 rounded-lg hover:bg-slate-100 transition-colors"
+      class="hamburger-button md:hidden flex flex-col justify-center items-center w-10 h-10 rounded-lg transition-colors"
       aria-label="Toggle menu"
       aria-expanded={isOpen.value}
       style={{

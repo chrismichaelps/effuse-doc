@@ -146,12 +146,6 @@
   justify-content: center;
 }
 
-.footer-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
 .footer-effuse-badge {
   display: flex;
   align-items: center;
@@ -199,6 +193,12 @@
   transition:
     opacity 0.2s ease,
     transform 0.2s ease;
+}
+
+:root[data-theme='light'] .footer-logo,
+:root[data-theme='light'] .footer-badge-logo,
+:root[data-theme='light'] .footer-social-icon {
+  filter: brightness(0);
 }
 
 .footer-link-external {

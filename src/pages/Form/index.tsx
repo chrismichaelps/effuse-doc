@@ -344,7 +344,7 @@ const mutation = useMutation({
           aria-labelledby="form-title"
         >
           <header class="bg-white/5 px-6 py-4">
-            <h2 id="form-title" class="text-xl font-semibold text-white">
+            <h2 id="form-title" class="text-xl font-semibold text-primary">
               {t.value?.createPost}
             </h2>
             <p class="text-slate-400 text-sm mt-1">{t.value?.apiNote}</p>
@@ -499,7 +499,7 @@ const mutation = useMutation({
                   style={() =>
                     form.isValid.value
                       ? { color: 'var(--accent-mint)' }
-                      : { color: '#ff6b6b' }
+                      : { color: 'var(--accent-danger)' }
                   }
                 >
                   {isValidText.value}
@@ -554,7 +554,7 @@ const mutation = useMutation({
               <div class="px-6 pb-6">
                 <div
                   class="p-4 bg-mint/10 text-mint rounded-xl font-medium border border-mint/20 text-center animate-water-drop"
-                  style="background: rgba(141, 240, 204, 0.1); color: var(--accent-mint); border-color: rgba(141, 240, 204, 0.1);"
+                  style="background: var(--accent-mint-subtle); color: var(--accent-mint); border-color: var(--border-default);"
                 >
                   {successMessage.value}
                 </div>
@@ -563,7 +563,7 @@ const mutation = useMutation({
               <div class="px-6 pb-6">
                 <div
                   class="p-4 bg-red-500/10 text-red-400 rounded-xl font-medium border border-red-500/20 text-center animate-water-drop"
-                  style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border-color: rgba(239, 68, 68, 0.2);"
+                  style="background: var(--accent-danger-subtle); color: var(--accent-danger); border-color: var(--accent-danger-border);"
                 >
                   {errorMessage.value}
                 </div>
@@ -589,7 +589,7 @@ const mutation = useMutation({
             aria-labelledby="posts-title"
           >
             <header class="bg-white/5 px-6 py-4 flex justify-between items-center">
-              <h2 id="posts-title" class="text-xl font-semibold text-white">
+              <h2 id="posts-title" class="text-xl font-semibold text-primary">
                 {t.value?.createdPosts}
               </h2>
               <span class="example-badge">{postsCount.value}</span>
@@ -626,7 +626,7 @@ const mutation = useMutation({
                           <footer class="flex-shrink-0">
                             <span
                               class="example-badge"
-                              style="background: rgba(182, 157, 248, 0.1); color: var(--accent-lilac); border-color: rgba(182, 157, 248, 0.1);"
+                              style="background: var(--accent-lilac-glow); color: var(--accent-lilac); border-color: var(--border-default);"
                             >
                               USER {String(post.userId)}
                             </span>

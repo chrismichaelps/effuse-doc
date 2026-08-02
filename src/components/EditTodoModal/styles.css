@@ -1,0 +1,72 @@
+.edit-todo-modal-shell {
+  color: var(--text-primary);
+}
+
+.edit-todo-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-backdrop);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.edit-todo-dialog {
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-elevated);
+}
+
+.edit-todo-header {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.edit-todo-label {
+  color: var(--text-secondary);
+}
+
+.edit-todo-input {
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-strong);
+  caret-color: var(--accent-lilac);
+}
+
+.edit-todo-input::placeholder {
+  color: var(--text-muted);
+}
+
+.edit-todo-input:focus-visible {
+  border-color: var(--accent-lilac);
+  box-shadow: 0 0 0 3px var(--accent-lilac-glow);
+}
+
+.edit-todo-footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-default);
+}
+
+.edit-todo-cancel,
+.edit-todo-save {
+  border: 1px solid var(--border-default);
+  cursor: pointer;
+}
+
+.edit-todo-cancel {
+  color: var(--text-primary);
+  background: var(--surface-interactive);
+}
+
+.edit-todo-cancel:hover {
+  background: var(--surface-interactive-hover);
+}
+
+.edit-todo-save {
+  color: var(--button-primary-text);
+  background: var(--button-primary-bg);
+}
+
+.edit-todo-save:hover {
+  filter: brightness(1.08);
+}

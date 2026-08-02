@@ -90,7 +90,9 @@ const ThemeCard = define<ThemeCardProps, ThemeCardExposed>({
         gap: '0.75rem',
       })}
     >
-      <h3 style={{ fontWeight: '600', fontSize: '1rem' }}>{label}</h3>
+      <h3 style={{ fontWeight: '600', fontSize: '1rem', color: 'inherit' }}>
+        {label}
+      </h3>
       <div
         style={() => ({
           background: getPrimaryColor(theme.value),

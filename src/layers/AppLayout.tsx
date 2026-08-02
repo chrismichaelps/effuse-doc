@@ -5,7 +5,7 @@ import { Footer } from '../components/Footer';
 export const AppLayout = define({
   script: () => ({}),
   template: ({ children }) => (
-    <div class="docs-layout-container min-h-screen flex flex-col bg-slate-50">
+    <div class="docs-layout-container min-h-screen flex flex-col">
       <Header />
       <main class="flex-1">{children}</main>
       <Footer />

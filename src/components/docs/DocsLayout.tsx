@@ -195,7 +195,13 @@ export const DocsLayout = define({
           <aside class="docs-toc-sidebar lg:block hidden">
             <div class="toc-sidebar-container">
               <h3 class="toc-sidebar-title flex items-center gap-2">
-                <img src="/icons/list.svg" width="14" height="14" alt="List" />
+                <img
+                  src="/icons/list.svg"
+                  width="14"
+                  height="14"
+                  alt=""
+                  class="toc-sidebar-icon"
+                />
                 {t('toc.onThisPage', '')}
               </h3>
               <nav class="toc-sidebar-nav" aria-label="Table of contents">

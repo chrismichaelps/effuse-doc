@@ -1,16 +1,11 @@
 import { defineLayer, signal, type Signal } from '@effuse/core';
-import { Header } from '../components/Header';
-import { Footer } from '../components/Footer';
+import { applyTheme, readStoredTheme, resolveTheme } from '../theme.js';
 
 export const LayoutLayer = defineLayer({
   name: 'layout',
   props: {
     isDarkMode: signal(false),
     isMobileMenuOpen: signal(false),
-  },
-  components: {
-    Header,
-    Footer,
   },
   onMount: () => {
     console.log('[LayoutLayer] mounted');
@@ -32,10 +27,15 @@ export const LayoutLayer = defineLayer({
     if (typeof window === 'undefined') return undefined;
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    s.props.isDarkMode.value = mediaQuery.matches;
+    const storedTheme = readStoredTheme(window.localStorage);
+    const initialTheme = resolveTheme(storedTheme, mediaQuery.matches);
+    s.props.isDarkMode.value = initialTheme === 'dark';
+    applyTheme(initialTheme);
 
     const handleDarkModeChange = (e: MediaQueryListEvent) => {
+      if (readStoredTheme(window.localStorage)) return;
       s.props.isDarkMode.value = e.matches;
+      applyTheme(e.matches ? 'dark' : 'light');
     };
 
     mediaQuery.addEventListener('change', handleDarkModeChange);

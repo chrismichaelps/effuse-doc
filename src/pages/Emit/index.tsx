@@ -254,13 +254,13 @@ emit('message', { text: 'Hello!', author: 'Dev' });
         >
           <span
             class="example-badge"
-            style="background: rgba(182, 157, 248, 0.1); color: var(--accent-lilac);"
+            style="background: var(--accent-lilac-glow); color: var(--accent-lilac);"
           >
             useEmits
           </span>
           <span
             class="example-badge"
-            style="background: rgba(141, 240, 204, 0.1); color: var(--accent-mint);"
+            style="background: var(--accent-mint-subtle); color: var(--accent-mint);"
           >
             useEventSignal
           </span>
@@ -368,7 +368,7 @@ emit('message', { text: 'Hello!', author: 'Dev' });
             type="button"
             onClick={() => resetSession()}
             class="btn-secondary"
-            style="border-color: rgba(255, 100, 100, 0.2); color: #ff6b6b;"
+            style="border-color: var(--accent-danger-border); color: var(--accent-danger);"
           >
             {t.value?.reset || ''}
           </button>
