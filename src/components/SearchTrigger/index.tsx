@@ -30,7 +30,12 @@ export const SearchTrigger = define({
     } satisfies SearchTriggerExposed;
   },
   template: ({ isMac, handleClick }) => (
-    <button type="button" class="search-trigger" onClick={handleClick}>
+    <button
+      type="button"
+      class="search-trigger"
+      onClick={handleClick}
+      aria-label="Search documentation"
+    >
       <img src="/icons/search.svg" alt="" class="search-trigger-icon" />
       <span class="search-trigger-text">Search</span>
       <span class="search-trigger-kbd">

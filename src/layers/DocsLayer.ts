@@ -14,7 +14,6 @@ export const DocsLayer = defineLayer({
   name: 'docs',
   dependencies: ['sidebar', 'i18n'],
   props: {
-    theme: signal<'light' | 'dark'>('light'),
     currentSlug: signal(''),
   },
   components: {

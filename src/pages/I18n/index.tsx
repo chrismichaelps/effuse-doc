@@ -119,7 +119,7 @@ export const I18nPage = define<object, I18nPageExposed>({
           aria-labelledby="i18n-demo-title"
         >
           <header class="bg-white/5 px-6 py-4">
-            <h2 id="i18n-demo-title" class="text-xl font-semibold text-white">
+            <h2 id="i18n-demo-title" class="text-xl font-semibold text-primary">
               {t.value?.welcome}
             </h2>
           </header>
@@ -230,7 +230,7 @@ export const I18nPage = define<object, I18nPageExposed>({
             </p>
           </footer>
 
-          <details style="padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05);">
+          <details style="padding: 1.5rem; border-top: 1px solid var(--border-subtle);">
             <summary class="text-xs font-bold text-slate-500 uppercase tracking-widest cursor-pointer outline-none">
               {(t.value as any)?.howItWorks}
             </summary>

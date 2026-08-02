@@ -16,6 +16,27 @@ export const HeroCanvas = define({
 
       let width = 0;
       let height = 0;
+      let foreground = { r: 255, g: 255, b: 255 };
+
+      const syncThemeColors = () => {
+        const value = getComputedStyle(document.documentElement)
+          .getPropertyValue('--text-primary')
+          .trim();
+        const match = value.match(/^#([\da-f]{2})([\da-f]{2})([\da-f]{2})$/i);
+        if (!match) return;
+        foreground = {
+          r: Number.parseInt(match[1], 16),
+          g: Number.parseInt(match[2], 16),
+          b: Number.parseInt(match[3], 16),
+        };
+      };
+
+      syncThemeColors();
+      const themeObserver = new MutationObserver(syncThemeColors);
+      themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme'],
+      });
 
       const mouse = {
         x: 0,
@@ -84,9 +105,10 @@ export const HeroCanvas = define({
             mouse.y,
             300
           );
-          auraGrad.addColorStop(0, 'rgba(255, 255, 255, 0.06)');
-          auraGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.015)');
-          auraGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+          const { r, g, b } = foreground;
+          auraGrad.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.06)`);
+          auraGrad.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, 0.015)`);
+          auraGrad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
           ctx.fillStyle = auraGrad;
           ctx.fillRect(0, 0, width, height);
         }
@@ -139,7 +161,8 @@ export const HeroCanvas = define({
             const hoverAlpha = smoothEffect * 0.45;
             const alpha = Math.min(0.75, baseAlpha + hoverAlpha);
 
-            ctx.fillStyle = `rgba(255, 255, 255, ${alpha.toFixed(3)})`;
+            const { r, g, b } = foreground;
+            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha.toFixed(3)})`;
             const dotSize = 1.0 + smoothEffect * 1.5;
 
             ctx.beginPath();
@@ -148,7 +171,7 @@ export const HeroCanvas = define({
 
             // Subtle vector lines near cursor on hover
             if (smoothEffect > 0.3 && (i % 2 === 0 || j % 2 === 0)) {
-              ctx.strokeStyle = `rgba(255, 255, 255, ${(smoothEffect * 0.12).toFixed(3)})`;
+              ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${(smoothEffect * 0.12).toFixed(3)})`;
               ctx.beginPath();
               ctx.moveTo(px, py);
               ctx.lineTo(mouse.x, mouse.y);
@@ -164,6 +187,7 @@ export const HeroCanvas = define({
 
       return () => {
         if (animId) cancelAnimationFrame(animId);
+        themeObserver.disconnect();
         window.removeEventListener('resize', handleResize);
         window.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseleave', handleMouseLeave);

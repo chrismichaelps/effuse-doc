@@ -5,6 +5,7 @@ import {
   type ReadonlySignal,
 } from '@effuse/core';
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
+import './styles.css';
 
 interface EditTodoModalProps {
   isOpen: Signal<boolean>;
@@ -30,26 +31,23 @@ export const EditTodoModal = define<EditTodoModalProps, EditTodoModalExposed>({
     const { isOpen, title, onTitleChange, onSave, onClose } = props;
     if (!isOpen.value) return null;
     return (
-      <div class="fixed inset-0 z-50 flex items-center justify-center">
-        <div
-          class="absolute inset-0 bg-black bg-opacity-50"
-          onClick={() => onClose()}
-        />
+      <div class="edit-todo-modal-shell fixed inset-0 z-50 flex items-center justify-center">
+        <div class="edit-todo-backdrop" onClick={() => onClose()} />
 
         <section
-          class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+          class="edit-todo-dialog relative rounded-2xl w-full max-w-md mx-4 overflow-hidden"
           role="dialog"
           aria-modal="true"
           aria-labelledby="edit-todo-title"
         >
-          <header class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-4">
-            <h2 id="edit-todo-title" class="text-xl font-semibold text-white">
+          <header class="edit-todo-header px-6 py-4">
+            <h2 id="edit-todo-title" class="text-xl font-semibold">
               {t.value?.editTodo}
             </h2>
           </header>
 
           <div class="p-6">
-            <label class="block mb-2 text-sm font-medium text-slate-700">
+            <label class="edit-todo-label block mb-2 text-sm font-medium">
               {t.value?.todoTitle}
             </label>
             <input
@@ -62,23 +60,23 @@ export const EditTodoModal = define<EditTodoModalProps, EditTodoModalExposed>({
                 if (e.key === 'Enter') onSave();
                 if (e.key === 'Escape') onClose();
               }}
-              class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              class="edit-todo-input w-full px-4 py-3 rounded-lg focus:outline-none"
               placeholder={t.value?.enterTodoTitlePlaceholder ?? ''}
             />
           </div>
 
-          <footer class="px-6 py-4 bg-slate-50 flex justify-end gap-3">
+          <footer class="edit-todo-footer px-6 py-4 flex justify-end gap-3">
             <button
               type="button"
               onClick={() => onClose()}
-              class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg font-medium hover:bg-slate-300 transition-colors"
+              class="edit-todo-cancel px-4 py-2 rounded-lg font-medium transition-colors"
             >
               {t.value?.cancel}
             </button>
             <button
               type="button"
               onClick={() => onSave()}
-              class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              class="edit-todo-save px-4 py-2 rounded-lg font-medium transition-colors"
             >
               {t.value?.saveChanges}
             </button>

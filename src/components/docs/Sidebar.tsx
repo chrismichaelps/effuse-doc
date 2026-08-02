@@ -124,7 +124,13 @@ export const Sidebar = define({
       <header class="sidebar-header">
         <div class="sidebar-top-row">
           <div class="flex items-center gap-2">
-            <img src="/logo/logo-white.svg" width="20" height="20" alt="Logo" />
+            <img
+              src="/logo/logo-white.svg"
+              width="20"
+              height="20"
+              alt="Logo"
+              class="sidebar-brand-logo"
+            />
             <span class="sidebar-brand-title">Documentation</span>
           </div>
           <SidebarToggle class="sidebar-brand-toggle" />

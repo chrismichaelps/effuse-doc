@@ -16,10 +16,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: radial-gradient(
-    rgba(255, 255, 255, 0.05) 1px,
-    transparent 1px
-  );
+  background-image: radial-gradient(var(--pattern-dot) 1px, transparent 1px);
   background-size: 24px 24px;
   pointer-events: none;
   z-index: 0;
@@ -157,8 +154,8 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.875rem 2rem;
-  background: var(--accent-mint);
-  color: #080808;
+  background: var(--button-primary-bg);
+  color: var(--button-primary-text);
   font-weight: 600;
   font-size: 0.9375rem;
   border-radius: var(--radius-md);

@@ -253,7 +253,7 @@ const mutation = useMutation({
                 <header class="px-6 py-4 bg-white/5">
                   <h3
                     id="todo-modal-title"
-                    class="text-xl font-bold text-white"
+                    class="text-xl font-bold text-primary"
                   >
                     {t.value?.editTodo}
                   </h3>
@@ -333,7 +333,7 @@ const mutation = useMutation({
           <span class="example-badge">Portal Modal</span>
           <span
             class="example-badge"
-            style="background: rgba(141, 240, 204, 0.1); color: var(--accent-mint); border-color: rgba(141, 240, 204, 0.1);"
+            style="background: var(--accent-mint-subtle); color: var(--accent-mint); border-color: var(--border-default);"
           >
             @effuse/store
           </span>
@@ -370,7 +370,7 @@ const mutation = useMutation({
         <section class="stat-grid" aria-label="Task statistics">
           <article
             class="stat-card"
-            style="background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.05);"
+            style="background: var(--surface-subtle); border-color: var(--border-subtle);"
           >
             <h4 class="stat-label">{t.value?.total}</h4>
             <div class="stat-value" style="color: var(--text-primary);">
@@ -383,7 +383,7 @@ const mutation = useMutation({
           </article>
           <article
             class="stat-card"
-            style="background: rgba(182, 157, 248, 0.03); border-color: rgba(182, 157, 248, 0.1);"
+            style="background: var(--accent-lilac-glow); border-color: var(--accent-lilac-glow);"
           >
             <h4 class="stat-label">{t.value?.pending}</h4>
             <div class="stat-value" style="color: var(--accent-lilac);">
@@ -477,8 +477,11 @@ const mutation = useMutation({
                       }
                       style={() => ({
                         background: todoSignal.value.completed
-                          ? 'var(--accent-mint)'
-                          : 'rgba(255,255,255,0.05)',
+                          ? 'var(--button-primary-bg)'
+                          : 'var(--surface-interactive)',
+                        color: todoSignal.value.completed
+                          ? 'var(--button-primary-text)'
+                          : 'var(--text-secondary)',
                       })}
                     >
                       {todoSignal.value.completed ? (
@@ -509,7 +512,7 @@ const mutation = useMutation({
                         type="button"
                         onClick={() => deleteTodo(todoSignal.value.id)}
                         class="btn-secondary"
-                        style="padding: 0.3rem 0.8rem; font-size: 0.75rem; border-color: rgba(255, 100, 100, 0.2); color: #ff6b6b;"
+                        style="padding: 0.3rem 0.8rem; font-size: 0.75rem; border-color: var(--accent-danger-border); color: var(--accent-danger);"
                       >
                         {t.value?.delete}
                       </button>

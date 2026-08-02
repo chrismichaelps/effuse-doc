@@ -14,10 +14,7 @@
   left: 0;
   right: 0;
   height: 60%;
-  background-image: radial-gradient(
-    rgba(255, 255, 255, 0.06) 1px,
-    transparent 1px
-  );
+  background-image: radial-gradient(var(--pattern-dot) 1px, transparent 1px);
   background-size: 24px 24px;
   pointer-events: none;
   z-index: 0;
@@ -167,7 +164,7 @@
   top: 2rem;
   right: 2rem;
   color: var(--accent-mint);
-  border: 1px solid rgba(141, 240, 204, 0.3);
+  border: 1px solid var(--border-strong);
   border-radius: 99rem;
   padding: 0.375rem 0.875rem;
   font-size: 0.75rem;
@@ -183,7 +180,7 @@
 }
 
 .sponsor-btn:hover {
-  background: rgba(141, 240, 204, 0.1);
+  background: var(--accent-mint-subtle);
   border-color: var(--accent-mint);
   transform: translateY(-2px);
 }

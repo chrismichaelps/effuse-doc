@@ -3,7 +3,7 @@ import type { Signal, ReadonlySignal, EffuseLayerRegistry } from '@effuse/core';
 declare module '@effuse/core' {
   interface EffuseLayerRegistry {
     docs: {
-      props: { theme: Signal<string>; currentSlug: Signal<string> };
+      props: { currentSlug: Signal<string> };
     };
     i18n: {
       props: {

@@ -26,7 +26,8 @@
 }
 
 .example-card {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 20px;
@@ -49,7 +50,8 @@
 }
 
 .stat-card {
-  background: rgba(141, 240, 204, 0.03);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
   border-radius: 16px;
   padding: 1.5rem;
   display: flex;
@@ -59,7 +61,7 @@
 }
 
 .stat-card:hover {
-  background: rgba(141, 240, 204, 0.05);
+  background: var(--surface-interactive);
   transform: translateY(-2px);
 }
 
@@ -87,8 +89,8 @@
 }
 
 .btn-premium {
-  background: var(--accent-mint);
-  color: #0b1012;
+  background: var(--button-primary-bg);
+  color: var(--button-primary-text);
   padding: 0.75rem 1.5rem;
   border-radius: 10px;
   font-weight: 600;
@@ -101,7 +103,7 @@
 .btn-premium:hover {
   transform: translateY(-1px);
   filter: brightness(1.1);
-  box-shadow: 0 0 20px rgba(141, 240, 204, 0.3);
+  box-shadow: 0 12px 28px var(--accent-mint-glow);
 }
 
 .btn-premium:active {
@@ -109,7 +111,8 @@
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-interactive);
+  border: 1px solid var(--border-default);
   color: var(--text-primary);
   padding: 0.75rem 1.5rem;
   border-radius: 10px;
@@ -119,25 +122,25 @@
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--surface-interactive-hover);
 }
 
 .example-input {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-default);
   border-radius: 10px;
   padding: 0.875rem 1rem;
   color: var(--text-primary);
   font-size: 1rem;
   width: 100%;
   transition: all 0.2s ease;
-  border: none;
 }
 
 .example-input:focus {
   outline: none;
   border-color: var(--accent-mint);
-  background: rgba(141, 240, 204, 0.02);
-  box-shadow: 0 0 0 4px rgba(141, 240, 204, 0.1);
+  background: var(--accent-mint-subtle);
+  box-shadow: 0 0 0 4px var(--accent-mint-glow);
 }
 
 .example-badge {
@@ -145,7 +148,7 @@
   border-radius: 20px;
   font-size: 0.75rem;
   font-weight: 600;
-  background: rgba(182, 157, 248, 0.1);
+  background: var(--accent-lilac-glow);
   color: var(--accent-lilac);
 }
 
@@ -168,7 +171,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--overlay-backdrop);
   backdrop-filter: blur(4px);
 }
 
@@ -214,7 +217,8 @@
 }
 
 .demo-section {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 20px;
@@ -242,12 +246,13 @@
 }
 
 .demo-controls .btn-secondary.active {
-  background: var(--accent-mint);
-  color: #0b1012;
+  background: var(--button-primary-bg);
+  color: var(--button-primary-text);
 }
 
 .demo-result {
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
@@ -281,8 +286,8 @@
 }
 
 .demo-input {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-default);
   border-radius: 8px;
   padding: 0.6rem 1rem;
   color: var(--text-primary);
@@ -294,7 +299,7 @@
 .demo-input:focus {
   outline: none;
   border-color: var(--accent-mint);
-  background: rgba(141, 240, 204, 0.02);
+  background: var(--accent-mint-subtle);
 }
 
 .demo-list {
@@ -309,7 +314,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .demo-list-item:last-child {
@@ -356,7 +361,7 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-subtle);
   border-radius: 12px;
   animation: pulse-skeleton 1.5s ease-in-out infinite;
 }
@@ -449,9 +454,9 @@
   align-items: center;
   gap: 1.5rem;
   padding: 1.5rem;
-  background: rgba(141, 240, 204, 0.05);
+  background: var(--accent-mint-subtle);
   border-radius: 16px;
-  border: 1px solid rgba(141, 240, 204, 0.1);
+  border: 1px solid var(--border-default);
 }
 
 .user-avatar {
@@ -464,7 +469,7 @@
   justify-content: center;
   font-size: 1.75rem;
   font-weight: 700;
-  color: #0b1012;
+  color: var(--button-primary-text);
 }
 
 .user-info {

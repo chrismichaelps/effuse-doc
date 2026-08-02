@@ -181,12 +181,12 @@ export const DocsHeader = define({
         <div class="flex-1 flex justify-center items-center overflow-hidden">
           <button
             type="button"
-            class="toc-trigger flex items-center justify-center space-x-2 py-1 px-3 rounded-lg hover:bg-white/5 transition-colors focus:outline-none"
+            class="toc-trigger"
             onClick={toggleDropdown}
             aria-expanded={dropdownOpen.value}
             aria-label="Table of contents"
           >
-            <span class="font-bold text-sm tracking-wide text-gray-200 hover:text-white truncate transition-colors">
+            <span class="toc-trigger-label">
               {() =>
                 activeSectionTitle.value || props.pageTitle || 'On this page'
               }
@@ -202,12 +202,10 @@ export const DocsHeader = define({
         ref={(el: unknown) => {
           dropdownRef.value = el as HTMLElement;
         }}
-        class="toc-popover absolute top-full left-0 right-0 mt-2 bg-[#111113]/95 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-4 z-50"
+        class="toc-popover"
         style="display: none;"
       >
-        <div class="toc-header text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-2">
-          {onThisPageText.value}
-        </div>
+        <div class="toc-header">{onThisPageText.value}</div>
         <nav class="toc-list-container max-h-[60vh] overflow-y-auto custom-scrollbar">
           <ul class="space-y-1 p-0 m-0 list-none">
             <For
@@ -217,16 +215,16 @@ export const DocsHeader = define({
               {(itemSignal: ReadonlySignal<TocItem>) => (
                 <li
                   class={() =>
-                    `toc-item m-0 ${itemSignal.value.level === 3 ? 'pl-4' : ''}`
+                    `toc-popover-item ${itemSignal.value.level === 3 ? 'nested' : ''}`
                   }
                 >
                   <a
                     href={`#${itemSignal.value.id}`}
                     class={() =>
-                      `block py-1.5 px-3 rounded-lg text-xs transition-all duration-200 ${
+                      `toc-popover-link ${
                         activeSectionId.value === itemSignal.value.id
-                          ? 'bg-white/10 text-white font-medium shadow-sm'
-                          : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+                          ? 'active'
+                          : ''
                       }`
                     }
                     onClick={(e: Event) =>

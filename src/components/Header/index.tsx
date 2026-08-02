@@ -9,6 +9,7 @@ import { HamburgerButton } from '../HamburgerButton';
 import { LanguageSelector } from '../docs/LanguageSelector';
 import { SearchTrigger } from '../SearchTrigger';
 import { SearchModal } from '../SearchModal';
+import { ThemeToggle } from '../ThemeToggle';
 import { useToggle } from '../../hooks/index.js';
 import { useMediaQuery } from '@effuse/use';
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
@@ -121,6 +122,8 @@ export const Header = define<Record<string, never>, HeaderExposed>({
               <div class="header-search-wrapper">
                 <SearchTrigger />
               </div>
+
+              <ThemeToggle />
 
               <div
                 class={() =>
