@@ -1,4 +1,5 @@
 import { define, useHead, watchEffect } from '@effuse/core';
+import { TelemetryRail } from '../../components/TelemetryRail/index.js';
 import { useTranslation } from '../../hooks';
 import '../Legal/styles.css';
 
@@ -29,6 +30,13 @@ export const ContactPage = define({
         <header class="legal-header">
           <h1 class="legal-title">{t('legal.contact.title', '')}</h1>
         </header>
+
+        <TelemetryRail
+          start="Effuse"
+          middle="/contact"
+          end="Open · Direct"
+          className="legal-telemetry"
+        />
 
         <div class="legal-content">
           <section class="legal-section legal-contact-card">

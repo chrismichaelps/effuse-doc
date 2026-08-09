@@ -1,5 +1,6 @@
 import { computed, define, signal, useHead } from '@effuse/core';
 import { Link } from '@effuse/router';
+import { TelemetryRail } from '../../components/TelemetryRail/index.js';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 import './styles.css';
@@ -238,13 +239,12 @@ export const HomePage = define({
                 </li>
               ))}
             </ol>
-            <div class="pipeline-readout" aria-hidden="true">
-              <span>state.count</span>
-              <span class="pipeline-trace"></span>
-              <span>GET /api/docs</span>
-              <span class="pipeline-trace"></span>
-              <span>200 · hydrated</span>
-            </div>
+            <TelemetryRail
+              start="state.count"
+              middle="GET /api/docs"
+              end="200 · hydrated"
+              className="pipeline-readout"
+            />
           </div>
         </div>
       </section>
@@ -487,7 +487,7 @@ export const HomePage = define({
           </div>
           <div class="ssr-proof">
             <span class="ssr-dot" aria-hidden="true"></span>
-            This documentation site is rendered with Effuse SSR.
+            This documentation site is rendered with Effuse.
           </div>
         </div>
       </section>

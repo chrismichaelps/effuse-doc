@@ -10,6 +10,7 @@ import { useTranslation } from '../../hooks';
 import { i18nStore, type AppTranslations } from '../../store/appI18n';
 import './styles.css';
 import { I18nLayer } from '../../layers/I18nLayer.js';
+import { TelemetryRail } from '../../components/TelemetryRail/index.js';
 
 export const AboutPage = define({
   layers: { i18n: I18nLayer } as const,
@@ -64,6 +65,13 @@ export const AboutPage = define({
           <h1>{title.value}</h1>
           <p>{description.value}</p>
         </header>
+
+        <TelemetryRail
+          start="open.source"
+          middle="/about"
+          end="community · typed"
+          className="about-telemetry"
+        />
 
         <For
           each={sections}

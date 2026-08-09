@@ -1,4 +1,5 @@
 import { define, useHead, watchEffect } from '@effuse/core';
+import { TelemetryRail } from '../../components/TelemetryRail/index.js';
 import { useTranslation } from '../../hooks';
 import '../Legal/styles.css';
 
@@ -27,6 +28,13 @@ export const TermsPage = define({
           <h1 class="legal-title">{t('legal.terms.title', '')}</h1>
           <p class="legal-subtitle">{t('legal.terms.lastUpdated', '')}</p>
         </header>
+
+        <TelemetryRail
+          start="Effuse"
+          middle="/legal/terms"
+          end="Public · Current"
+          className="legal-telemetry"
+        />
 
         <div class="legal-content">
           <section class="legal-section">

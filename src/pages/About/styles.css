@@ -30,7 +30,7 @@
 }
 
 .about-hero {
-  margin-bottom: 4rem;
+  margin-bottom: 1.75rem;
   max-width: 700px;
   animation: fadeInUp 0.8s var(--ease-spring) both;
 }

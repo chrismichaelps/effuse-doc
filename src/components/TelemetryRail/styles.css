@@ -1,0 +1,106 @@
+.telemetry-rail {
+  display: grid;
+  grid-template-columns: auto minmax(2.5rem, 1fr) auto minmax(2.5rem, 1fr) auto;
+  align-items: center;
+  gap: clamp(0.65rem, 2vw, 1.2rem);
+  min-width: 0;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  line-height: 1;
+}
+
+.telemetry-rail-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.telemetry-rail-label--end {
+  text-align: right;
+}
+
+.telemetry-rail-trace {
+  position: relative;
+  height: 1px;
+  overflow: hidden;
+  background: var(--border-default);
+}
+
+.telemetry-rail-trace::after {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 36%;
+  content: '';
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-lilac));
+  animation: telemetry-rail-flow 3.2s var(--ease-out-expo) infinite alternate;
+  box-shadow: 0 0 14px var(--accent-cyan-glow);
+}
+
+.telemetry-rail-trace--delayed::after {
+  animation-delay: -1.6s;
+}
+
+.legal-telemetry,
+.about-telemetry,
+.releases-telemetry {
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.legal-telemetry {
+  margin-bottom: clamp(1.5rem, 4vw, 2.25rem);
+  animation: telemetry-rail-enter 700ms var(--ease-spring-gentle) 60ms both;
+}
+
+.about-telemetry {
+  margin-bottom: 3rem;
+  animation: telemetry-rail-enter 700ms var(--ease-spring-gentle) 100ms both;
+}
+
+.releases-telemetry {
+  margin-top: 2rem;
+}
+
+@keyframes telemetry-rail-flow {
+  from {
+    transform: translateX(-15%);
+  }
+
+  to {
+    transform: translateX(190%);
+  }
+}
+
+@keyframes telemetry-rail-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .telemetry-rail {
+    grid-template-columns: auto minmax(2rem, 1fr) auto;
+    font-size: 0.62rem;
+  }
+
+  .telemetry-rail-label--middle,
+  .telemetry-rail-trace--delayed {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .telemetry-rail-trace::after,
+  .legal-telemetry,
+  .about-telemetry {
+    animation: none;
+  }
+}

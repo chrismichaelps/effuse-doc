@@ -5,6 +5,7 @@ import { matchTag } from '../../utils/data/index.js';
 import { ReleaseLoader } from './components/ReleaseLoader.js';
 import { ReleaseError } from './components/ReleaseError.js';
 import { ReleaseList } from './components/ReleaseList.js';
+import { TelemetryRail } from '../../components/TelemetryRail/index.js';
 
 export const ReleasesPage = define({
   script: ({ onMount }) => {
@@ -43,6 +44,12 @@ export const ReleasesPage = define({
           <p class="text-white/60 mt-2">
             The latest updates and improvements to Effuse.
           </p>
+          <TelemetryRail
+            start="packages.latest"
+            middle="/releases"
+            end="stable · published"
+            className="releases-telemetry"
+          />
         </header>
 
         {computed(() =>
