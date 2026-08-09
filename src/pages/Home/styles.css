@@ -396,13 +396,124 @@
   letter-spacing: 0.08em;
 }
 
+.example-file {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.example-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: var(--code-bg);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.example-tab {
+  position: relative;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 46px;
+  padding: 0 0.9rem;
+  overflow: hidden;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--border-subtle);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition:
+    color 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.example-tab:hover {
+  color: var(--text-primary);
+  background: var(--surface-interactive-hover);
+}
+
+.example-tab.active {
+  color: var(--text-primary);
+  background: var(--surface-subtle);
+}
+
+.example-tab.active::after {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0;
+  left: 0.75rem;
+  height: 2px;
+  content: '';
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-lilac));
+  box-shadow: 0 0 12px var(--accent-cyan-glow);
+}
+
+.example-tab:focus-visible {
+  outline: 2px solid var(--accent-lilac);
+  outline-offset: 1px;
+}
+
+.example-tab-index {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+}
+
+.example-tab-label {
+  overflow: hidden;
+  font-size: 0.72rem;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.example-telemetry {
+  display: grid;
+  grid-template-columns: auto minmax(3rem, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 34px;
+  padding: 0 0.9rem;
+  color: var(--text-muted);
+  background: var(--surface-subtle);
+  border-bottom: 1px solid var(--border-default);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.example-telemetry-trace {
+  position: relative;
+  height: 1px;
+  overflow: hidden;
+  background: var(--border-default);
+}
+
+.example-telemetry-trace::after {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 28%;
+  content: '';
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-lilac));
+  animation: example-telemetry-flow 2.8s var(--ease-out-expo) infinite;
+  box-shadow: 0 0 14px var(--accent-cyan-glow);
+}
+
 .signal-lab-body {
   display: grid;
   grid-template-columns: minmax(0, 1.24fr) minmax(240px, 0.76fr);
+  min-height: 430px;
 }
 
 .signal-code {
-  min-height: 390px;
+  min-height: 430px;
+  max-height: 480px;
   padding: 1.25rem 0;
   margin: 0;
   overflow: auto;
@@ -486,6 +597,52 @@
   justify-content: center;
   padding: 1.5rem;
   border-left: 1px solid var(--border-default);
+}
+
+.signal-output h3 {
+  margin: 0.7rem 0 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.signal-output > p:not(.update-note) {
+  margin: 0.65rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.74rem;
+  line-height: 1.55;
+}
+
+.example-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin: 1.15rem 0 0;
+}
+
+.example-metrics > div {
+  min-width: 0;
+  padding: 0.8rem;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: 9px;
+}
+
+.example-metrics dt {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  text-transform: uppercase;
+}
+
+.example-metrics dd {
+  margin: 0.4rem 0 0;
+  overflow: hidden;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .output-label {
@@ -799,6 +956,16 @@
   }
 }
 
+@keyframes example-telemetry-flow {
+  from {
+    transform: translateX(-110%);
+  }
+
+  to {
+    transform: translateX(360%);
+  }
+}
+
 @media (max-width: 900px) {
   .package-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -918,10 +1085,23 @@
 
   .signal-lab-body {
     grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .example-tabs {
+    display: flex;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+
+  .example-tab {
+    min-width: 104px;
   }
 
   .signal-code {
     min-height: 0;
+    max-height: 360px;
     padding: 1.1rem 0;
     font-size: 0.69rem;
   }
@@ -970,7 +1150,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pipeline-shell::before,
-  .update-note > span {
+  .update-note > span,
+  .example-telemetry-trace::after {
     animation: none;
   }
 

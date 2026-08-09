@@ -41,7 +41,7 @@ describe('server entry dispatch', () => {
 
     expect(response.status).toBe(200);
     expect(html).toContain('From signal to server');
-    expect(html).toContain('Fine-grained reactivity');
+    expect(html).toContain('Application examples');
     expect(html).toContain('Capability architecture');
     expect(html).toContain('Server and SSR');
   });

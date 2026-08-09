@@ -1,4 +1,4 @@
-import { computed, define, signal, useHead } from '@effuse/core';
+import { computed, define, Show, signal, useHead } from '@effuse/core';
 import { Link } from '@effuse/router';
 import { TelemetryRail } from '../../components/TelemetryRail/index.js';
 import gsap from 'gsap';
@@ -31,12 +31,425 @@ const PIPELINE_STEPS = [
   ['06', 'Runtime', 'SSR and hydration'],
 ] as const;
 
+type ExampleId = 'counter' | 'query' | 'endpoint' | 'mutation';
+type CodeTokenKind =
+  'keyword' | 'string' | 'number' | 'function' | 'property' | 'tag';
+type CodeToken = readonly [text: string, kind?: CodeTokenKind];
+
+interface CodeExample {
+  readonly id: ExampleId;
+  readonly label: string;
+  readonly file: string;
+  readonly badge: string;
+  readonly ariaLabel: string;
+  readonly lines: readonly (readonly CodeToken[])[];
+  readonly output: {
+    readonly eyebrow: string;
+    readonly title: string;
+    readonly description: string;
+    readonly metrics: readonly (readonly [label: string, value: string])[];
+    readonly note: string;
+  };
+}
+
+const CODE_EXAMPLES = [
+  {
+    id: 'counter',
+    label: 'Signal',
+    file: 'Counter.tsx',
+    badge: 'LIVE',
+    ariaLabel: 'Fine-grained signal code example',
+    lines: [
+      [
+        ['import ', 'keyword'],
+        ['{ computed, define, signal }'],
+        [' from ', 'keyword'],
+        ["'@effuse/core'", 'string'],
+        [';'],
+      ],
+      [],
+      [
+        ['export const ', 'keyword'],
+        ['Counter = '],
+        ['define', 'function'],
+        ['({'],
+      ],
+      [['  script', 'property'], [': () => {']],
+      [
+        ['    const ', 'keyword'],
+        ['count = '],
+        ['signal', 'function'],
+        ['('],
+        ['1', 'number'],
+        [');'],
+      ],
+      [
+        ['    const ', 'keyword'],
+        ['doubled = '],
+        ['computed', 'function'],
+        ['(() =>'],
+      ],
+      [['      count.'], ['value', 'property'], [' * '], ['2', 'number']],
+      [['    );']],
+      [['    return ', 'keyword'], ['{ count, doubled };']],
+      [['  },']],
+      [['  template', 'property'], [': ({ count, doubled }) => (']],
+      [['    <output>', 'tag'], ['{count} · {doubled}'], ['</output>', 'tag']],
+      [['  ),']],
+      [['});']],
+    ],
+    output: {
+      eyebrow: 'Rendered output',
+      title: 'Fine-grained state',
+      description: 'Only the text nodes that read each signal update.',
+      metrics: [
+        ['subscriptions', '2 nodes'],
+        ['reconciliation', 'none'],
+      ],
+      note: 'Direct subscriptions keep updates precise.',
+    },
+  },
+  {
+    id: 'query',
+    label: 'Query',
+    file: 'Users.tsx',
+    badge: 'CACHE',
+    ariaLabel: 'Validated server-state query code example',
+    lines: [
+      [
+        ['import ', 'keyword'],
+        ['{ define }'],
+        [' from ', 'keyword'],
+        ["'@effuse/core'", 'string'],
+        [';'],
+      ],
+      [
+        ['import ', 'keyword'],
+        ['{ useQuery }'],
+        [' from ', 'keyword'],
+        ["'@effuse/query'", 'string'],
+        [';'],
+      ],
+      [
+        ['import ', 'keyword'],
+        ['{ UsersSchema }'],
+        [' from ', 'keyword'],
+        ["'./contracts'", 'string'],
+        [';'],
+      ],
+      [],
+      [
+        ['const ', 'keyword'],
+        ['getUsers = '],
+        ['async ', 'keyword'],
+        ['() => {'],
+      ],
+      [
+        ['  const ', 'keyword'],
+        ['response = '],
+        ['await ', 'keyword'],
+        ['fetch', 'function'],
+        ['('],
+        ["'/api/users'", 'string'],
+        [');'],
+      ],
+      [
+        ['  if ', 'keyword'],
+        ['(!response.ok) throw ', 'keyword'],
+        ['new ', 'keyword'],
+        ['Error', 'function'],
+        ['();'],
+      ],
+      [
+        ['  return ', 'keyword'],
+        ['UsersSchema.'],
+        ['parse', 'function'],
+        ['('],
+        ['await ', 'keyword'],
+        ['response.'],
+        ['json', 'function'],
+        ['());'],
+      ],
+      [['};']],
+      [],
+      [
+        ['export const ', 'keyword'],
+        ['Users = '],
+        ['define', 'function'],
+        ['({'],
+      ],
+      [['  script', 'property'], [': () => {']],
+      [
+        ['    const ', 'keyword'],
+        ['users = '],
+        ['useQuery', 'function'],
+        ['({'],
+      ],
+      [['      queryKey', 'property'], [": ['users'],"]],
+      [['      queryFn', 'property'], [': getUsers,']],
+      [['      staleTime', 'property'], [': '], ['60_000', 'number'], [',']],
+      [['    });']],
+      [['    return ', 'keyword'], ['{ users };']],
+      [['  },']],
+      [['});']],
+    ],
+    output: {
+      eyebrow: 'Server state',
+      title: 'Validated cached reads',
+      description:
+        'One query owns loading, errors, retries, deduplication, and freshness.',
+      metrics: [
+        ['request key', "['users']"],
+        ['fresh for', '60 seconds'],
+      ],
+      note: 'Zod validates unknown JSON before it enters application state.',
+    },
+  },
+  {
+    id: 'endpoint',
+    label: 'Endpoint',
+    file: 'api/users/[id]/route.ts',
+    badge: 'SERVER',
+    ariaLabel: 'File-derived server endpoint code example',
+    lines: [
+      [['import ', 'keyword'], ['{']],
+      [['  defineServerFileHandler,', 'property']],
+      [['  defineServerRequest,', 'property']],
+      [['  serverSchema,', 'property']],
+      [['} from ', 'keyword'], ["'@effuse/core/server'", 'string'], [';']],
+      [
+        ['import ', 'keyword'],
+        ['{ findUser }'],
+        [' from ', 'keyword'],
+        ["'../../../data/users'", 'string'],
+        [';'],
+      ],
+      [],
+      [
+        ['const ', 'keyword'],
+        ['request = '],
+        ['defineServerRequest', 'function'],
+        ['({'],
+      ],
+      [
+        ['  params', 'property'],
+        [': serverSchema.'],
+        ['object', 'function'],
+        ['({'],
+      ],
+      [
+        ['    id', 'property'],
+        [': serverSchema.'],
+        ['string', 'property'],
+        [','],
+      ],
+      [['  }),']],
+      [['});']],
+      [],
+      [
+        ['const ', 'keyword'],
+        ['response = serverSchema.'],
+        ['object', 'function'],
+        ['({'],
+      ],
+      [
+        ['  id', 'property'],
+        [': serverSchema.'],
+        ['string', 'property'],
+        [','],
+      ],
+      [
+        ['  name', 'property'],
+        [': serverSchema.'],
+        ['string', 'property'],
+        [','],
+      ],
+      [['});']],
+      [],
+      [
+        ['export const ', 'keyword'],
+        ['GET = '],
+        ['defineServerFileHandler', 'function'],
+        ['('],
+      ],
+      [["  '/api/users/[id]'", 'string'], [',']],
+      [['  { request, response },']],
+      [['  async ', 'keyword'], ['({ input }) =>']],
+      [['    findUser', 'function'], ['(input.params.id)']],
+      [[');']],
+    ],
+    output: {
+      eyebrow: 'Request contract',
+      title: 'Path, input, and handler agree',
+      description:
+        'The file location derives the route while schemas validate its boundary.',
+      metrics: [
+        ['invalid input', '400'],
+        ['runtime', 'Node · Bun'],
+      ],
+      note: 'Route drift and invalid responses fail at the framework boundary.',
+    },
+  },
+  {
+    id: 'mutation',
+    label: 'Mutation',
+    file: 'CreateUser.tsx',
+    badge: 'WRITE',
+    ariaLabel: 'Cache-aware API mutation code example',
+    lines: [
+      [['import ', 'keyword'], ['{ useMutation, useQueryClient }']],
+      [['  from ', 'keyword'], ["'@effuse/query'", 'string'], [';']],
+      [],
+      [
+        ['const ', 'keyword'],
+        ['createUser = '],
+        ['async ', 'keyword'],
+        ['(input: NewUser) => {'],
+      ],
+      [
+        ['  const ', 'keyword'],
+        ['response = '],
+        ['await ', 'keyword'],
+        ['fetch', 'function'],
+        ['('],
+        ["'/api/users'", 'string'],
+        [', {'],
+      ],
+      [['    method', 'property'], [": 'POST'", 'string'], [',']],
+      [
+        ['    headers', 'property'],
+        [": { 'content-type': 'application/json' },"],
+      ],
+      [
+        ['    body', 'property'],
+        [': JSON.'],
+        ['stringify', 'function'],
+        ['(input),'],
+      ],
+      [['  });']],
+      [
+        ['  if ', 'keyword'],
+        ['(!response.ok) throw ', 'keyword'],
+        ['new ', 'keyword'],
+        ['Error', 'function'],
+        ['();'],
+      ],
+      [['  return ', 'keyword'], ['response.'], ['json', 'function'], ['();']],
+      [['};']],
+      [],
+      [
+        ['const ', 'keyword'],
+        ['queryClient = '],
+        ['useQueryClient', 'function'],
+        ['();'],
+      ],
+      [
+        ['const ', 'keyword'],
+        ['create = '],
+        ['useMutation', 'function'],
+        ['({'],
+      ],
+      [['  mutationFn', 'property'], [': createUser,']],
+      [['  onSuccess', 'property'], [': () => queryClient.']],
+      [['    invalidateQueries', 'function'], ["({ queryKey: ['users'] }),"]],
+      [['});']],
+    ],
+    output: {
+      eyebrow: 'Write workflow',
+      title: 'Mutate, then reconcile the cache',
+      description:
+        'Pending and error state stay reactive while related queries refresh.',
+      metrics: [
+        ['method', 'POST'],
+        ['refreshes', 'users query'],
+      ],
+      note: 'Mutation lifecycle and cache invalidation remain explicit.',
+    },
+  },
+] as const satisfies readonly CodeExample[];
+
+const renderCodeExample = (example: CodeExample) => (
+  <pre class="signal-code" aria-label={example.ariaLabel}>
+    <code>
+      {example.lines.map((tokens, index) => (
+        <span class={`code-line${tokens.length === 0 ? ' empty' : ''}`}>
+          <span class="code-line-number">
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          <span class="code-line-content">
+            {tokens.map(([text, kind]) => (
+              <span class={kind === undefined ? '' : `code-${kind}`}>
+                {text}
+              </span>
+            ))}
+          </span>
+        </span>
+      ))}
+    </code>
+  </pre>
+);
+
+const renderExampleOutput = (example: CodeExample) => (
+  <aside class="signal-output example-output" aria-label={example.output.title}>
+    <span class="output-label">{example.output.eyebrow}</span>
+    <h3>{example.output.title}</h3>
+    <p>{example.output.description}</p>
+    <dl class="example-metrics">
+      {example.output.metrics.map(([label, value]) => (
+        <div>
+          <dt>{label}</dt>
+          <dd>{value}</dd>
+        </div>
+      ))}
+    </dl>
+    <p class="update-note">
+      <span aria-hidden="true"></span>
+      {example.output.note}
+    </p>
+  </aside>
+);
+
 export const HomePage = define({
   script: ({ onMount }) => {
     const count = signal(1);
     const doubled = computed(() => count.value * 2);
     const copied = signal(false);
+    const activeExample = signal<ExampleId>('counter');
+    const activeExampleDetails = computed(
+      () =>
+        CODE_EXAMPLES.find((example) => example.id === activeExample.value) ??
+        CODE_EXAMPLES[0]
+    );
     let copyTimer: ReturnType<typeof setTimeout> | undefined;
+
+    const selectExample = (id: ExampleId) => {
+      activeExample.value = id;
+    };
+
+    const handleExampleKeydown = (event: KeyboardEvent, id: ExampleId) => {
+      const currentIndex = CODE_EXAMPLES.findIndex(
+        (example) => example.id === id
+      );
+      let nextIndex = currentIndex;
+
+      if (event.key === 'ArrowRight') {
+        nextIndex = (currentIndex + 1) % CODE_EXAMPLES.length;
+      } else if (event.key === 'ArrowLeft') {
+        nextIndex =
+          (currentIndex - 1 + CODE_EXAMPLES.length) % CODE_EXAMPLES.length;
+      } else if (event.key === 'Home') {
+        nextIndex = 0;
+      } else if (event.key === 'End') {
+        nextIndex = CODE_EXAMPLES.length - 1;
+      } else {
+        return;
+      }
+
+      event.preventDefault();
+      const nextExample = CODE_EXAMPLES[nextIndex];
+      selectExample(nextExample.id);
+      document.getElementById(`home-example-tab-${nextExample.id}`)?.focus();
+    };
 
     const copyCommand = () => {
       const command = 'pnpm add @effuse/core';
@@ -165,7 +578,11 @@ export const HomePage = define({
       count,
       doubled,
       copied,
+      activeExample,
+      activeExampleDetails,
       copyCommand,
+      selectExample,
+      handleExampleKeydown,
       increment: () => {
         count.value += 1;
       },
@@ -174,7 +591,18 @@ export const HomePage = define({
       },
     };
   },
-  template: ({ count, doubled, copied, copyCommand, increment, reset }) => (
+  template: ({
+    count,
+    doubled,
+    copied,
+    activeExample,
+    activeExampleDetails,
+    copyCommand,
+    selectExample,
+    handleExampleKeydown,
+    increment,
+    reset,
+  }) => (
     <main class="home-page">
       <div class="home-grid" aria-hidden="true"></div>
 
@@ -260,138 +688,109 @@ export const HomePage = define({
 
       <section class="story-section" aria-labelledby="signals-title">
         <div class="story-copy">
-          <span class="section-index">01 · Fine-grained reactivity</span>
-          <h2 id="signals-title">Update the value, not the whole tree.</h2>
+          <span class="section-index">01 · Application examples</span>
+          <h2 id="signals-title">Move from local state to production data.</h2>
           <p>
-            Signals track their consumers directly. When state changes, Effuse
-            updates only the text, attribute, or class that depends on it.
+            Start with precise signals, then carry the same typed model through
+            validated queries, file-derived endpoints, and cache-aware writes.
           </p>
-          <Link to="/docs/signals" class="text-link">
-            Explore Signals <span aria-hidden="true">→</span>
+          <Link to="/docs/getting-started" class="text-link">
+            Explore the documentation <span aria-hidden="true">→</span>
           </Link>
         </div>
 
         <div class="story-visual signal-lab">
           <div class="lab-toolbar">
-            <span>Counter.tsx</span>
-            <span class="lab-badge">LIVE</span>
+            <span class="example-file">
+              {() => activeExampleDetails.value.file}
+            </span>
+            <span class="lab-badge">
+              {() => activeExampleDetails.value.badge}
+            </span>
           </div>
-          <div class="signal-lab-body">
-            <pre class="signal-code" aria-label="Signal code example">
-              <code>
-                <span class="code-line">
-                  <span class="code-line-number">01</span>
-                  <span class="code-line-content">
-                    <span class="code-keyword">import</span> &#123; computed,
-                    define, signal &#125; <span class="code-keyword">from</span>{' '}
-                    <span class="code-string">'@effuse/core'</span>;
-                  </span>
+          <div
+            class="example-tabs"
+            role="tablist"
+            aria-label="Effuse application examples"
+          >
+            {CODE_EXAMPLES.map((example, index) => (
+              <button
+                id={`home-example-tab-${example.id}`}
+                type="button"
+                role="tab"
+                class={() =>
+                  `example-tab ${
+                    activeExample.value === example.id ? 'active' : ''
+                  }`
+                }
+                aria-selected={() => activeExample.value === example.id}
+                aria-controls={`home-example-panel-${example.id}`}
+                onClick={() => selectExample(example.id)}
+                onKeyDown={(event: KeyboardEvent) =>
+                  handleExampleKeydown(event, example.id)
+                }
+              >
+                <span class="example-tab-index">
+                  {String(index + 1).padStart(2, '0')}
                 </span>
-                <span class="code-line empty">
-                  <span class="code-line-number">02</span>
-                  <span class="code-line-content"></span>
-                </span>
-                <span class="code-line">
-                  <span class="code-line-number">03</span>
-                  <span class="code-line-content">
-                    <span class="code-keyword">export const</span> Counter ={' '}
-                    <span class="code-function">define</span>(&#123;
-                  </span>
-                </span>
-                <span class="code-line">
-                  <span class="code-line-number">04</span>
-                  <span class="code-line-content indent-1">
-                    <span class="code-property">script</span>: () =&gt; &#123;
-                  </span>
-                </span>
-                <span class="code-line">
-                  <span class="code-line-number">05</span>
-                  <span class="code-line-content indent-2">
-                    <span class="code-keyword">const</span> count ={' '}
-                    <span class="code-function">signal</span>(
-                    <span class="code-number">1</span>);
-                  </span>
-                </span>
-                <span class="code-line">
-                  <span class="code-line-number">06</span>
-                  <span class="code-line-content indent-2">
-                    <span class="code-keyword">const</span> doubled ={' '}
-                    <span class="code-function">computed</span>(() =&gt;
-                  </span>
-                </span>
-                <span class="code-line">
-                  <span class="code-line-number">07</span>
-                  <span class="code-line-content indent-3">
-                    count.<span class="code-property">value</span> *{' '}
-                    <span class="code-number">2</span>
-                  </span>
-                </span>
-                <span class="code-line">
-                  <span class="code-line-number">08</span>
-                  <span class="code-line-content indent-2">);</span>
-                </span>
-                <span class="code-line">
-                  <span class="code-line-number">09</span>
-                  <span class="code-line-content indent-2">
-                    <span class="code-keyword">return</span> &#123; count,
-                    doubled &#125;;
-                  </span>
-                </span>
-                <span class="code-line">
-                  <span class="code-line-number">10</span>
-                  <span class="code-line-content indent-1">&#125;,</span>
-                </span>
-                <span class="code-line">
-                  <span class="code-line-number">11</span>
-                  <span class="code-line-content indent-1">
-                    <span class="code-property">template</span>: (&#123; count,
-                    doubled &#125;) =&gt; (
-                  </span>
-                </span>
-                <span class="code-line">
-                  <span class="code-line-number">12</span>
-                  <span class="code-line-content indent-2">
-                    <span class="code-tag">&lt;output&gt;</span>
-                    &#123;count&#125; · &#123;doubled&#125;
-                    <span class="code-tag">&lt;/output&gt;</span>
-                  </span>
-                </span>
-                <span class="code-line">
-                  <span class="code-line-number">13</span>
-                  <span class="code-line-content indent-1">),</span>
-                </span>
-                <span class="code-line">
-                  <span class="code-line-number">14</span>
-                  <span class="code-line-content">&#125;);</span>
-                </span>
-              </code>
-            </pre>
-            <div class="signal-output">
-              <span class="output-label">Rendered output</span>
-              <div class="output-values" aria-live="polite">
-                <div>
-                  <span>count</span>
-                  <strong>{count}</strong>
-                </div>
-                <div>
-                  <span>doubled</span>
-                  <strong>{doubled}</strong>
-                </div>
-              </div>
-              <div class="demo-actions">
-                <button type="button" onClick={increment}>
-                  Increment signal
-                </button>
-                <button type="button" class="quiet" onClick={reset}>
-                  Reset
-                </button>
-              </div>
-              <p class="update-note">
-                <span aria-hidden="true"></span>
-                Two text nodes subscribed. No tree diff.
-              </p>
-            </div>
+                <span class="example-tab-label">{example.label}</span>
+              </button>
+            ))}
           </div>
+          <div class="example-telemetry" aria-hidden="true">
+            <span>{() => activeExampleDetails.value.label.toLowerCase()}</span>
+            <span class="example-telemetry-trace"></span>
+            <span>{() => activeExampleDetails.value.badge.toLowerCase()}</span>
+          </div>
+          {CODE_EXAMPLES.map((example) => (
+            <Show when={() => activeExample.value === example.id}>
+              {() => (
+                <div
+                  id={`home-example-panel-${example.id}`}
+                  class="signal-lab-body"
+                  role="tabpanel"
+                  aria-labelledby={`home-example-tab-${example.id}`}
+                  tabIndex={0}
+                >
+                  {renderCodeExample(example)}
+                  {example.id === 'counter' ? (
+                    <aside
+                      class="signal-output counter-output"
+                      aria-label="Live signal output"
+                    >
+                      <span class="output-label">Rendered output</span>
+                      <h3>Fine-grained state</h3>
+                      <p>Only the text nodes that read each signal update.</p>
+                      <div class="output-values" aria-live="polite">
+                        <div>
+                          <span>count</span>
+                          <strong>{count}</strong>
+                        </div>
+                        <div>
+                          <span>doubled</span>
+                          <strong>{doubled}</strong>
+                        </div>
+                      </div>
+                      <div class="demo-actions">
+                        <button type="button" onClick={increment}>
+                          Increment signal
+                        </button>
+                        <button type="button" class="quiet" onClick={reset}>
+                          Reset
+                        </button>
+                      </div>
+                      <p class="update-note">
+                        <span aria-hidden="true"></span>
+                        Two text nodes subscribed. No tree diff.
+                      </p>
+                    </aside>
+                  ) : (
+                    renderExampleOutput(example)
+                  )}
+                </div>
+              )}
+            </Show>
+          ))}
         </div>
       </section>
 
