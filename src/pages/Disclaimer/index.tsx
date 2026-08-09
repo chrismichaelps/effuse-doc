@@ -17,10 +17,10 @@ export const DisclaimerPage = define({
   },
   template: ({ t }) => (
     <main class="legal-page">
-      <div class="vibrant-bg">
-        <div class="aurora-blob blob-1"></div>
-        <div class="aurora-blob blob-2"></div>
-        <div class="aurora-blob blob-3"></div>
+      <div class="legal-backdrop" aria-hidden="true">
+        <div class="legal-aurora legal-aurora--one"></div>
+        <div class="legal-aurora legal-aurora--two"></div>
+        <div class="legal-aurora legal-aurora--three"></div>
       </div>
       <div class="legal-container">
         <header class="legal-header">

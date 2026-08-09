@@ -62,72 +62,83 @@ export const Footer = define({
   template: ({ sections, version }) => (
     <footer class="footer-motion">
       <div class="footer-content">
-        <nav class="footer-nav" aria-label="Footer navigation">
-          <For
-            each={() => sections}
-            children={(section) => (
-              <section class="footer-section">
-                <h2 class="footer-section-title">{section.value.title}</h2>
-                <ul class="footer-section-links list-none p-0 m-0">
-                  <For
-                    each={() => section.value.links}
-                    children={(link) => (
-                      <li class="footer-link-item">
-                        {link.value.external ? (
-                          <a
-                            href={link.value.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="footer-link footer-link-external"
-                          >
-                            {link.value.icon && (
-                              <img
-                                src={link.value.icon}
-                                alt=""
-                                class="footer-social-icon"
-                              />
-                            )}
-                            <span>{link.value.label}</span>
-                          </a>
-                        ) : (
-                          <Link to={link.value.href} class="footer-link">
-                            {link.value.label}
-                          </Link>
-                        )}
-                      </li>
-                    )}
-                  />
-                </ul>
-              </section>
-            )}
-          />
-        </nav>
+        <div class="footer-main">
+          <div class="footer-brand-block">
+            <Link to="/" class="footer-brand" aria-label="Effuse home">
+              <img
+                src="/logo/logo-white.svg"
+                alt=""
+                class="footer-brand-logo"
+              />
+              <span>Effuse</span>
+            </Link>
+            <p>Typed reactive applications, from signal to server.</p>
+            <code class="footer-install">pnpm add @effuse/core</code>
+          </div>
+
+          <nav class="footer-nav" aria-label="Footer navigation">
+            <For
+              each={() => sections}
+              children={(section) => (
+                <section class="footer-section">
+                  <h2 class="footer-section-title">{section.value.title}</h2>
+                  <ul class="footer-section-links list-none p-0 m-0">
+                    <For
+                      each={() => section.value.links}
+                      children={(link) => (
+                        <li class="footer-link-item">
+                          {link.value.external ? (
+                            <a
+                              href={link.value.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              class="footer-link footer-link-external"
+                            >
+                              {link.value.icon && (
+                                <img
+                                  src={link.value.icon}
+                                  alt=""
+                                  class="footer-social-icon"
+                                />
+                              )}
+                              <span>{link.value.label}</span>
+                            </a>
+                          ) : (
+                            <Link to={link.value.href} class="footer-link">
+                              {link.value.label}
+                            </Link>
+                          )}
+                        </li>
+                      )}
+                    />
+                  </ul>
+                </section>
+              )}
+            />
+          </nav>
+        </div>
 
         <div class="footer-bottom">
           <div class="footer-version">
-            <img src="/logo/logo-white.svg" alt="Effuse" class="footer-logo" />
+            <span class="footer-version-dot" aria-hidden="true"></span>
             <span class="footer-version-label">Latest version:</span>
             <Link to="/releases" class="footer-version-badge">
               {version}
             </Link>
           </div>
 
-          <div class="footer-effuse-badge">
-            <div class="footer-badge-left">
-              <img
-                src="/logo/logo-white.svg"
-                alt="Effuse"
-                class="footer-badge-logo"
-              />
-              <span class="footer-badge-label">Effuse</span>
-            </div>
-            <div class="footer-badge-copyright">
-              © <time datetime="2025">2025</time> -{' '}
+          <div class="footer-meta">
+            <span>
+              © <time datetime="2025">2025</time>–
               <time datetime={new Date().getFullYear().toString()}>
                 {new Date().getFullYear()}
               </time>{' '}
-              Effuse. MIT License.
-            </div>
+              Effuse
+            </span>
+            <span class="footer-meta-divider" aria-hidden="true"></span>
+            <span>MIT License</span>
+            <span class="footer-meta-divider" aria-hidden="true"></span>
+            <span>Built with Effuse</span>
           </div>
         </div>
       </div>

@@ -1,105 +1,59 @@
-import { define, useHead, signal, computed } from '@effuse/core';
+import { computed, define, signal, useHead } from '@effuse/core';
 import { Link } from '@effuse/router';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
-import { FeatureCard } from '../../components/FeatureCard';
-import { HeroCanvas } from '../../components/HeroCanvas';
 import './styles.css';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-const CODE_EXAMPLES = {
-  counter: {
-    filename: 'Counter.tsx',
-    code: `import { define, signal } from '@effuse/core';
+const PACKAGE_NAMES = [
+  '@effuse/core',
+  '@effuse/router',
+  '@effuse/query',
+  '@effuse/store',
+  '@effuse/i18n',
+  '@effuse/server',
+  '@effuse/ink',
+  '@effuse/cli',
+] as const;
 
-export const Counter = define({
-  script: () => {
-    const count = signal(0);
-    return { count, increment: () => count.value++ };
-  },
-  template: ({ count, increment }) => (
-    <button onClick={increment} class="btn-primary">
-      Count is: {count}
-    </button>
-  ),
-});`,
-  },
-  signals: {
-    filename: 'Reactivity.ts',
-    code: `import { signal, computed, watchEffect } from '@effuse/core';
-
-const price = signal(100);
-const quantity = signal(2);
-const total = computed(() => price.value * quantity.value);
-
-watchEffect(() => {
-  console.log(\`Order Total: \${total.value}\`);
-});`,
-  },
-  server: {
-    filename: 'ServerAPI.ts',
-    code: `import { defineServerHandler, json } from '@effuse/server';
-
-export const handler = defineServerHandler({
-  async GET(req) {
-    return json({ status: 'ok', version: '2.0.0' });
-  },
-});`,
-  },
-};
+const PIPELINE_STEPS = [
+  ['01', 'Signal', 'Reactive source'],
+  ['02', 'Computed', 'Derived value'],
+  ['03', 'Component', 'Precise DOM update'],
+  ['04', 'Layer', 'Typed capability'],
+  ['05', 'Route', 'Validated endpoint'],
+  ['06', 'SSR', 'Hydrated response'],
+] as const;
 
 export const HomePage = define({
   script: ({ onMount }) => {
-    const activeTab = signal<'counter' | 'signals' | 'server'>('counter');
+    const count = signal(1);
+    const doubled = computed(() => count.value * 2);
     const copied = signal(false);
-
-    const isCopied = computed(() => copied.value);
+    let copyTimer: ReturnType<typeof setTimeout> | undefined;
 
     const copyCommand = () => {
-      const textToCopy = 'pnpm add @effuse/core';
-      try {
-        if (navigator.clipboard && window.isSecureContext) {
-          navigator.clipboard.writeText(textToCopy).catch(() => {
-            const textarea = document.createElement('textarea');
-            textarea.value = textToCopy;
-            textarea.style.position = 'fixed';
-            textarea.style.left = '-9999px';
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-          });
-        } else {
-          const textarea = document.createElement('textarea');
-          textarea.value = textToCopy;
-          textarea.style.position = 'fixed';
-          textarea.style.left = '-9999px';
-          document.body.appendChild(textarea);
-          textarea.select();
-          document.execCommand('copy');
-          document.body.removeChild(textarea);
-        }
-      } catch {
-        // Fallback catch
-      }
+      const command = 'pnpm add @effuse/core';
 
+      void navigator.clipboard?.writeText(command).catch(() => undefined);
       copied.value = true;
-      setTimeout(() => {
+      if (copyTimer !== undefined) clearTimeout(copyTimer);
+      copyTimer = setTimeout(() => {
         copied.value = false;
-      }, 2000);
+      }, 1800);
     };
 
     useHead({
-      title:
-        'Effuse - Modern Reactive UI Framework | High-Performance Reactive Web Development',
+      title: 'Effuse - Typed Reactive Applications from Signal to Server',
       description:
-        'Effuse is a modern, signal-based UI framework for building high-performance web applications with fine-grained reactivity and type-safe components. Powered by Effect.',
+        'Build full-stack reactive applications with fine-grained signals, typed capability layers, file-derived APIs, and server-side rendering.',
       og: {
-        title: 'Effuse - Modern Reactive UI Framework',
-        description: 'Fine-grained reactivity, type-safe components',
+        title: 'Effuse - From Signal to Server',
+        description:
+          'One typed system for fine-grained reactivity, capability layers, routing, APIs, and SSR.',
         type: 'website',
         url: 'https://effuse-doc.vercel.app/',
         siteName: 'Effuse',
@@ -107,362 +61,463 @@ export const HomePage = define({
       twitter: {
         card: 'summary_large_image',
         site: '@effuse',
-        title: 'Effuse - Modern Reactive UI Framework',
+        title: 'Effuse - From Signal to Server',
         description:
-          'Built for scale with fine-grained signals and type-safe components.',
+          'Build typed reactive applications without virtual DOM overhead.',
       },
       script: [
         {
           type: 'application/ld+json',
-          innerHTML: JSON.stringify({
+          content: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'SoftwareApplication',
             name: 'Effuse',
             operatingSystem: 'Any',
             applicationCategory: 'DeveloperApplication',
             description:
-              'A signal-based UI framework with fine-grained reactivity and type-safe components.',
+              'A typed full-stack reactive framework with fine-grained signals, capability layers, server APIs, and SSR.',
             offers: {
               '@type': 'Offer',
               price: '0',
               priceCurrency: 'USD',
             },
           }),
-        } as any,
+        },
       ],
     });
 
     onMount(() => {
-      // Hero Entrance Animation
-      const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      const page = document.querySelector('.home-page');
+      if (!page) return undefined;
 
-      heroTl
-        .from('.hero-badge', { y: 20, opacity: 0, duration: 0.6 })
-        .from('.hero-heading', { y: 40, opacity: 0, duration: 0.85 }, '-=0.4')
-        .from('.hero-subtext', { y: 25, opacity: 0, duration: 0.75 }, '-=0.5')
-        .from('.hero-ctas', { y: 20, opacity: 0, duration: 0.65 }, '-=0.4')
-        .from(
-          '.hero-stats-grid',
-          { y: 20, opacity: 0, duration: 0.65 },
-          '-=0.3'
-        );
+      const reduceMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches;
+      if (reduceMotion) {
+        return () => {
+          if (copyTimer !== undefined) clearTimeout(copyTimer);
+        };
+      }
 
-      // Hero Scroll Scale-Down & Fade Out
-      gsap.to('.hero-container', {
-        scrollTrigger: {
-          trigger: '.hero-section',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.6,
-        },
-        scale: 0.95,
-        opacity: 0.35,
-        y: -25,
-        ease: 'none',
-      });
+      const context = gsap.context(() => {
+        gsap.from('.hero-reveal', {
+          y: 28,
+          opacity: 0,
+          duration: 0.72,
+          stagger: 0.1,
+          ease: 'power3.out',
+        });
 
-      // Background Aurora Parallax Shift
-      gsap.to('.blob-1', {
-        scrollTrigger: {
-          trigger: '.home-page',
-          start: 'top top',
-          end: 'bottom bottom',
-          scrub: 1,
-        },
-        y: 300,
-      });
+        gsap.from('.pipeline-node', {
+          scrollTrigger: {
+            trigger: '.pipeline-shell',
+            start: 'top 86%',
+            once: true,
+          },
+          y: 18,
+          opacity: 0,
+          duration: 0.56,
+          stagger: 0.08,
+          ease: 'power2.out',
+        });
 
-      gsap.to('.blob-2', {
-        scrollTrigger: {
-          trigger: '.home-page',
-          start: 'top top',
-          end: 'bottom bottom',
-          scrub: 1,
-        },
-        y: -250,
-      });
+        gsap.utils.toArray<HTMLElement>('.story-section').forEach((section) => {
+          const content = section.querySelector('.story-copy');
+          const visual = section.querySelector('.story-visual');
+
+          gsap.from([content, visual], {
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 78%',
+              once: true,
+            },
+            y: 42,
+            opacity: 0,
+            duration: 0.78,
+            stagger: 0.12,
+            ease: 'power3.out',
+          });
+        });
+
+        gsap.from('.ecosystem-inner > *', {
+          scrollTrigger: {
+            trigger: '.ecosystem-section',
+            start: 'top 82%',
+            once: true,
+          },
+          y: 24,
+          opacity: 0,
+          duration: 0.62,
+          stagger: 0.08,
+          ease: 'power2.out',
+        });
+      }, page);
 
       return () => {
-        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+        context.revert();
+        if (copyTimer !== undefined) clearTimeout(copyTimer);
       };
     });
 
     return {
-      activeTab,
-      isCopied,
+      count,
+      doubled,
+      copied,
       copyCommand,
+      increment: () => {
+        count.value += 1;
+      },
+      reset: () => {
+        count.value = 1;
+      },
     };
   },
-  template: ({ activeTab, isCopied, copyCommand }) => (
+  template: ({ count, doubled, copied, copyCommand, increment, reset }) => (
     <main class="home-page">
-      <HeroCanvas />
-      <div class="vibrant-bg" aria-hidden="true">
-        <div class="aurora-blob blob-1"></div>
-        <div class="aurora-blob blob-2"></div>
-      </div>
+      <div class="home-grid" aria-hidden="true"></div>
 
-      {/* Hero Section */}
-      <section class="hero-section">
+      <section class="hero-section" aria-labelledby="home-title">
         <div class="hero-container">
-          <Link to="/docs/getting-started" class="hero-badge">
-            <span class="hero-badge-pill">v2.0 Released</span>
-            <span class="hero-badge-text">Explore Effuse Server & Signals</span>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
+          <Link to="/docs/getting-started" class="hero-kicker hero-reveal">
+            <span class="kicker-status" aria-hidden="true"></span>
+            Effuse 2 · SSR, Server APIs, Signals
+            <span aria-hidden="true">→</span>
           </Link>
 
-          <h1 class="hero-heading">
-            A modern approach to
-            <br />
-            <span class="hero-gradient">Web Development</span>
+          <h1 id="home-title" class="hero-heading hero-reveal">
+            From signal to server,
+            <span>one typed system.</span>
           </h1>
 
-          <p class="hero-subtext">
-            Build high-performance reactive applications with fine-grained
-            signals, capability-first layers, and type-safe components.
+          <p class="hero-subtext hero-reveal">
+            Build reactive applications with precise DOM updates, explicit
+            capability layers, file-derived endpoints, and server rendering—all
+            in TypeScript.
           </p>
 
-          <div class="hero-ctas">
-            <Link to="/docs/getting-started" class="cta-primary">
-              Get Started
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
+          <div class="hero-actions hero-reveal">
+            <Link to="/docs/getting-started" class="home-button primary">
+              Start building <span aria-hidden="true">→</span>
             </Link>
-
-            <button type="button" class="command-pill" onClick={copyCommand}>
-              <span class="command-prefix">$</span>
-              <code class="command-code">pnpm add @effuse/core</code>
-              <span class="command-icon flex items-center justify-center">
-                {computed(() =>
-                  isCopied.value ? (
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#27c93f"
-                      stroke-width="2.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  ) : (
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                    </svg>
-                  )
-                )}
+            <button
+              type="button"
+              class="install-command"
+              onClick={copyCommand}
+              aria-label="Copy pnpm installation command"
+            >
+              <span aria-hidden="true">$</span>
+              <code>pnpm add @effuse/core</code>
+              <span class="copy-state">
+                {computed(() => (copied.value ? 'Copied' : 'Copy'))}
               </span>
             </button>
-
             <a
               href="https://github.com/chrismichaelps/effuse"
               target="_blank"
               rel="noopener noreferrer"
-              class="cta-secondary"
+              class="home-button secondary"
             >
-              <img
-                src="/icons/github.svg"
-                alt="GitHub"
-                width="18"
-                height="18"
-                class="github-icon"
-              />
               GitHub
             </a>
           </div>
 
-          {/* Key Metrics / Highlights Bar */}
-          <div class="hero-stats-grid">
-            <div class="stat-card">
-              <span class="stat-number">100%</span>
-              <span class="stat-label">Fine-Grained Signals</span>
+          <div class="pipeline-shell hero-reveal">
+            <div class="pipeline-toolbar">
+              <span class="pipeline-status">
+                <span class="pipeline-status-dot" aria-hidden="true"></span>
+                Reactive pipeline
+              </span>
+              <span class="pipeline-meta">No virtual DOM</span>
             </div>
-            <div class="stat-card">
-              <span class="stat-number">0 VDOM</span>
-              <span class="stat-label">Virtual DOM Overhead</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number">Layered</span>
-              <span class="stat-label">Capability Architecture</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number">Full-Stack</span>
-              <span class="stat-label">Built-in Server & APIs</span>
+            <ol class="pipeline-grid" aria-label="Effuse application pipeline">
+              {PIPELINE_STEPS.map(([number, title, description]) => (
+                <li class="pipeline-node">
+                  <span class="pipeline-number">{number}</span>
+                  <strong>{title}</strong>
+                  <span>{description}</span>
+                </li>
+              ))}
+            </ol>
+            <div class="pipeline-readout" aria-hidden="true">
+              <span>state.count</span>
+              <span class="pipeline-trace"></span>
+              <span>GET /api/docs</span>
+              <span class="pipeline-trace"></span>
+              <span>200 · hydrated</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section class="features-section" aria-labelledby="features-title">
-        <div class="features-container">
-          <div class="features-header">
-            <h2 id="features-title" class="features-title">
-              Built for Speed & Scalability
-            </h2>
-            <p class="features-subtitle">
-              Everything you need to write clean, type-safe reactive web apps.
-            </p>
-          </div>
-
-          <div class="features-grid">
-            <article>
-              <FeatureCard
-                icon="/logo/signals.svg"
-                title="Fine-Grained Signals"
-                description="Automatic dependency tracking. Only update DOM nodes that actually change."
-              />
-            </article>
-            <article>
-              <FeatureCard
-                icon="/logo/components.svg"
-                title="Type-Safe Components"
-                description="Clean script and template separation with complete TypeScript inference."
-              />
-            </article>
-            <article>
-              <FeatureCard
-                icon="/logo/efficient.svg"
-                title="Capability Layers"
-                description="Explicit capability-first layer architecture with typed dependency injection."
-              />
-            </article>
-            <article>
-              <FeatureCard
-                icon="/icons/list.svg"
-                title="Effuse Router & SSR"
-                description="Seamless client SPA routing with server API route rendering handlers."
-              />
-            </article>
-            <article>
-              <FeatureCard
-                icon="/logo/signals.svg"
-                title="Effuse Ink & CLI"
-                description="Declarative terminal UI framework for rich interactive CLI tools."
-              />
-            </article>
-            <article>
-              <FeatureCard
-                icon="/logo/components.svg"
-                title="i18n & Global State"
-                description="Integrated reactive internationalization and state store layers."
-              />
-            </article>
-          </div>
+      <section class="story-section" aria-labelledby="signals-title">
+        <div class="story-copy">
+          <span class="section-index">01 · Fine-grained reactivity</span>
+          <h2 id="signals-title">Update the value, not the whole tree.</h2>
+          <p>
+            Signals track their consumers directly. When state changes, Effuse
+            updates only the text, attribute, or class that depends on it.
+          </p>
+          <Link to="/docs/signals" class="text-link">
+            Explore Signals <span aria-hidden="true">→</span>
+          </Link>
         </div>
-      </section>
 
-      {/* Code Interactive Showcase */}
-      <section class="code-section" aria-label="Code example">
-        <div class="code-container">
-          <div class="code-window">
-            <figcaption class="code-header">
-              <div class="code-header-left">
-                <div class="code-dots" aria-hidden="true">
-                  <span class="code-dot red"></span>
-                  <span class="code-dot yellow"></span>
-                  <span class="code-dot green"></span>
+        <div class="story-visual signal-lab">
+          <div class="lab-toolbar">
+            <span>Counter.tsx</span>
+            <span class="lab-badge">LIVE</span>
+          </div>
+          <div class="signal-lab-body">
+            <pre class="signal-code" aria-label="Signal code example">
+              <code>
+                <span class="code-line">
+                  <span class="code-line-number">01</span>
+                  <span class="code-line-content">
+                    <span class="code-keyword">import</span> &#123; computed,
+                    define, signal &#125; <span class="code-keyword">from</span>{' '}
+                    <span class="code-string">'@effuse/core'</span>;
+                  </span>
+                </span>
+                <span class="code-line empty">
+                  <span class="code-line-number">02</span>
+                  <span class="code-line-content"></span>
+                </span>
+                <span class="code-line">
+                  <span class="code-line-number">03</span>
+                  <span class="code-line-content">
+                    <span class="code-keyword">export const</span> Counter ={' '}
+                    <span class="code-function">define</span>(&#123;
+                  </span>
+                </span>
+                <span class="code-line">
+                  <span class="code-line-number">04</span>
+                  <span class="code-line-content indent-1">
+                    <span class="code-property">script</span>: () =&gt; &#123;
+                  </span>
+                </span>
+                <span class="code-line">
+                  <span class="code-line-number">05</span>
+                  <span class="code-line-content indent-2">
+                    <span class="code-keyword">const</span> count ={' '}
+                    <span class="code-function">signal</span>(
+                    <span class="code-number">1</span>);
+                  </span>
+                </span>
+                <span class="code-line">
+                  <span class="code-line-number">06</span>
+                  <span class="code-line-content indent-2">
+                    <span class="code-keyword">const</span> doubled ={' '}
+                    <span class="code-function">computed</span>(() =&gt;
+                  </span>
+                </span>
+                <span class="code-line">
+                  <span class="code-line-number">07</span>
+                  <span class="code-line-content indent-3">
+                    count.<span class="code-property">value</span> *{' '}
+                    <span class="code-number">2</span>
+                  </span>
+                </span>
+                <span class="code-line">
+                  <span class="code-line-number">08</span>
+                  <span class="code-line-content indent-2">);</span>
+                </span>
+                <span class="code-line">
+                  <span class="code-line-number">09</span>
+                  <span class="code-line-content indent-2">
+                    <span class="code-keyword">return</span> &#123; count,
+                    doubled &#125;;
+                  </span>
+                </span>
+                <span class="code-line">
+                  <span class="code-line-number">10</span>
+                  <span class="code-line-content indent-1">&#125;,</span>
+                </span>
+                <span class="code-line">
+                  <span class="code-line-number">11</span>
+                  <span class="code-line-content indent-1">
+                    <span class="code-property">template</span>: (&#123; count,
+                    doubled &#125;) =&gt; (
+                  </span>
+                </span>
+                <span class="code-line">
+                  <span class="code-line-number">12</span>
+                  <span class="code-line-content indent-2">
+                    <span class="code-tag">&lt;output&gt;</span>
+                    &#123;count&#125; · &#123;doubled&#125;
+                    <span class="code-tag">&lt;/output&gt;</span>
+                  </span>
+                </span>
+                <span class="code-line">
+                  <span class="code-line-number">13</span>
+                  <span class="code-line-content indent-1">),</span>
+                </span>
+                <span class="code-line">
+                  <span class="code-line-number">14</span>
+                  <span class="code-line-content">&#125;);</span>
+                </span>
+              </code>
+            </pre>
+            <div class="signal-output">
+              <span class="output-label">Rendered output</span>
+              <div class="output-values" aria-live="polite">
+                <div>
+                  <span>count</span>
+                  <strong>{count}</strong>
                 </div>
-                <div class="code-tabs">
-                  <button
-                    type="button"
-                    class={() =>
-                      `code-tab ${activeTab.value === 'counter' ? 'active' : ''}`
-                    }
-                    onClick={() => {
-                      activeTab.value = 'counter';
-                    }}
-                  >
-                    Counter.tsx
-                  </button>
-                  <button
-                    type="button"
-                    class={() =>
-                      `code-tab ${activeTab.value === 'signals' ? 'active' : ''}`
-                    }
-                    onClick={() => {
-                      activeTab.value = 'signals';
-                    }}
-                  >
-                    Reactivity.ts
-                  </button>
-                  <button
-                    type="button"
-                    class={() =>
-                      `code-tab ${activeTab.value === 'server' ? 'active' : ''}`
-                    }
-                    onClick={() => {
-                      activeTab.value = 'server';
-                    }}
-                  >
-                    ServerAPI.ts
-                  </button>
+                <div>
+                  <span>doubled</span>
+                  <strong>{doubled}</strong>
                 </div>
               </div>
-              <span class="code-filename">
-                {() => CODE_EXAMPLES[activeTab.value].filename}
-              </span>
-            </figcaption>
-
-            <pre class="code-body">
-              <code>{() => CODE_EXAMPLES[activeTab.value].code}</code>
-            </pre>
+              <div class="demo-actions">
+                <button type="button" onClick={increment}>
+                  Increment signal
+                </button>
+                <button type="button" class="quiet" onClick={reset}>
+                  Reset
+                </button>
+              </div>
+              <p class="update-note">
+                <span aria-hidden="true"></span>
+                Two text nodes subscribed. No tree diff.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section class="cta-section">
-        <div class="cta-container">
-          <h2 class="cta-title">Ready to build with Effuse?</h2>
-          <p class="cta-subtitle">
-            Explore the docs, build your first component, and experience
-            fine-grained reactivity.
+      <section
+        class="story-section story-reversed"
+        aria-labelledby="layers-title"
+      >
+        <div class="story-copy">
+          <span class="section-index">02 · Capability architecture</span>
+          <h2 id="layers-title">Make dependencies visible and typed.</h2>
+          <p>
+            Layers own related state, services, lifecycle, routes, and server
+            behavior. Components import the capability through a local alias—no
+            string lookup or prop drilling.
           </p>
-          <div class="cta-buttons">
-            <Link to="/docs/getting-started" class="cta-primary">
-              Read Documentation
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
+          <Link to="/docs/layers" class="text-link">
+            Understand Layers <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+
+        <div class="story-visual layer-map">
+          <div class="layer-map-grid" aria-label="Theme layer capability map">
+            <div class="capability-node state-node">
+              <span>State</span>
+              <strong>mode: Signal</strong>
+            </div>
+            <div class="capability-node service-node">
+              <span>Service</span>
+              <strong>theme.toggle()</strong>
+            </div>
+            <div class="layer-core">
+              <span>Capability</span>
+              <strong>ThemeLayer</strong>
+              <code>layers.theme</code>
+            </div>
+            <div class="capability-node lifecycle-node">
+              <span>Lifecycle</span>
+              <strong>setup → cleanup</strong>
+            </div>
+            <div class="capability-node server-node">
+              <span>Server</span>
+              <strong>routes + actions</strong>
+            </div>
+          </div>
+          <div class="layer-consumer">
+            <span>ThemeToggle.tsx</span>
+            <code>layers: &#123; theme: ThemeLayer &#125;</code>
+            <span class="type-check">Type inferred ✓</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="story-section" aria-labelledby="server-title">
+        <div class="story-copy">
+          <span class="section-index">03 · Server and SSR</span>
+          <h2 id="server-title">Let the file define the endpoint.</h2>
+          <p>
+            Effuse discovers server routes from the filesystem, validates input
+            and output contracts, dispatches APIs before the SSR fallback, and
+            hydrates the same application in the browser.
+          </p>
+          <Link to="/docs/server" class="text-link">
+            Build Server APIs <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+
+        <div class="story-visual server-console">
+          <div class="lab-toolbar">
+            <span>src/server/api/search/route.ts</span>
+            <span class="lab-badge">SSR</span>
+          </div>
+          <div class="request-flow" aria-label="Server request lifecycle">
+            <div class="request-step">
+              <span>01</span>
+              <div>
+                <strong>Request</strong>
+                <code>GET /api/search?q=define(</code>
+              </div>
+            </div>
+            <div class="request-step">
+              <span>02</span>
+              <div>
+                <strong>Contract</strong>
+                <code>SearchQuerySchema → valid</code>
+              </div>
+            </div>
+            <div class="request-step">
+              <span>03</span>
+              <div>
+                <strong>File-derived handler</strong>
+                <code>defineServerFileHandler('/api/search')</code>
+              </div>
+            </div>
+            <div class="request-step complete">
+              <span>04</span>
+              <div>
+                <strong>Response</strong>
+                <code>200 JSON · cache tagged</code>
+              </div>
+              <span class="response-time">server</span>
+            </div>
+          </div>
+          <div class="ssr-proof">
+            <span class="ssr-dot" aria-hidden="true"></span>
+            This documentation site is rendered with Effuse SSR.
+          </div>
+        </div>
+      </section>
+
+      <section class="ecosystem-section" aria-labelledby="ecosystem-title">
+        <div class="ecosystem-inner">
+          <span class="section-index">The Effuse ecosystem</span>
+          <h2 id="ecosystem-title">Start small. Keep one mental model.</h2>
+          <p>
+            Add routing, queries, state, internationalization, server behavior,
+            terminal interfaces, and build tooling without leaving the same
+            reactive architecture.
+          </p>
+          <div class="package-grid" aria-label="Effuse packages">
+            {PACKAGE_NAMES.map((name) => (
+              <code>{name}</code>
+            ))}
+          </div>
+          <div class="ecosystem-actions">
+            <Link to="/docs/getting-started" class="home-button primary">
+              Read the documentation <span aria-hidden="true">→</span>
             </Link>
+            <a
+              href="https://github.com/chrismichaelps/effuse"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="home-button secondary"
+            >
+              View source
+            </a>
           </div>
         </div>
       </section>
