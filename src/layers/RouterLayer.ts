@@ -3,6 +3,10 @@ import { isTaggedError } from '../utils/data/tagged-error.js';
 import { installRouter } from '@effuse/router';
 import { router } from '../router';
 import { getErrorMessage } from '../utils/errors.js';
+import {
+  scheduleRouteScrollReset,
+  type CancelRouteScrollReset,
+} from '../utils/routeScroll.js';
 
 interface RouterTracingService {
   isCategoryEnabled: (category: string) => boolean;
@@ -46,6 +50,27 @@ export const RouterLayer = defineLayer({
 
     const tracing = ctx.getService('tracing');
     let unsubscribeTracing: (() => void) | undefined;
+    let cancelPendingScrollReset: CancelRouteScrollReset | undefined;
+
+    const unsubscribeScrollReset = router.afterEach((to) => {
+      cancelPendingScrollReset?.();
+
+      if (typeof window === 'undefined') return;
+
+      cancelPendingScrollReset = scheduleRouteScrollReset(
+        {
+          requestFrame: (callback) => window.requestAnimationFrame(callback),
+          cancelFrame: (frameId) => window.cancelAnimationFrame(frameId),
+          syncSmoothScrollToTop: () => {
+            window.__lenis?.scrollTo(0, { immediate: true, force: true });
+          },
+          scrollWindowToTop: () => {
+            window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+          },
+        },
+        to.hash
+      );
+    });
 
     if (isRouterTracingService(tracing)) {
       if (tracing.isCategoryEnabled('router')) {
@@ -65,6 +90,8 @@ export const RouterLayer = defineLayer({
     }
 
     return () => {
+      cancelPendingScrollReset?.();
+      unsubscribeScrollReset();
       unsubscribeTracing?.();
       console.log('[RouterLayer] cleanup');
     };
