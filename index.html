@@ -11,9 +11,7 @@
           const theme =
             savedTheme === 'light' || savedTheme === 'dark'
               ? savedTheme
-              : matchMedia('(prefers-color-scheme: dark)').matches
-                ? 'dark'
-                : 'light';
+              : 'dark';
           document.documentElement.dataset.theme = theme;
           document.documentElement.style.colorScheme = theme;
           document
@@ -21,6 +19,7 @@
             ?.setAttribute('content', theme === 'dark' ? '#080808' : '#ffffff');
         } catch {
           document.documentElement.dataset.theme = 'dark';
+          document.documentElement.style.colorScheme = 'dark';
         }
       })();
     </script>

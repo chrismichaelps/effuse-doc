@@ -9,14 +9,14 @@ import {
 } from './theme.js';
 
 describe('theme preferences', () => {
-  it('prefers a valid saved theme over the system preference', () => {
-    expect(resolveTheme('light', true)).toBe('light');
-    expect(resolveTheme('dark', false)).toBe('dark');
+  it('prefers a valid saved theme over the default', () => {
+    expect(resolveTheme('light')).toBe('light');
+    expect(resolveTheme('dark')).toBe('dark');
   });
 
-  it('falls back to the system preference for missing or invalid values', () => {
-    expect(resolveTheme(null, true)).toBe('dark');
-    expect(resolveTheme('sepia', false)).toBe('light');
+  it('defaults to dark for missing or invalid values', () => {
+    expect(resolveTheme(null)).toBe('dark');
+    expect(resolveTheme('sepia')).toBe('dark');
     expect(isTheme('sepia')).toBe(false);
   });
 
