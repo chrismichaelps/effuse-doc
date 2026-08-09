@@ -123,8 +123,10 @@ export const useScrollSpy = defineHook<ScrollSpyConfig, ScrollSpyReturn>({
 
       const container = document.querySelector(config.containerSelector);
       if (!container) return undefined;
+      let frameId: number | undefined;
 
-      const handleScroll = () => {
+      const updateActiveHeading = () => {
+        frameId = undefined;
         const currentLock = lockState.value;
         let locked = false;
         Lock.$match(currentLock, {
@@ -149,14 +151,6 @@ export const useScrollSpy = defineHook<ScrollSpyConfig, ScrollSpyReturn>({
         const referenceTop = containerScrolls
           ? container.getBoundingClientRect().top
           : 0;
-        const headings = new Map<string, HTMLElement>();
-        for (const heading of document.querySelectorAll<HTMLElement>(
-          'h1, h2, h3'
-        )) {
-          const title = heading.textContent?.trim();
-          if (title && !headings.has(title)) headings.set(title, heading);
-        }
-
         const isAtEnd =
           scrollRoot.scrollTop + scrollRoot.clientHeight >=
           scrollRoot.scrollHeight - 2;
@@ -164,8 +158,7 @@ export const useScrollSpy = defineHook<ScrollSpyConfig, ScrollSpyReturn>({
         activeId.value = resolveActiveTocId(
           tocItems,
           (item) => {
-            const heading =
-              document.getElementById(item.id) ?? headings.get(item.title);
+            const heading = document.getElementById(item.id);
             return heading
               ? heading.getBoundingClientRect().top - referenceTop
               : undefined;
@@ -175,16 +168,20 @@ export const useScrollSpy = defineHook<ScrollSpyConfig, ScrollSpyReturn>({
         );
       };
 
+      const handleScroll = () => {
+        if (frameId !== undefined) return;
+        frameId = requestAnimationFrame(updateActiveHeading);
+      };
+
       container.addEventListener('scroll', handleScroll, { passive: true });
       window.addEventListener('scroll', handleScroll, { passive: true });
 
-      requestAnimationFrame(() => {
-        handleScroll();
-      });
+      handleScroll();
 
       return () => {
         container.removeEventListener('scroll', handleScroll);
         window.removeEventListener('scroll', handleScroll);
+        if (frameId !== undefined) cancelAnimationFrame(frameId);
         Lock.$match(lockState.value, {
           Unlocked: () => {},
           Locked: () => {

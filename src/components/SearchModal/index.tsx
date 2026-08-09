@@ -14,6 +14,7 @@ import { matchTag } from '../../utils/data/index.js';
 import { splitSearchHighlight } from '../../content/search/highlight.js';
 import './styles.css';
 import { SearchLayer } from '../../layers/SearchLayer.js';
+import { scheduleDocumentHeadingScroll } from '../docs/documentNavigation.js';
 
 interface SearchModalExposed {
   modalState: Signal<any>;
@@ -46,11 +47,30 @@ export const SearchModal = define({
     const router = useRouter();
     const i18nStore = requireI18nStore(useStore('i18n'));
     const t = computed(() => i18nStore.translations.value?.search);
+    let cancelPendingAnchorNavigation: (() => void) | undefined;
 
     const handleInput = (e: Event) => {
       const target = e.currentTarget;
       if (!(target instanceof HTMLInputElement)) return;
       store.search(target.value);
+    };
+
+    const navigateToResult = (result: SearchResultItem): void => {
+      if (!result.filePath) return;
+
+      const slug = result.filePath.split('/').pop()?.replace('.md', '') ?? '';
+      if (!slug) return;
+
+      store.close();
+      const pathname = `/docs/${slug}`;
+      router.push(`${pathname}${result.anchor ? `#${result.anchor}` : ''}`);
+
+      // A later selection owns anchor delivery and cancels pending work from
+      // the previous route.
+      cancelPendingAnchorNavigation?.();
+      cancelPendingAnchorNavigation = result.anchor
+        ? scheduleDocumentHeadingScroll(result.anchor, 30, pathname)
+        : undefined;
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -75,13 +95,7 @@ export const SearchModal = define({
         case 'Enter': {
           e.preventDefault();
           const selected = store.getSelected();
-          if (selected?.filePath) {
-            const slug =
-              selected.filePath.split('/').pop()?.replace('.md', '') ?? '';
-            const anchor = selected.anchor ? `#${selected.anchor}` : '';
-            store.close();
-            router.push(`/docs/${slug}${anchor}`);
-          }
+          if (selected) navigateToResult(selected);
           break;
         }
       }
@@ -97,31 +111,15 @@ export const SearchModal = define({
       }
     };
 
-    const handleResultClick = (result: SearchResultItem) => {
-      if (result.filePath) {
-        const slug = result.filePath.split('/').pop()?.replace('.md', '') ?? '';
-        const anchor = result.anchor ? `#${result.anchor}` : '';
-        const targetUrl = `/docs/${slug}${anchor}`;
-
-        store.close();
-        router.push(targetUrl);
-
-        if (result.anchor) {
-          setTimeout(() => {
-            const element = document.getElementById(result.anchor!);
-            if (element) {
-              element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-          }, 100);
-        }
-      }
-    };
+    const handleResultClick = (result: SearchResultItem) =>
+      navigateToResult(result);
 
     onMount(() => {
       window.addEventListener('keydown', handleKeyDown);
 
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
+        cancelPendingAnchorNavigation?.();
         document.body.style.overflow = '';
       };
     });

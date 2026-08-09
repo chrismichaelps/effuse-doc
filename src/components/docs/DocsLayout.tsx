@@ -8,11 +8,14 @@ import {
 } from '@effuse/core';
 import { SidebarLayer } from '../../layers/SidebarLayer.js';
 import { Sidebar } from './Sidebar.js';
-import { DocsHeader, type TocItem } from './DocsHeader.js';
+import {
+  DocsHeader,
+  type TocItem,
+  type TocNavigateHandler,
+} from './DocsHeader.js';
 import { SidebarToggle } from './SidebarToggle.js';
 import {
   useScrollSpy,
-  useSmoothScroll,
   useTranslation,
   useIsMobile,
 } from '../../hooks/index.js';
@@ -25,6 +28,7 @@ import {
   fromNullable,
   Option,
 } from '../../utils/data/index.js';
+import { scrollToDocumentHeading } from './documentNavigation.js';
 import './styles.css';
 
 interface DocsLayoutProps {
@@ -37,7 +41,7 @@ interface DocsLayoutProps {
 interface DocsLayoutExposed {
   docsStore: typeof registeredDocsStore;
   activeSectionId: Signal<string>;
-  handleTocClick: (e: Event, id: string, title: string) => void;
+  handleTocClick: TocNavigateHandler;
   normalizedTocItems: ReadonlySignal<TocItem[]>;
   t: (key: string, fallback?: string) => string;
   isCollapsed: ReadonlySignal<boolean>;
@@ -75,48 +79,10 @@ export const DocsLayout = define({
       items: normalizedTocItems,
     });
 
-    const smoothScroll = useSmoothScroll({
-      wrapper: '.docs-main',
-      content: '.docs-content',
-      duration: 1.2,
-    });
-
-    const handleTocClick = (e: Event, id: string, title: string) => {
-      {
-        e.preventDefault();
-        scrollSpy.setActiveId(id);
-
-        let el: HTMLElement | null = null;
-        try {
-          el = document.querySelector(`#${CSS.escape(id)}`);
-        } catch {
-          el = document.getElementById(id);
-        }
-
-        if (!el) {
-          const headings = document.querySelectorAll('h1, h2, h3');
-          for (const h of headings) {
-            if (h.textContent?.trim() === title) {
-              if (h instanceof HTMLElement) el = h;
-              break;
-            }
-          }
-        }
-
-        if (el) {
-          const scrollContainer = document.querySelector('.docs-main');
-          if (scrollContainer) {
-            const rect = el.getBoundingClientRect();
-            const containerRect = scrollContainer.getBoundingClientRect();
-            const offsetTop =
-              rect.top - containerRect.top + scrollContainer.scrollTop;
-            scrollContainer.scrollTo({
-              top: offsetTop - 20,
-              behavior: 'smooth',
-            });
-          }
-        }
-      }
+    const handleTocClick: TocNavigateHandler = (event, id) => {
+      event.preventDefault();
+      if (!scrollToDocumentHeading(id)) return;
+      scrollSpy.setActiveId(id);
     };
 
     const sidebarClass = computed(() => {
@@ -128,7 +94,6 @@ export const DocsLayout = define({
 
     onMount(() => {
       scrollSpy.init();
-      smoothScroll.init();
       return undefined;
     });
 
@@ -187,6 +152,7 @@ export const DocsLayout = define({
             pageTitle={props.pageTitle}
             tocItems={normalizedTocItems}
             activeId={activeSectionId}
+            onNavigate={handleTocClick}
           />
         </div>
         <div class="docs-content-wrapper">
@@ -217,12 +183,8 @@ export const DocsLayout = define({
                           class={() =>
                             `toc-sidebar-link ${activeSectionId.value === itemSignal.value.id ? 'active' : ''}`
                           }
-                          onClick={(e: Event) =>
-                            handleTocClick(
-                              e,
-                              itemSignal.value.id,
-                              itemSignal.value.title
-                            )
+                          onClick={(event: Event) =>
+                            handleTocClick(event, itemSignal.value.id)
                           }
                         >
                           {itemSignal.value.title}

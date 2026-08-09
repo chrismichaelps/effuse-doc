@@ -22,10 +22,13 @@ export interface TocItem {
   level?: number;
 }
 
+export type TocNavigateHandler = (event: Event, id: string) => void;
+
 interface DocsHeaderProps {
   pageTitle?: string;
   tocItems?: TocItem[] | ReadonlySignal<TocItem[]>;
   activeId?: Signal<string>;
+  onNavigate?: TocNavigateHandler;
   class?: string;
 }
 
@@ -36,7 +39,7 @@ interface DocsHeaderExposed {
   toggleDropdown: () => void;
   activeSectionId: Signal<string>;
   activeSectionTitle: ReadonlySignal<string>;
-  handleTocItemClick: (e: Event, id: string, title: string) => void;
+  handleTocItemClick: TocNavigateHandler;
   onThisPageText: ReadonlySignal<string>;
   dropdownRef: Signal<HTMLElement | null>;
 }
@@ -96,54 +99,10 @@ export const DocsHeader = define({
 
     const onThisPageText = computed(() => t('toc.onThisPage', ''));
 
-    const handleTocItemClick = (e: Event, id: string, title: string) => {
-      {
-        e.preventDefault();
-        dropdown.close();
-
-        let el: HTMLElement | null = null;
-        try {
-          el = document.querySelector(`#${CSS.escape(id)}`);
-        } catch {
-          el = document.getElementById(id);
-        }
-
-        if (!el) {
-          const headings = document.querySelectorAll('h1, h2, h3');
-          for (const h of headings) {
-            if (h.textContent?.trim() === title) {
-              if (h instanceof HTMLElement) el = h;
-              break;
-            }
-          }
-        }
-
-        if (!el) return;
-
-        const scrollContainer = document.querySelector('.docs-main');
-        const isContainerScrollable =
-          scrollContainer &&
-          scrollContainer.scrollHeight > scrollContainer.clientHeight;
-
-        if (isContainerScrollable) {
-          const rect = el.getBoundingClientRect();
-          const containerRect = scrollContainer.getBoundingClientRect();
-          const offsetTop =
-            rect.top - containerRect.top + scrollContainer.scrollTop;
-          scrollContainer.scrollTo({
-            top: offsetTop - 80,
-            behavior: 'smooth',
-          });
-        } else {
-          const rect = el.getBoundingClientRect();
-          const scrollTop =
-            window.pageYOffset || document.documentElement.scrollTop;
-          window.scrollTo({
-            top: rect.top + scrollTop - 100,
-            behavior: 'smooth',
-          });
-        }
-      }
+    const handleTocItemClick: TocNavigateHandler = (event, id) => {
+      event.preventDefault();
+      dropdown.close();
+      props.onNavigate?.(event, id);
     };
 
     return {
@@ -227,12 +186,8 @@ export const DocsHeader = define({
                           : ''
                       }`
                     }
-                    onClick={(e: Event) =>
-                      handleTocItemClick(
-                        e,
-                        itemSignal.value.id,
-                        itemSignal.value.title
-                      )
+                    onClick={(event: Event) =>
+                      handleTocItemClick(event, itemSignal.value.id)
                     }
                   >
                     {itemSignal.value.title}

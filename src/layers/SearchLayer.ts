@@ -15,19 +15,8 @@ export const SearchLayer = defineLayer({
   services: {
     search: () => searchStore,
   },
-  onMount: () => {
-    console.log('[SearchLayer] mounted');
-  },
-  onUnmount: () => {
-    console.log('[SearchLayer] unmounted');
-  },
   onError: (err: unknown) => {
     console.error('[SearchLayer] error:', getErrorMessage(err));
   },
-  setup: () => {
-    searchStore.init();
-    return () => {
-      console.log('[SearchLayer] cleanup');
-    };
-  },
+  setup: () => searchStore.init(),
 });

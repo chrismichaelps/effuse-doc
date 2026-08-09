@@ -22,14 +22,17 @@ export const SmoothScroll = define({
 
       window.__lenis = lenis;
 
+      let frameId: number;
       function raf(time: number) {
         lenis.raf(time);
-        requestAnimationFrame(raf);
+        frameId = requestAnimationFrame(raf);
       }
 
-      requestAnimationFrame(raf);
+      frameId = requestAnimationFrame(raf);
 
       return () => {
+        // Lenis does not own the caller's animation frame lifecycle.
+        cancelAnimationFrame(frameId);
         lenis.destroy();
         window.__lenis = undefined;
       };
