@@ -12,21 +12,23 @@ if (typeof window !== 'undefined') {
 const PACKAGE_NAMES = [
   '@effuse/core',
   '@effuse/router',
-  '@effuse/query',
   '@effuse/store',
+  '@effuse/query',
+  '@effuse/use',
   '@effuse/i18n',
-  '@effuse/server',
   '@effuse/ink',
+  '@effuse/compiler',
   '@effuse/cli',
+  '@effuse/server',
 ] as const;
 
 const PIPELINE_STEPS = [
   ['01', 'Signal', 'Reactive source'],
   ['02', 'Computed', 'Derived value'],
-  ['03', 'Component', 'Precise DOM update'],
-  ['04', 'Layer', 'Typed capability'],
-  ['05', 'Route', 'Validated endpoint'],
-  ['06', 'SSR', 'Hydrated response'],
+  ['03', 'Component', 'Precise DOM consumer'],
+  ['04', 'Layer', 'Capability owner'],
+  ['05', 'API', 'Typed request contract'],
+  ['06', 'Runtime', 'SSR and hydration'],
 ] as const;
 
 export const HomePage = define({
@@ -50,21 +52,20 @@ export const HomePage = define({
     useHead({
       title: 'Effuse - Typed Reactive Applications from Signal to Server',
       description:
-        'Build full-stack reactive applications with fine-grained signals, typed capability layers, file-derived APIs, and server-side rendering.',
+        'Explore an experimental TypeScript application framework with fine-grained signals, typed capability layers, portable server APIs, and SSR.',
       og: {
         title: 'Effuse - From Signal to Server',
         description:
-          'One typed system for fine-grained reactivity, capability layers, routing, APIs, and SSR.',
+          'An experimental TypeScript framework for fine-grained interfaces, capability layers, portable server APIs, and SSR.',
         type: 'website',
         url: 'https://effuse-doc.vercel.app/',
         siteName: 'Effuse',
       },
       twitter: {
         card: 'summary_large_image',
-        site: '@effuse',
         title: 'Effuse - From Signal to Server',
         description:
-          'Build typed reactive applications without virtual DOM overhead.',
+          'Build typed applications with fine-grained updates, explicit capability layers, portable server APIs, and SSR.',
       },
       script: [
         {
@@ -76,7 +77,7 @@ export const HomePage = define({
             operatingSystem: 'Any',
             applicationCategory: 'DeveloperApplication',
             description:
-              'A typed full-stack reactive framework with fine-grained signals, capability layers, server APIs, and SSR.',
+              'An experimental TypeScript application framework with fine-grained signals, capability layers, portable server APIs, and SSR.',
             offers: {
               '@type': 'Offer',
               price: '0',
@@ -181,7 +182,7 @@ export const HomePage = define({
         <div class="hero-container">
           <Link to="/docs/getting-started" class="hero-kicker hero-reveal">
             <span class="kicker-status" aria-hidden="true"></span>
-            Effuse 2 · SSR, Server APIs, Signals
+            Effuse · Experimental · Signal to server
             <span aria-hidden="true">→</span>
           </Link>
 
@@ -191,9 +192,9 @@ export const HomePage = define({
           </h1>
 
           <p class="hero-subtext hero-reveal">
-            Build reactive applications with precise DOM updates, explicit
-            capability layers, file-derived endpoints, and server rendering—all
-            in TypeScript.
+            Build fine-grained interfaces and portable server applications with
+            explicit capability layers, typed file-derived APIs, and SSR—using
+            one TypeScript model.
           </p>
 
           <div class="hero-actions hero-reveal">
@@ -222,15 +223,23 @@ export const HomePage = define({
             </a>
           </div>
 
+          <p class="hero-status-note hero-reveal">
+            Production-oriented and actively evolving. Stable compatibility is
+            not yet guaranteed.
+          </p>
+
           <div class="pipeline-shell hero-reveal">
             <div class="pipeline-toolbar">
               <span class="pipeline-status">
                 <span class="pipeline-status-dot" aria-hidden="true"></span>
-                Reactive pipeline
+                Application capability graph
               </span>
-              <span class="pipeline-meta">No virtual DOM</span>
+              <span class="pipeline-meta">Fine-grained DOM</span>
             </div>
-            <ol class="pipeline-grid" aria-label="Effuse application pipeline">
+            <ol
+              class="pipeline-grid"
+              aria-label="Effuse application capability graph"
+            >
               {PIPELINE_STEPS.map(([number, title, description]) => (
                 <li class="pipeline-node">
                   <span class="pipeline-number">{number}</span>
@@ -394,9 +403,9 @@ export const HomePage = define({
           <span class="section-index">02 · Capability architecture</span>
           <h2 id="layers-title">Make dependencies visible and typed.</h2>
           <p>
-            Layers own related state, services, lifecycle, routes, and server
-            behavior. Components import the capability through a local alias—no
-            string lookup or prop drilling.
+            Layers own services, state, lifecycle, hooks, policy, middleware,
+            routes, and actions. Components consume each capability through a
+            typed local alias—without string lookup or prop drilling.
           </p>
           <Link to="/docs/layers" class="text-link">
             Understand Layers <span aria-hidden="true">→</span>
@@ -440,9 +449,10 @@ export const HomePage = define({
           <span class="section-index">03 · Server and SSR</span>
           <h2 id="server-title">Let the file define the endpoint.</h2>
           <p>
-            Effuse discovers server routes from the filesystem, validates input
-            and output contracts, dispatches APIs before the SSR fallback, and
-            hydrates the same application in the browser.
+            Effuse discovers API and action files, validates request and
+            response contracts, applies middleware and cache policy, dispatches
+            handlers before the SSR fallback, and hydrates the same application
+            in the browser.
           </p>
           <Link to="/docs/server" class="text-link">
             Build Server APIs <span aria-hidden="true">→</span>
@@ -497,9 +507,10 @@ export const HomePage = define({
           <span class="section-index">The Effuse ecosystem</span>
           <h2 id="ecosystem-title">Start small. Keep one mental model.</h2>
           <p>
-            Add routing, queries, state, internationalization, server behavior,
-            terminal interfaces, and build tooling without leaving the same
-            reactive architecture.
+            Add routing, server-state queries, application state, reusable
+            hooks, internationalization, SSR-safe Markdown, portable Node and
+            Bun hosting, and build tooling without leaving the same capability
+            graph.
           </p>
           <div class="package-grid" aria-label="Effuse packages">
             {PACKAGE_NAMES.map((name) => (
