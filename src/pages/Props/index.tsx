@@ -10,7 +10,7 @@ import {
 } from '@effuse/core';
 import { Ink } from '@effuse/ink';
 import { DocsLayout } from '../../components/docs/DocsLayout';
-import type { i18nStore as I18nStoreType } from '../../store/appI18n';
+import { requireI18nStore } from '../../store/guards.js';
 import { triggerHaptic } from '../../components/Haptics';
 import '../../styles/examples.css';
 
@@ -30,13 +30,16 @@ interface StatDisplayExposed {
   triggerUpdateText: ReadonlySignal<string | undefined>;
 }
 
+const resolveDisplayValue = (value: DisplayProps['value']): string | number =>
+  typeof value === 'string' || typeof value === 'number' ? value : value.value;
+
 const StatDisplay = define<DisplayProps, StatDisplayExposed>({
   script: ({ props, useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
 
     const colorSig = computed(() => unref(props.color) || 'mint');
     const labelSig = computed(() => unref(props.label));
-    const valueSig = computed(() => unref(props.value) as string | number);
+    const valueSig = computed(() => resolveDisplayValue(props.value));
     const triggerUpdateText = computed(
       () => i18nStore.translations.value?.examples?.props?.triggerUpdate
     );
@@ -89,14 +92,15 @@ const StatDisplay = define<DisplayProps, StatDisplayExposed>({
 
 export const PropsPage = define({
   script: ({ useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
 
     const t = computed(() => i18nStore.translations.value?.examples?.props);
 
     watchEffect(() => {
       useHead({
-        title: `${t.value?.title as string} - Effuse Playground`,
-        description: t.value?.description as string,
+        title: `${t.value?.title ?? 'Props'} - Effuse Playground`,
+        description:
+          t.value?.description ?? 'Reactive component props with Effuse.',
       });
     });
 
@@ -240,8 +244,8 @@ export const PropsPage = define({
             label={t.value?.activeStatus ?? ''}
             value={
               isActive.value
-                ? (t.value?.active as string)
-                : (t.value?.inactive as string)
+                ? (t.value?.active ?? 'Active')
+                : (t.value?.inactive ?? 'Inactive')
             }
             color={isActive.value ? 'mint' : 'cyan'}
             onAction={toggleActive}

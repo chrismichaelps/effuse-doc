@@ -1,10 +1,9 @@
-import {
-  createI18n,
-  type Translations as EffuseTranslations,
-} from '@effuse/i18n';
-import { signal, type Signal } from '@effuse/core';
-import { Either, right, left, isRight } from '../utils/data/index.js';
-import { I18nError } from '../errors/index.js';
+import { createI18n } from '@effuse/i18n';
+import { computed, signal } from '@effuse/core';
+import enTranslations from '../locales/en.json';
+import esTranslations from '../locales/es.json';
+import jaTranslations from '../locales/ja.json';
+import zhTranslations from '../locales/zh.json';
 
 export const LOCALES = {
   EN: 'en',
@@ -15,9 +14,7 @@ export const LOCALES = {
 
 export type Locale = (typeof LOCALES)[keyof typeof LOCALES];
 
-const LOCALES_PATH = '/locales';
-
-interface AppTranslations {
+export interface AppTranslations {
   nav: {
     home: string;
     docs: string;
@@ -148,6 +145,7 @@ interface AppTranslations {
       loadingPosts: string;
       noPosts: string;
       user: string;
+      howItWorks?: string;
     };
     todos: {
       title: string;
@@ -172,6 +170,7 @@ interface AppTranslations {
       loadingMore: string;
       refreshing: string;
       user: string;
+      howItWorks?: string;
     };
     props: {
       title: string;
@@ -207,6 +206,7 @@ interface AppTranslations {
       summary: string;
       yourName: string;
       footer: string;
+      howItWorks?: string;
     };
     emit: {
       title: string;
@@ -374,67 +374,42 @@ interface AppTranslations {
 
 export type Translations = AppTranslations;
 
-type TranslationResult = Either<Error, AppTranslations>;
+export const isLocale = (value: string): value is Locale =>
+  Object.values(LOCALES).some((locale) => locale === value);
 
-const translations = signal<AppTranslations | null>(null);
-const translationCache = new Map<string, AppTranslations>();
+const normalizeLocale = (value: string): Locale =>
+  isLocale(value) ? value : LOCALES.EN;
 
-const loadTranslations = async (locale: string): Promise<TranslationResult> => {
-  const cached = translationCache.get(locale);
-  if (cached) return right(cached);
+const translationsByLocale = {
+  [LOCALES.EN]: enTranslations,
+  [LOCALES.ES]: esTranslations,
+  [LOCALES.JA]: jaTranslations,
+  [LOCALES.ZH]: zhTranslations,
+} satisfies Record<Locale, AppTranslations>;
 
-  try {
-    const response = await fetch(`${LOCALES_PATH}/${locale}.json`);
-    if (!response.ok) {
-      return left(
-        new I18nError({
-          locale,
-          statusCode: response.status,
-        })
-      );
-    }
-    const data: AppTranslations = await response.json();
-    translationCache.set(locale, data);
-    return right(data);
-  } catch (error) {
-    return left(
-      new I18nError({
-        locale,
-        cause: error,
-      })
-    );
-  }
-};
-
-const i18n = createI18n({
+const i18n = createI18n<AppTranslations>({
   defaultLocale: LOCALES.EN,
   fallbackLocale: LOCALES.EN,
   detectLocale: true,
   persistLocale: true,
-  loader: async (locale) => {
-    const result = await loadTranslations(locale);
-    if (!isRight(result)) throw result.left;
-    return result.right as unknown as EffuseTranslations;
-  },
+  translations: translationsByLocale,
 });
 
+const translations = signal<AppTranslations | null>(
+  translationsByLocale[normalizeLocale(i18n.getLocale())]
+);
+
 export const i18nStore = {
-  locale: i18n.locale as Signal<Locale>,
+  locale: computed<Locale>(() => normalizeLocale(i18n.locale.value)),
   translations,
   isLoading: signal<boolean>(false),
   setLocale: async (loc: Locale) => {
     await i18n.setLocale(loc);
-    const result = await loadTranslations(loc);
-    if (isRight(result)) {
-      translations.value = result.right;
-    }
+    translations.value = translationsByLocale[loc];
   },
   init: () => {
-    void loadTranslations(i18n.getLocale()).then((result) => {
-      if (isRight(result)) {
-        translations.value = result.right;
-      }
-    });
+    translations.value =
+      translationsByLocale[normalizeLocale(i18n.getLocale())];
   },
   t: i18n.t,
 };

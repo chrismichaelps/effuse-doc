@@ -1,11 +1,14 @@
 import { parseMarkdownContent, type DocEntry } from './markdownParser.js';
 import { isSome } from '../../utils/data/index.js';
 
-const allMarkdownModules = import.meta.glob('../../content/docs/*/*.md', {
-  query: '?raw',
-  import: 'default',
-  eager: false,
-}) as Record<string, () => Promise<string>>;
+const allMarkdownModules = import.meta.glob<string>(
+  '../../content/docs/*/*.md',
+  {
+    query: '?raw',
+    import: 'default',
+    eager: false,
+  }
+);
 
 export const loadDocsIndex = async (lang: string): Promise<DocEntry[]> => {
   const entries: DocEntry[] = [];

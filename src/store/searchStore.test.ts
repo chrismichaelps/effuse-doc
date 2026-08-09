@@ -79,13 +79,10 @@ describe('search request scheduling', () => {
     expect(signals[1]?.aborted).toBe(false);
   });
 
-  it('loads and searches the selected locale without duplicate requests', async () => {
-    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
-      const url = String(input);
-      return url.startsWith('/locales/')
-        ? Response.json({}, { status: 200 })
-        : emptyResponse();
-    });
+  it('searches the selected bundled locale without duplicate requests', async () => {
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL) =>
+      emptyResponse()
+    );
     vi.stubGlobal('fetch', fetchMock);
 
     await i18nStore.setLocale('ja');
@@ -93,9 +90,9 @@ describe('search request scheduling', () => {
     await vi.advanceTimersByTimeAsync(50);
 
     const requestedUrls = fetchMock.mock.calls.map(([input]) => String(input));
-    expect(requestedUrls.filter((url) => url === '/locales/ja.json')).toEqual([
-      '/locales/ja.json',
-    ]);
+    expect(requestedUrls.filter((url) => url.startsWith('/locales/'))).toEqual(
+      []
+    );
     expect(
       requestedUrls.filter((url) => url.startsWith('/api/search'))
     ).toEqual(['/api/search?locale=ja&q=%E6%A4%9C%E7%B4%A2']);

@@ -8,12 +8,8 @@ import {
   type ReadonlySignal,
 } from '@effuse/core';
 import { useRouter } from '@effuse/router';
-import type {
-  SearchStore,
-  SearchResultItem,
-  SearchStatus,
-} from '../../store/searchStore';
-import type { i18nStore as I18nStoreType } from '../../store/appI18n';
+import type { SearchResultItem, SearchStatus } from '../../store/searchStore';
+import { requireI18nStore, requireSearchStore } from '../../store/guards.js';
 import { matchTag } from '../../utils/data/index.js';
 import { splitSearchHighlight } from '../../content/search/highlight.js';
 import './styles.css';
@@ -23,7 +19,7 @@ interface SearchModalExposed {
   modalState: Signal<any>;
   searchStatus: Signal<SearchStatus>;
   query: Signal<string>;
-  results: ReadonlySignal<readonly SearchResultItem[]>;
+  results: ReadonlySignal<SearchResultItem[]>;
   isLoading: ReadonlySignal<boolean>;
   selectedIndex: Signal<number>;
   showLoading: ReadonlySignal<boolean>;
@@ -44,20 +40,21 @@ interface SearchModalExposed {
 
 export const SearchModal = define({
   layers: { search: SearchLayer } as const,
-  script: ({ onMount, useStore, useCallback, layers: { search } }) => {
-    const store = search.services.search as SearchStore;
+  script: ({ onMount, useStore, layers: { search } }) => {
+    const store = requireSearchStore(search.services.search);
 
     const router = useRouter();
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
     const t = computed(() => i18nStore.translations.value?.search);
 
-    const handleInput = useCallback((e: Event) => {
-      const target = e.target as HTMLInputElement;
-      store?.search(target.value);
-    });
+    const handleInput = (e: Event) => {
+      const target = e.currentTarget;
+      if (!(target instanceof HTMLInputElement)) return;
+      store.search(target.value);
+    };
 
-    const handleKeyDown = useCallback((e: KeyboardEvent) => {
-      const isOpen = matchTag(store?.modalState.value, {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isOpen = matchTag(store.modalState.value, {
         Closed: () => false,
         Opening: () => true,
         Open: () => true,
@@ -69,42 +66,44 @@ export const SearchModal = define({
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
-          store?.selectNext();
+          store.selectNext();
           break;
         case 'ArrowUp':
           e.preventDefault();
-          store?.selectPrevious();
+          store.selectPrevious();
           break;
         case 'Enter': {
           e.preventDefault();
-          const selected = store?.getSelected();
+          const selected = store.getSelected();
           if (selected?.filePath) {
             const slug =
               selected.filePath.split('/').pop()?.replace('.md', '') ?? '';
             const anchor = selected.anchor ? `#${selected.anchor}` : '';
-            store?.close();
+            store.close();
             router.push(`/docs/${slug}${anchor}`);
           }
           break;
         }
       }
-    });
+    };
 
-    const handleBackdropClick = useCallback((e: MouseEvent) => {
+    const handleBackdropClick = (e: MouseEvent) => {
+      const target = e.target;
       if (
-        (e.target as HTMLElement).classList.contains('search-modal-backdrop')
+        target instanceof HTMLElement &&
+        target.classList.contains('search-modal-backdrop')
       ) {
-        store?.close();
+        store.close();
       }
-    });
+    };
 
-    const handleResultClick = useCallback((result: SearchResultItem) => {
+    const handleResultClick = (result: SearchResultItem) => {
       if (result.filePath) {
         const slug = result.filePath.split('/').pop()?.replace('.md', '') ?? '';
         const anchor = result.anchor ? `#${result.anchor}` : '';
         const targetUrl = `/docs/${slug}${anchor}`;
 
-        store?.close();
+        store.close();
         router.push(targetUrl);
 
         if (result.anchor) {
@@ -116,7 +115,7 @@ export const SearchModal = define({
           }, 100);
         }
       }
-    });
+    };
 
     onMount(() => {
       window.addEventListener('keydown', handleKeyDown);
@@ -130,7 +129,7 @@ export const SearchModal = define({
     watchEffect(() => {
       if (typeof document === 'undefined') return;
 
-      const isOpen = matchTag(store?.modalState.value, {
+      const isOpen = matchTag(store.modalState.value, {
         Closed: () => false,
         Opening: () => true,
         Open: () => true,
@@ -139,17 +138,17 @@ export const SearchModal = define({
       });
       if (isOpen) {
         document.body.style.overflow = 'hidden';
-        (window as any).__lenis?.stop();
+        window.__lenis?.stop();
       } else {
         document.body.style.overflow = '';
-        (window as any).__lenis?.start();
+        window.__lenis?.start();
       }
     });
 
     watchEffect(() => {
       if (typeof document === 'undefined') return;
 
-      const idx = store?.selectedIndex.value;
+      const idx = store.selectedIndex.value;
       if (idx !== undefined && idx >= 0) {
         const element = document.querySelector(
           `.search-result-item:nth-child(${idx + 1})`
@@ -161,7 +160,7 @@ export const SearchModal = define({
     });
 
     const isOpen = computed(() =>
-      matchTag(store?.modalState.value, {
+      matchTag(store.modalState.value, {
         Closed: () => false,
         Opening: () => true,
         Open: () => true,
@@ -171,7 +170,7 @@ export const SearchModal = define({
     );
 
     const isClosing = computed(() =>
-      matchTag(store?.modalState.value, {
+      matchTag(store.modalState.value, {
         Closing: () => true,
         Closed: () => false,
         Opening: () => false,
@@ -180,24 +179,24 @@ export const SearchModal = define({
       })
     );
 
-    const handleAnimationEnd = useCallback(() => {
+    const handleAnimationEnd = () => {
       if (isClosing.value) {
-        store?.completeClose();
+        store.completeClose();
       }
-    });
+    };
 
-    const results = computed(() =>
-      matchTag(store?.searchStatus.value, {
-        Idle: () => [] as readonly SearchResultItem[],
-        Loading: () => [] as readonly SearchResultItem[],
-        Results: ({ results }) => results,
-        Error: () => [] as readonly SearchResultItem[],
-        _: () => [] as readonly SearchResultItem[],
+    const results = computed<SearchResultItem[]>(() =>
+      matchTag<SearchStatus, SearchResultItem[]>(store.searchStatus.value, {
+        Idle: () => [],
+        Loading: () => [],
+        Results: ({ results }) => [...results],
+        Error: () => [],
+        _: () => [],
       })
     );
 
     const isLoading = computed(() =>
-      matchTag(store?.searchStatus.value, {
+      matchTag(store.searchStatus.value, {
         Idle: () => false,
         Loading: () => true,
         Results: () => false,
@@ -207,13 +206,11 @@ export const SearchModal = define({
     );
 
     const showLoading = computed(
-      () => store?.searchStatus.value?._tag === 'Loading'
+      () => store.searchStatus.value._tag === 'Loading'
     );
-    const showError = computed(
-      () => store?.searchStatus.value?._tag === 'Error'
-    );
+    const showError = computed(() => store.searchStatus.value._tag === 'Error');
     const errorMessage = computed(() => {
-      const status = store?.searchStatus.value;
+      const status = store.searchStatus.value;
       if (status?._tag !== 'Error') return '';
 
       return status.error._tag === 'QueryTooShort'
@@ -221,24 +218,24 @@ export const SearchModal = define({
         : status.error.message;
     });
     const showNoResults = computed(() => {
-      const status = store?.searchStatus.value;
+      const status = store.searchStatus.value;
       return status?._tag === 'Results' && status.results.length === 0;
     });
     const showEmptyState = computed(
-      () => store?.searchStatus.value?._tag === 'Idle'
+      () => store.searchStatus.value._tag === 'Idle'
     );
     const showResults = computed(() => {
-      const status = store?.searchStatus.value;
+      const status = store.searchStatus.value;
       return status?._tag === 'Results' && status.results.length > 0;
     });
 
     return {
-      modalState: store?.modalState,
-      searchStatus: store?.searchStatus,
-      query: store?.query,
+      modalState: store.modalState,
+      searchStatus: store.searchStatus,
+      query: store.query,
       results,
       isLoading,
-      selectedIndex: store?.selectedIndex,
+      selectedIndex: store.selectedIndex,
       showLoading,
       showError,
       errorMessage,
@@ -253,7 +250,7 @@ export const SearchModal = define({
       handleAnimationEnd,
       t,
       highlight: (text: string) => {
-        if (!store?.query.value) return <span>{text}</span>;
+        if (!store.query.value) return <span>{text}</span>;
         const parts = splitSearchHighlight(text, store.query.value);
         return (
           <span>
@@ -364,10 +361,7 @@ export const SearchModal = define({
                   : 'hidden'
               }
             >
-              <For
-                each={results as Signal<SearchResultItem[]>}
-                keyExtractor={(item) => item.id}
-              >
+              <For each={results} keyExtractor={(item) => item.id}>
                 {(result, index) => (
                   <li
                     class={() =>

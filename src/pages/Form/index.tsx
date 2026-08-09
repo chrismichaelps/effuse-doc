@@ -13,10 +13,11 @@ import {
 import { useMutation } from '@effuse/query';
 import { Ink } from '@effuse/ink';
 import { DocsLayout } from '../../components/docs/DocsLayout';
-import type { i18nStore as I18nStoreType } from '../../store/appI18n';
+import { requireI18nStore } from '../../store/guards.js';
 import { triggerHaptic } from '../../components/Haptics';
 import { FormSubmissionError } from '../../errors/index.js';
 import { taggedEnum, matchTag } from '../../utils/data/index.js';
+import { PostResponseSchema } from '../../schemas/external.js';
 import '../../styles/examples.css';
 
 interface Post {
@@ -61,14 +62,15 @@ const STATUS_DISPLAY_DURATION_MS = 3000;
 
 export const FormDemoPage = define({
   script: ({ useCallback, useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
 
     const t = computed(() => i18nStore.translations.value?.examples?.form);
 
     watchEffect(() => {
       useHead({
-        title: `${t.value?.title as string} - Effuse Playground`,
-        description: t.value?.description as string,
+        title: `${t.value?.title ?? 'Form'} - Effuse Playground`,
+        description:
+          t.value?.description ?? 'Reactive form validation with Effuse.',
       });
     });
 
@@ -92,8 +94,7 @@ export const FormDemoPage = define({
             formId: 'create-post',
           });
         }
-        const result = (await response.json()) as Post;
-        return result;
+        return PostResponseSchema.parse(await response.json());
       },
       onSuccess: (newPost: Post) => {
         const postWithUniqueId = { ...newPost, id: nextPostId++ };
@@ -200,23 +201,21 @@ export const FormDemoPage = define({
     });
     const submitButtonText = computed(() =>
       createPostMutation.isPending.value
-        ? (t.value?.submittingButton as string)
-        : (t.value?.createButton as string)
+        ? (t.value?.submittingButton ?? 'Submitting...')
+        : (t.value?.createButton ?? 'Create post')
     );
     const isValidText = computed(() =>
       form.isValid.value
-        ? (t.value?.valid as string)
-        : (t.value?.invalid as string)
+        ? (t.value?.valid ?? 'Valid')
+        : (t.value?.invalid ?? 'Invalid')
     );
     const isDirtyText = computed(() =>
       form.isDirty.value
-        ? (t.value?.modified as string)
-        : (t.value?.pristine as string)
+        ? (t.value?.modified ?? 'Modified')
+        : (t.value?.pristine ?? 'Pristine')
     );
     const isSubmittingText = computed(() =>
-      form.isSubmitting.value
-        ? (t.value?.yes as string)
-        : (t.value?.no as string)
+      form.isSubmitting.value ? (t.value?.yes ?? 'Yes') : (t.value?.no ?? 'No')
     );
     const canSubmit = computed(
       () => form.isValid.value && !createPostMutation.isPending.value
@@ -373,9 +372,10 @@ const mutation = useMutation({
                   placeholder={t.value?.enterTitlePlaceholder ?? ''}
                   value={form.fields.title.value}
                   onInput={(e: Event) => {
-                    form.fields.title.value = (
-                      e.target as HTMLInputElement
-                    ).value;
+                    const input = e.currentTarget;
+                    if (input instanceof HTMLInputElement) {
+                      form.fields.title.value = input.value;
+                    }
                   }}
                   onBlur={() => {
                     form.touched.title.value = true;
@@ -407,9 +407,10 @@ const mutation = useMutation({
                 placeholder={t.value?.emailPlaceholder ?? ''}
                 value={form.fields.email.value}
                 onInput={(e: Event) => {
-                  form.fields.email.value = (
-                    e.target as HTMLInputElement
-                  ).value;
+                  const input = e.currentTarget;
+                  if (input instanceof HTMLInputElement) {
+                    form.fields.email.value = input.value;
+                  }
                 }}
                 onBlur={() => {
                   form.touched.email.value = true;
@@ -437,9 +438,10 @@ const mutation = useMutation({
                   placeholder={t.value?.bodyPlaceholder ?? ''}
                   value={form.fields.body.value}
                   onInput={(e: Event) => {
-                    form.fields.body.value = (
-                      e.target as HTMLTextAreaElement
-                    ).value;
+                    const textarea = e.currentTarget;
+                    if (textarea instanceof HTMLTextAreaElement) {
+                      form.fields.body.value = textarea.value;
+                    }
                   }}
                   onBlur={() => {
                     form.touched.body.value = true;
@@ -472,10 +474,9 @@ const mutation = useMutation({
                 max="10"
                 value={form.fields.userId.value}
                 onInput={(e: Event) => {
-                  const val = parseInt(
-                    (e.target as HTMLInputElement).value,
-                    10
-                  );
+                  const input = e.currentTarget;
+                  if (!(input instanceof HTMLInputElement)) return;
+                  const val = parseInt(input.value, 10);
                   form.fields.userId.value = isNaN(val) ? 1 : val;
                 }}
                 onBlur={() => {
@@ -645,7 +646,7 @@ const mutation = useMutation({
               class="stat-label"
               style="margin-bottom: 1rem; cursor: pointer; outline: none;"
             >
-              {(t.value as any)?.howItWorks}
+              {t.value?.howItWorks}
             </summary>
             <div style="margin-top: 1rem;">
               <figure>

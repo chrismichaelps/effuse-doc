@@ -9,12 +9,17 @@ import {
 } from '@effuse/core';
 import { DocsLayout } from '../../components/docs/DocsLayout';
 import { Ink } from '@effuse/ink';
-import type { i18nStore as I18nStoreType } from '../../store/appI18n';
+import {
+  LOCALES,
+  type AppTranslations,
+  type Locale,
+} from '../../store/appI18n';
+import { requireI18nStore } from '../../store/guards.js';
 import { triggerHaptic } from '../../components/Haptics';
 import '../../styles/examples.css';
 
 interface I18nPageExposed {
-  t: ReadonlySignal<any>;
+  t: ReadonlySignal<AppTranslations['examples']['i18n'] | undefined>;
   currentLocale: ReadonlySignal<string>;
   toggleLocale: () => void;
   itemCount: Signal<number>;
@@ -27,13 +32,14 @@ interface I18nPageExposed {
 
 export const I18nPage = define<object, I18nPageExposed>({
   script: ({ useCallback, useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
     const t = computed(() => i18nStore.translations.value?.examples?.i18n);
 
     watchEffect(() => {
       useHead({
-        title: `${t.value?.title as string} - Effuse Playground`,
-        description: t.value?.description as string,
+        title: `${t.value?.title ?? 'Internationalization'} - Effuse Playground`,
+        description:
+          t.value?.description ?? 'Reactive internationalization with Effuse.',
       });
     });
 
@@ -42,20 +48,26 @@ export const I18nPage = define<object, I18nPageExposed>({
     const userName = signal('Developer');
 
     const toggleLocale = useCallback(() => {
-      const locales = ['en', 'es', 'ja', 'zh'];
+      const locales: readonly Locale[] = [
+        LOCALES.EN,
+        LOCALES.ES,
+        LOCALES.JA,
+        LOCALES.ZH,
+      ];
       const currentIdx = locales.indexOf(i18nStore.locale.value);
-      const nextLocale = locales[(currentIdx + 1) % locales.length] as any;
+      const nextLocale =
+        locales[(currentIdx + 1) % locales.length] ?? LOCALES.EN;
       void i18nStore.setLocale(nextLocale);
     });
 
     const greetingText = computed(() => {
-      const template = t.value?.greeting as string;
-      return (template || '').replace('{{name}}', userName.value);
+      const template = t.value?.greeting ?? '';
+      return template.replace('{{name}}', userName.value);
     });
 
     const summaryText = computed(() => {
-      const template = t.value?.summary as string;
-      return (template || '')
+      const template = t.value?.summary ?? '';
+      return template
         .replace('{{name}}', userName.value)
         .replace('{{project}}', 'Effuse')
         .replace('{{version}}', '0.1.0');
@@ -64,12 +76,12 @@ export const I18nPage = define<object, I18nPageExposed>({
     const itemsCountText = computed(() => {
       const template =
         itemCount.value === 1
-          ? (t.value?.itemsOne as string)
-          : (t.value?.itemsOther as string);
-      return (template || '').replace('{{count}}', String(itemCount.value));
+          ? (t.value?.itemsOne ?? '')
+          : (t.value?.itemsOther ?? '');
+      return template.replace('{{count}}', String(itemCount.value));
     });
 
-    const yourNameLabel = computed(() => t.value?.yourName as string);
+    const yourNameLabel = computed(() => t.value?.yourName ?? '');
 
     return {
       t,
@@ -217,7 +229,10 @@ export const I18nPage = define<object, I18nPageExposed>({
                 type="text"
                 value={userName.value}
                 onInput={(e: Event) => {
-                  userName.value = (e.target as HTMLInputElement).value;
+                  const input = e.currentTarget;
+                  if (input instanceof HTMLInputElement) {
+                    userName.value = input.value;
+                  }
                 }}
                 class="example-input"
               />
@@ -232,7 +247,7 @@ export const I18nPage = define<object, I18nPageExposed>({
 
           <details style="padding: 1.5rem; border-top: 1px solid var(--border-subtle);">
             <summary class="text-xs font-bold text-slate-500 uppercase tracking-widest cursor-pointer outline-none">
-              {(t.value as any)?.howItWorks}
+              {t.value?.howItWorks}
             </summary>
             <div style="margin-top: 1rem;">
               <figure>

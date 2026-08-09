@@ -15,7 +15,7 @@ import {
 import { SidebarToggle } from './SidebarToggle.js';
 import { SidebarVersions } from './SidebarVersions.js';
 import { docsStore } from '../../store/docsUIStore.js';
-import { i18nStore } from '../../store/appI18n.js';
+import { useTranslation } from '../../hooks/index.js';
 import { NAV_SECTIONS } from '../../content/docs/nav.js';
 import { SidebarLayer } from '../../layers/SidebarLayer.js';
 
@@ -59,12 +59,9 @@ const ChevronIcon = define({
   ),
 });
 
-const translate = (key: string): string =>
-  (
-    i18nStore.translations.value?.sidebar as Record<string, string> | undefined
-  )?.[key] ?? key;
-
-const createSectionStates = (): SectionState[] =>
+const createSectionStates = (
+  translate: (key: string, fallback?: string) => string
+): SectionState[] =>
   NAV_SECTIONS.map((section) => {
     const containerRef = signal<HTMLElement | null>(null);
 
@@ -83,10 +80,12 @@ const createSectionStates = (): SectionState[] =>
 
     return {
       key: section.key,
-      title: computed(() => translate(section.titleKey)),
+      title: computed(() =>
+        translate(`sidebar.${section.titleKey}`, section.titleKey)
+      ),
       items: computed(() =>
         section.items.map((item) => ({
-          label: translate(item.labelKey),
+          label: translate(`sidebar.${item.labelKey}`, item.labelKey),
           href: item.href,
         }))
       ),
@@ -99,23 +98,21 @@ const createSectionStates = (): SectionState[] =>
 export const Sidebar = define({
   props: defineProps<SidebarProps>(),
   layers: { sidebar: SidebarLayer } as const,
-  script: ({ onMount, layers: { sidebar } }) => {
+  script: ({ onMount }) => {
+    const { t } = useTranslation();
+
     onMount(() => {
       requestAnimationFrame(() => {
         const links = document.querySelectorAll('.sidebar-link');
         links.forEach((link) => {
-          applyHoverTranslate(link as HTMLElement, 4);
+          if (link instanceof HTMLElement) applyHoverTranslate(link, 4);
         });
       });
       return undefined;
     });
 
     return {
-      sectionStates: createSectionStates(),
-      isSidebarOpen: sidebar.props.isOpen as ReadonlySignal<boolean>,
-      toggleSidebar: () => {
-        sidebar.props.isOpen.value = !sidebar.props.isOpen.value;
-      },
+      sectionStates: createSectionStates(t),
     } satisfies SidebarExposed;
   },
 
@@ -154,7 +151,8 @@ export const Sidebar = define({
                   `sidebar-items ${section.isOpen.value ? 'open' : ''} list-none p-0 m-0`
                 }
                 ref={(el: unknown) => {
-                  section.containerRef.value = el as HTMLElement;
+                  section.containerRef.value =
+                    el instanceof HTMLElement ? el : null;
                 }}
               >
                 <For

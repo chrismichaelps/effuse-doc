@@ -1,6 +1,7 @@
 import { define, defineProps, type Signal, computed } from '@effuse/core';
 import { taggedEnum, matchTag, constant } from '../../utils/data/index.js';
 import { docsStore } from '../../store/docsUIStore.js';
+import { requireDocsStore } from '../../store/guards.js';
 import { useMediaQuery } from '@effuse/use';
 import { SidebarLayer } from '../../layers/SidebarLayer.js';
 
@@ -61,29 +62,29 @@ interface SidebarToggleExposed {
 export const SidebarToggle = define({
   props: defineProps<SidebarToggleProps>(),
   layers: { sidebar: SidebarLayer } as const,
-  script: ({ props, useCallback, layers: { sidebar } }) => {
-    const docsUI = sidebar.services.docsUI as typeof docsStore;
+  script: ({ props, layers: { sidebar } }) => {
+    const docsUI = requireDocsStore(sidebar.services.docsUI);
     const { matches: isMobile } = useMediaQuery({
       query: '(max-width: 767px)',
       initialValue: false,
     });
 
-    const resolveContext = useCallback((): ToggleContext => {
+    const resolveContext = (): ToggleContext => {
       if (props.onToggle) {
         return Context.Custom({ onToggle: props.onToggle });
       }
       return isMobile.value
         ? Context.Mobile({ store: docsUI })
         : Context.Desktop({ store: docsUI });
-    });
+    };
 
     const context = computed(resolveContext);
 
-    const handleClick = useCallback((e: MouseEvent) => {
+    const handleClick = (e: MouseEvent) => {
       e.stopPropagation();
       const action = getToggleAction(context.value);
       action();
-    });
+    };
 
     const buttonClass = computed(() => {
       const baseClass = 'sidebar-toggle-btn';

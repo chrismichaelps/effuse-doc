@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createFetchHandler } from './entry-server.js';
-import type { SearchResponse } from './content/search/types.js';
+import { SearchResponseSchema } from './server/contracts/search.js';
 
 const template = `<!doctype html>
 <html lang="en">
@@ -19,7 +19,7 @@ describe('server entry dispatch', () => {
     expect(response.status).toBe(200);
     expect(response.headers.get('content-type')).toContain('application/json');
 
-    const payload = (await response.json()) as SearchResponse;
+    const payload = SearchResponseSchema.parse(await response.json());
     expect(payload.results[0]?.matchedIn).toBe('code');
   });
 
@@ -33,5 +33,16 @@ describe('server entry dispatch', () => {
     expect(response.headers.get('content-type')).toContain('text/html');
     expect(html).toContain('Layers');
     expect(html).toContain('id="__EFFUSE_DATA__"');
+  });
+
+  it('renders the homepage product story on the server', async () => {
+    const response = await handler(new Request('http://effuse.local/'));
+    const html = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(html).toContain('From signal to server');
+    expect(html).toContain('Fine-grained reactivity');
+    expect(html).toContain('Capability architecture');
+    expect(html).toContain('Server and SSR');
   });
 });

@@ -2,16 +2,14 @@ import { createStore, connectDevTools } from '@effuse/store';
 import { ensureQueryData } from '@effuse/query';
 import { i18nStore } from './appI18n.js';
 import { queryClient } from './queryClient.js';
-import type {
-  SearchResponse,
-  SearchResultItem,
-} from '../content/search/types.js';
+import type { SearchResultItem } from '../content/search/types.js';
 import {
   SEARCH_MAX_QUERY_LENGTH,
   SEARCH_MIN_QUERY_LENGTH,
   normalizeSearchQuery,
   searchQueryLength,
 } from '../content/search/config.js';
+import { SearchResponseSchema } from '../server/contracts/search.js';
 import {
   Option,
   some,
@@ -107,7 +105,7 @@ const fetchSearchResults = async (
   if (!response.ok) {
     throw new Error(`Search request failed with status ${response.status}`);
   }
-  const payload = (await response.json()) as SearchResponse;
+  const payload = SearchResponseSchema.parse(await response.json());
   return payload.results;
 };
 

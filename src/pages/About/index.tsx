@@ -1,17 +1,22 @@
-import { define, computed, useHead, For, watchEffect } from '@effuse/core';
+import {
+  define,
+  computed,
+  useHead,
+  For,
+  watchEffect,
+  type ReadonlySignal,
+} from '@effuse/core';
 import { useTranslation } from '../../hooks';
-import type { Translations } from '../../store/appI18n';
+import { i18nStore, type AppTranslations } from '../../store/appI18n';
 import './styles.css';
 import { I18nLayer } from '../../layers/I18nLayer.js';
 
 export const AboutPage = define({
   layers: { i18n: I18nLayer } as const,
-  script: ({ layers: { i18n } }) => {
+  script: () => {
     const { t } = useTranslation();
 
-    const trans = computed(
-      () => (i18n.props.translations.value as Translations | null)?.about
-    );
+    const trans = computed(() => i18nStore.translations.value?.about);
 
     watchEffect(() => {
       useHead({
@@ -60,8 +65,17 @@ export const AboutPage = define({
           <p>{description.value}</p>
         </header>
 
-        <For each={sections} keyExtractor={(s: any) => s.title}>
-          {(sectionSignal: any) => (
+        <For
+          each={sections}
+          keyExtractor={(
+            section: AppTranslations['about']['sections'][number]
+          ) => section.title}
+        >
+          {(
+            sectionSignal: ReadonlySignal<
+              AppTranslations['about']['sections'][number]
+            >
+          ) => (
             <section class="about-section">
               <aside class="section-sidebar">
                 <h2>{sectionSignal.value.title}</h2>

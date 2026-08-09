@@ -1,19 +1,17 @@
 import { defineLayer } from '@effuse/core';
 import { searchStore } from '../store/searchStore';
+import { getErrorMessage } from '../utils/errors.js';
 
 export const SearchLayer = defineLayer({
   name: 'search',
   dependencies: [],
   store: searchStore,
-  deriveProps: (store) => {
-    const s = store as typeof searchStore;
-    return {
-      modalState: s.modalState,
-      query: s.query,
-      searchStatus: s.searchStatus,
-      selectedIndex: s.selectedIndex,
-    };
-  },
+  deriveProps: () => ({
+    modalState: searchStore.modalState,
+    query: searchStore.query,
+    searchStatus: searchStore.searchStatus,
+    selectedIndex: searchStore.selectedIndex,
+  }),
   services: {
     search: () => searchStore,
   },
@@ -24,12 +22,10 @@ export const SearchLayer = defineLayer({
     console.log('[SearchLayer] unmounted');
   },
   onError: (err: unknown) => {
-    const message = (err as Error).message || String(err);
-    console.error('[SearchLayer] error:', message);
+    console.error('[SearchLayer] error:', getErrorMessage(err));
   },
-  setup: (ctx) => {
-    const s = ctx.store as typeof searchStore;
-    s.init();
+  setup: () => {
+    searchStore.init();
     return () => {
       console.log('[SearchLayer] cleanup');
     };

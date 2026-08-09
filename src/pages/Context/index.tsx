@@ -10,7 +10,7 @@ import { Ink } from '@effuse/ink';
 import { DocsLayout } from '../../components/docs/DocsLayout';
 import { triggerHaptic } from '../../components/Haptics';
 import { taggedEnum } from '../../utils/data/index.js';
-import type { i18nStore as I18nStoreType } from '../../store/appI18n';
+import { requireI18nStore } from '../../store/guards.js';
 import '../../styles/examples.css';
 
 type ThemeLight = { readonly _tag: 'Light'; readonly primary: string };
@@ -109,7 +109,7 @@ const ThemeCard = define<ThemeCardProps, ThemeCardExposed>({
 
 export const ContextPage = define({
   script: ({ onMount, useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
 
     const t = computed(() => i18nStore.translations.value?.examples?.context);
 
@@ -249,7 +249,7 @@ export const ContextPage = define({
             class="stat-label"
             style={{ marginBottom: '1rem', cursor: 'pointer', outline: 'none' }}
           >
-            {(t.value as any)?.howItWorks ?? 'How it works'}
+            {t.value?.howItWorks ?? 'How it works'}
           </summary>
           <div style={{ marginTop: '1rem' }}>
             <figure>

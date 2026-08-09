@@ -63,7 +63,8 @@ export const useInfiniteScroll = defineHook<
     let loadMoreCallback: (() => void) | null = null;
 
     const handleScroll = (e: Event) => {
-      const target = e.target as HTMLElement;
+      const target = e.currentTarget;
+      if (!(target instanceof HTMLElement)) return;
       const scrollTop = target.scrollTop;
       const scrollHeight = target.scrollHeight;
       const clientHeight = target.clientHeight;

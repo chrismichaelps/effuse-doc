@@ -63,7 +63,7 @@ export const DocsHeader = define({
   script: ({ props, onMount }) => {
     const { t } = useTranslation();
 
-    const resolvedPageTitle = computed(() => props.pageTitle as string);
+    const resolvedPageTitle = computed(() => props.pageTitle ?? '');
 
     const normalizedTocItems = computed<TocItem[]>(() => {
       const items = props.tocItems;
@@ -112,7 +112,7 @@ export const DocsHeader = define({
           const headings = document.querySelectorAll('h1, h2, h3');
           for (const h of headings) {
             if (h.textContent?.trim() === title) {
-              el = h as HTMLElement;
+              if (h instanceof HTMLElement) el = h;
               break;
             }
           }
@@ -200,7 +200,7 @@ export const DocsHeader = define({
 
       <div
         ref={(el: unknown) => {
-          dropdownRef.value = el as HTMLElement;
+          dropdownRef.value = el instanceof HTMLElement ? el : null;
         }}
         class="toc-popover"
         style="display: none;"

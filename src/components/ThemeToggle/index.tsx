@@ -16,7 +16,7 @@ interface ThemeToggleExposed {
 export const ThemeToggle = define({
   layers: { layout: LayoutLayer } as const,
   script: ({ onMount, layers: { layout } }) => {
-    const isDarkMode = layout.props.isDarkMode as Signal<boolean>;
+    const isDarkMode = layout.props.isDarkMode;
 
     onMount(() => {
       isDarkMode.value = getDocumentTheme() === 'dark';

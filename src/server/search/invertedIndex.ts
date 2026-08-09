@@ -24,6 +24,8 @@ export interface SearchMatch {
   bestField: 'title' | 'text' | 'code' | 'heading';
 }
 
+type SearchField = IndexEntry['field'];
+
 const K1 = 1.2;
 const B = 0.75;
 
@@ -208,7 +210,7 @@ export const searchIndex = (
       bm25Score: number;
       matchedQueryTerms: Set<string>;
       snippetTerms: Set<string>;
-      fieldScores: Map<string, number>;
+      fieldScores: Map<SearchField, number>;
       titleBonus: number;
       headingBonus: number;
       codeLiteralBonus: number;
@@ -248,7 +250,7 @@ export const searchIndex = (
           bm25Score: 0,
           matchedQueryTerms: new Set<string>(),
           snippetTerms: new Set<string>(),
-          fieldScores: new Map<string, number>(),
+          fieldScores: new Map<SearchField, number>(),
           titleBonus: 0,
           headingBonus: 0,
           codeLiteralBonus: 0,
@@ -275,7 +277,7 @@ export const searchIndex = (
         bm25Score: 0,
         matchedQueryTerms: new Set<string>(),
         snippetTerms: new Set<string>(),
-        fieldScores: new Map<string, number>(),
+        fieldScores: new Map<SearchField, number>(),
         titleBonus: 0,
         headingBonus: 0,
         codeLiteralBonus: 0,
@@ -342,7 +344,7 @@ export const searchIndex = (
       for (const [field, score] of data.fieldScores) {
         if (score > bestFieldScore) {
           bestFieldScore = score;
-          bestField = field as typeof bestField;
+          bestField = field;
         }
       }
     }

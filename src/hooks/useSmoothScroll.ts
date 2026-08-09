@@ -66,15 +66,15 @@ export const useSmoothScroll = defineHook<
       if (!isInit) return undefined;
 
       const wrapper = config.wrapper
-        ? document.querySelector(config.wrapper)
+        ? document.querySelector<HTMLElement>(config.wrapper)
         : undefined;
       const content = config.content
-        ? document.querySelector(config.content)
+        ? document.querySelector<HTMLElement>(config.content)
         : undefined;
 
       const lenis = new Lenis({
-        wrapper: wrapper as HTMLElement | undefined,
-        content: content as HTMLElement | undefined,
+        wrapper: wrapper ?? undefined,
+        content: content ?? undefined,
         duration: config.duration ?? 1.2,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         orientation: 'vertical',

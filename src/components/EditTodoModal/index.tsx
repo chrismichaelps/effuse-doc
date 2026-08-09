@@ -4,7 +4,7 @@ import {
   type Signal,
   type ReadonlySignal,
 } from '@effuse/core';
-import type { i18nStore as I18nStoreType } from '../../store/appI18n';
+import { requireI18nStore } from '../../store/guards.js';
 import './styles.css';
 
 interface EditTodoModalProps {
@@ -21,7 +21,7 @@ interface EditTodoModalExposed {
 
 export const EditTodoModal = define<EditTodoModalProps, EditTodoModalExposed>({
   script: ({ useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
     const t = computed(() => i18nStore.translations.value?.examples?.todos);
     return {
       t,
@@ -53,9 +53,12 @@ export const EditTodoModal = define<EditTodoModalProps, EditTodoModalExposed>({
             <input
               type="text"
               value={title}
-              onInput={(e: Event) =>
-                onTitleChange((e.target as HTMLInputElement).value)
-              }
+              onInput={(e: Event) => {
+                const input = e.currentTarget;
+                if (input instanceof HTMLInputElement) {
+                  onTitleChange(input.value);
+                }
+              }}
               onKeyDown={(e: KeyboardEvent) => {
                 if (e.key === 'Enter') onSave();
                 if (e.key === 'Escape') onClose();

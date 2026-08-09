@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createInProcessRouteFetch } from '@effuse/core/server';
-import type { SearchResponse } from '../../../content/search/types.js';
+import { SearchResponseSchema } from '../../contracts/search.js';
 import { AppServerLayer } from '../../../layers/AppServerLayer.js';
 import { SEARCH_MAX_QUERY_LENGTH } from '../../../content/search/config.js';
 import { metadata } from './route.js';
@@ -57,7 +57,7 @@ describe('GET /api/search', () => {
       const response = await routeFetch(url);
       expect(response.status).toBe(200);
 
-      const payload = (await response.json()) as SearchResponse;
+      const payload = SearchResponseSchema.parse(await response.json());
       expect(payload.results.map((result) => result.id)).toEqual(expectedIds);
     }
   );
@@ -69,7 +69,7 @@ describe('GET /api/search', () => {
     const response = await routeFetch(
       `http://effuse.local/api/search?locale=en&q=${query}`
     );
-    const payload = (await response.json()) as SearchResponse;
+    const payload = SearchResponseSchema.parse(await response.json());
 
     expect(payload.results[0]?.documentId).toBe(expectedDocument);
   });
@@ -78,7 +78,7 @@ describe('GET /api/search', () => {
     const response = await routeFetch(
       'http://effuse.local/api/search?locale=en&q=define%28'
     );
-    const payload = (await response.json()) as SearchResponse;
+    const payload = SearchResponseSchema.parse(await response.json());
 
     expect(payload.results[0]?.matchedIn).toBe('code');
     expect(payload.results[0]?.text).toContain('define(');

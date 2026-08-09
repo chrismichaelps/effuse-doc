@@ -13,12 +13,13 @@ import { Ink } from '@effuse/ink';
 import { DocsLayout } from '../../components/docs/DocsLayout';
 import { triggerHaptic } from '../../components/Haptics';
 import { NetworkError } from '../../errors/index.js';
-import type { i18nStore as I18nStoreType } from '../../store/appI18n';
+import { requireI18nStore } from '../../store/guards.js';
 import '../../styles/examples.css';
+import { UserResponseSchema } from '../../schemas/external.js';
 
 const ShowDemo = define({
   script: ({ useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
     const t = computed(
       () => i18nStore.translations.value?.examples.controlFlow
     );
@@ -84,7 +85,7 @@ const ShowDemo = define({
 
 const SwitchDemo = define({
   script: ({ useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
     const t = computed(
       () => i18nStore.translations.value?.examples.controlFlow
     );
@@ -154,7 +155,7 @@ const SwitchDemo = define({
 
 const ForDemo = define({
   script: ({ useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
     const t = computed(
       () => i18nStore.translations.value?.examples.controlFlow
     );
@@ -188,7 +189,10 @@ const ForDemo = define({
           placeholder={t.value?.for.addPlaceholder}
           value={newItem.value}
           onInput={(e) => {
-            newItem.value = (e.target as HTMLInputElement).value;
+            const input = e.currentTarget;
+            if (input instanceof HTMLInputElement) {
+              newItem.value = input.value;
+            }
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
@@ -256,7 +260,7 @@ const ForDemo = define({
 
 const DynamicStyleDemo = define({
   script: ({ useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
     const t = computed(
       () => i18nStore.translations.value?.examples.controlFlow
     );
@@ -328,7 +332,7 @@ const DynamicStyleDemo = define({
 
 const RepeatDemo = define({
   script: ({ useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
     const t = computed(
       () => i18nStore.translations.value?.examples.controlFlow
     );
@@ -427,7 +431,7 @@ interface User {
 
 const AwaitDemo = define({
   script: ({ useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
     const t = computed(
       () => i18nStore.translations.value?.examples.controlFlow
     );
@@ -436,7 +440,7 @@ const AwaitDemo = define({
 
     const fetchUser = (id: number): Promise<User> =>
       fetch(`https://jsonplaceholder.typicode.com/users/${String(id)}`).then(
-        (res) => {
+        async (res) => {
           if (!res.ok) {
             throw new NetworkError({
               message: 'Failed to fetch user',
@@ -444,7 +448,7 @@ const AwaitDemo = define({
               status: res.status,
             });
           }
-          return res.json() as Promise<User>;
+          return UserResponseSchema.parse(await res.json());
         }
       );
 
@@ -531,7 +535,7 @@ const AwaitDemo = define({
 
 export const ComponentsPage = define({
   script: ({ useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
     const t = computed(
       () => i18nStore.translations.value?.examples.controlFlow
     );

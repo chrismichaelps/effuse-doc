@@ -1,13 +1,14 @@
 import { createHandler, createInProcessRouteFetch } from '@effuse/core/server';
 import { createMemoryHistory, runWithRouter } from '@effuse/router';
-import enTranslations from '../public/locales/en.json';
+import enTranslations from './locales/en.json';
 import { App } from './App';
 import { DEFAULT_LOCALE, DEFAULT_SLUG } from './content/docs/constants';
 import { createAppRouter } from './router';
 import { serverLayers } from './server/layers';
 import { queryClient } from './store/queryClient';
-import { i18nStore, type Translations } from './store/appI18n';
+import { i18nStore } from './store/appI18n';
 import type { Doc } from './content/docs/types';
+import { DocResponseSchema } from './server/contracts/docs.js';
 
 /** Matches DocsPage: `[[...slug]]` yields an array, a string, or nothing. */
 const toDocSlug = (value: unknown): string => {
@@ -38,7 +39,7 @@ export const createFetchHandler = (
   // The server renders in the default locale. Browser locale detection runs
   // after hydration, but the initial document must already contain readable
   // navigation, legal copy, and route metadata.
-  i18nStore.translations.value = enTranslations as Translations;
+  i18nStore.translations.value = enTranslations;
 
   const handler = createHandler({
     root: App,
@@ -53,7 +54,7 @@ export const createFetchHandler = (
     onError: (error, request) => {
       // Render failures wrap the original error; without the cause the log
       // says only "Render failed" and never points at the offending code.
-      const cause = (error as { cause?: unknown }).cause;
+      const cause = error instanceof Error ? error.cause : undefined;
       console.error(
         `[ssr] ${request.method} ${request.url}`,
         error,
@@ -85,7 +86,10 @@ export const createFetchHandler = (
     );
     if (!response.ok) return;
 
-    queryClient.setQueryData<Doc>(key, (await response.json()) as Doc);
+    queryClient.setQueryData<Doc>(
+      key,
+      DocResponseSchema.parse(await response.json())
+    );
   };
 
   return async (request) => {

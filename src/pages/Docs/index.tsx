@@ -9,6 +9,7 @@ import { i18nStore } from '../../store/appI18n.js';
 import { queryClient } from '../../store/queryClient.js';
 import { DEFAULT_SLUG } from '../../content/docs/constants.js';
 import type { Doc } from '../../content/docs/types.js';
+import { DocResponseSchema } from '../../server/contracts/docs.js';
 
 const SITE_URL = 'https://effuse-doc.vercel.app';
 
@@ -76,7 +77,7 @@ export const DocsPage = define<Record<string, never>, DocsPageExposed>({
           if (!response.ok) {
             throw new Error(`Document not found: ${currentSlug}`);
           }
-          return (await response.json()) as Doc;
+          return DocResponseSchema.parse(await response.json());
         },
         { client: queryClient, staleTime: Number.POSITIVE_INFINITY }
       )

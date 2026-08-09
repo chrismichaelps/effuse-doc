@@ -11,7 +11,7 @@ import {
 } from '@effuse/core';
 import { Ink } from '@effuse/ink';
 import { DocsLayout } from '../../components/docs/DocsLayout';
-import type { i18nStore as I18nStoreType } from '../../store/appI18n';
+import { requireI18nStore } from '../../store/guards.js';
 import { triggerHaptic } from '../../components/Haptics';
 import '../../styles/examples.css';
 
@@ -21,7 +21,7 @@ interface ChatMessage {
   author: string;
   timestamp: number;
   type: 'text' | 'system';
-  translationKey?: string;
+  translationKey?: 'sessionStarted' | 'switchedTo';
   translationData?: Record<string, string>;
 }
 
@@ -74,7 +74,7 @@ const generateId = () =>
 
 export const EmitDemoPage = define({
   script: ({ useCallback, useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
     const t = computed(() => i18nStore.translations.value?.examples?.emit);
 
     watchEffect(() => {
@@ -209,10 +209,10 @@ emit('message', { text: 'Hello!', author: 'Dev' });
       emitCount,
       lastMessage,
       setChatContainer: (el: unknown) => {
-        chatContainer = el as HTMLDivElement;
+        chatContainer = el instanceof HTMLDivElement ? el : null;
       },
       setInputEl: (el: unknown) => {
-        inputEl = el as HTMLInputElement;
+        inputEl = el instanceof HTMLInputElement ? el : null;
       },
       handleSendMessage,
       handleSwitchUser,
@@ -271,13 +271,14 @@ emit('message', { text: 'Hello!', author: 'Dev' });
             <input
               ref={setInputEl}
               type="text"
-              placeholder={
-                computed(() => t.value?.placeholder || '') as unknown as string
-              }
+              placeholder={t.value?.placeholder || ''}
               value={inputText}
-              onInput={(e) =>
-                (inputText.value = (e.target as HTMLInputElement).value)
-              }
+              onInput={(e) => {
+                const input = e.currentTarget;
+                if (input instanceof HTMLInputElement) {
+                  inputText.value = input.value;
+                }
+              }}
               onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
               class="example-input"
             />
@@ -431,8 +432,7 @@ emit('message', { text: 'Hello!', author: 'Dev' });
                       {computed(() => {
                         if (!msg.value.translationKey) return msg.value.text;
                         let template =
-                          (t.value as any)?.[msg.value.translationKey] ||
-                          msg.value.text;
+                          t.value?.[msg.value.translationKey] ?? msg.value.text;
                         if (msg.value.translationData) {
                           Object.entries(msg.value.translationData).forEach(
                             ([key, val]) => {
@@ -455,7 +455,7 @@ emit('message', { text: 'Hello!', author: 'Dev' });
             class="stat-label"
             style="margin-bottom: 1rem; cursor: pointer; outline: none;"
           >
-            {(t.value as any)?.howItWorks || 'How it works'}
+            {t.value?.howItWorks || 'How it works'}
           </summary>
           <div style="margin-top: 1rem;">
             <figure>

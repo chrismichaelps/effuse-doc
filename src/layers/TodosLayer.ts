@@ -6,14 +6,11 @@ export const TodosLayer = defineLayer({
   name: 'todos',
   dependencies: ['i18n'],
   store: todosStore,
-  deriveProps: (store) => {
-    const s = store as typeof todosStore;
-    return {
-      isLoading: signal(false),
-      filter: s.filter,
-      totalCount: computed(() => s.todos.value.length),
-    };
-  },
+  deriveProps: () => ({
+    isLoading: signal(false),
+    filter: todosStore.filter,
+    totalCount: computed(() => todosStore.todos.value.length),
+  }),
   provides: {
     todosStore: () => todosStore,
   },

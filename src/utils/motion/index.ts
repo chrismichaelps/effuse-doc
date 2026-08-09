@@ -55,9 +55,10 @@ export function initMotionScrollReveal(): void {
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const el = entry.target as HTMLElement;
-          animateSlideUp(el);
-          observer.unobserve(el);
+          if (entry.target instanceof HTMLElement) {
+            animateSlideUp(entry.target);
+            observer.unobserve(entry.target);
+          }
         }
       });
     },
@@ -68,8 +69,10 @@ export function initMotionScrollReveal(): void {
   );
 
   document.querySelectorAll('.motion-reveal').forEach((el) => {
-    (el as HTMLElement).style.opacity = '0';
-    observer.observe(el);
+    if (el instanceof HTMLElement) {
+      el.style.opacity = '0';
+      observer.observe(el);
+    }
   });
 }
 
@@ -106,7 +109,8 @@ export function animateStaggerChildren(
 ): void {
   const items = container.querySelectorAll(selector);
   items.forEach((item, i) => {
-    const el = item as HTMLElement;
+    if (!(item instanceof HTMLElement)) return;
+    const el = item;
     el.style.opacity = '0';
     el.style.transform = 'translateX(-10px)';
     el.style.transition = `opacity 0.2s ease ${i * delay}s, transform 0.2s ease ${i * delay}s`;

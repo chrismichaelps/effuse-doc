@@ -9,4 +9,4 @@ export const DEFAULT_LOCALE: Locale = 'en';
 export const DEFAULT_SLUG = 'getting-started';
 
 export const isLocale = (value: string): value is Locale =>
-  (LOCALES as readonly string[]).includes(value);
+  LOCALES.some((locale) => locale === value);

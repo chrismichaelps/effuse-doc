@@ -12,7 +12,7 @@ import { SearchModal } from '../SearchModal';
 import { ThemeToggle } from '../ThemeToggle';
 import { useToggle } from '../../hooks/index.js';
 import { useMediaQuery } from '@effuse/use';
-import type { i18nStore as I18nStoreType } from '../../store/appI18n';
+import { requireI18nStore } from '../../store/guards.js';
 import './styles.css';
 
 interface HeaderExposed {
@@ -39,7 +39,7 @@ const LOCALIZED_SECTIONS = [
 
 export const Header = define<Record<string, never>, HeaderExposed>({
   script: ({ useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
     const { matches: isMobile } = useMediaQuery({
       query: '(max-width: 767px)',
       initialValue: false,
@@ -55,10 +55,10 @@ export const Header = define<Record<string, never>, HeaderExposed>({
     });
 
     const docsLabel = computed(() => {
-      return i18nStore.translations.value?.nav?.docs as string;
+      return i18nStore.translations.value?.nav?.docs ?? 'Docs';
     });
     const aboutLabel = computed(() => {
-      return i18nStore.translations.value?.nav?.about as string;
+      return i18nStore.translations.value?.nav?.about ?? 'About';
     });
 
     return {

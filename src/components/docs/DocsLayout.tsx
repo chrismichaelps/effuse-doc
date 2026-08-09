@@ -16,7 +16,8 @@ import {
   useTranslation,
   useIsMobile,
 } from '../../hooks/index.js';
-import type { docsStore as DocsStoreType } from '../../store/docsUIStore.js';
+import { docsStore as registeredDocsStore } from '../../store/docsUIStore.js';
+import { requireDocsStore } from '../../store/guards.js';
 import {
   isArray,
   isNullish,
@@ -34,13 +35,13 @@ interface DocsLayoutProps {
 }
 
 interface DocsLayoutExposed {
-  docsStore: typeof DocsStoreType;
+  docsStore: typeof registeredDocsStore;
   activeSectionId: Signal<string>;
   handleTocClick: (e: Event, id: string, title: string) => void;
   normalizedTocItems: ReadonlySignal<TocItem[]>;
   t: (key: string, fallback?: string) => string;
-  isCollapsed: Signal<unknown>;
-  isOpen: Signal<unknown>;
+  isCollapsed: ReadonlySignal<boolean>;
+  isOpen: ReadonlySignal<boolean>;
   sidebarClass: ReadonlySignal<string>;
   isMobile: ReadonlySignal<boolean>;
 }
@@ -64,8 +65,7 @@ export const DocsLayout = define({
     const { t } = useTranslation();
     const isMobile = useIsMobile();
 
-    const docsStore = (sidebar.services.docsUI ??
-      sidebar.service('docsUI')) as typeof DocsStoreType;
+    const docsStore = requireDocsStore(sidebar.services.docsUI);
 
     const normalizedTocItems = computed(() => unwrapTocItems(props.tocItems));
 
@@ -97,7 +97,7 @@ export const DocsLayout = define({
           const headings = document.querySelectorAll('h1, h2, h3');
           for (const h of headings) {
             if (h.textContent?.trim() === title) {
-              el = h as HTMLElement;
+              if (h instanceof HTMLElement) el = h;
               break;
             }
           }
@@ -120,8 +120,8 @@ export const DocsLayout = define({
     };
 
     const sidebarClass = computed(() => {
-      const open = sidebar.props.isOpen.value;
-      const collapsed = sidebar.props.isCollapsed.value;
+      const open = docsStore.isSidebarVisible();
+      const collapsed = docsStore.isSidebarCollapsed();
       const className = `sidebar-desktop-wrapper ${open ? 'sidebar-mobile-open' : 'sidebar-mobile-closed'} ${collapsed ? 'collapsed' : ''}`;
       return className;
     });
@@ -138,8 +138,8 @@ export const DocsLayout = define({
       handleTocClick,
       normalizedTocItems,
       t,
-      isCollapsed: sidebar.props.isCollapsed,
-      isOpen: sidebar.props.isOpen,
+      isCollapsed: computed(() => docsStore.isSidebarCollapsed()),
+      isOpen: computed(() => docsStore.isSidebarVisible()),
       sidebarClass,
       isMobile,
     } satisfies DocsLayoutExposed;

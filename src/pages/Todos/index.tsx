@@ -9,15 +9,16 @@ import {
 import { isTaggedError } from '../../utils/data/tagged-error.js';
 import { useInfiniteQuery, useMutation } from '@effuse/query';
 import { Ink } from '@effuse/ink';
-import type {
-  todosStore as TodosStoreType,
-  Todo,
-} from '../../store/todosStore.js';
+import type { Todo } from '../../store/todosStore.js';
 import { DocsLayout } from '../../components/docs/DocsLayout';
 import { useInfiniteScroll } from '../../hooks/index.js';
-import type { i18nStore as I18nStoreType } from '../../store/appI18n';
+import { requireI18nStore, requireTodosStore } from '../../store/guards.js';
 import { triggerHaptic } from '../../components/Haptics';
 import { TodoError } from '../../errors/index.js';
+import {
+  TodoResponseSchema,
+  TodosResponseSchema,
+} from '../../schemas/external.js';
 import '../../styles/examples.css';
 
 const API_BASE = 'https://jsonplaceholder.typicode.com';
@@ -25,8 +26,8 @@ const PAGE_SIZE = 10;
 
 export const TodosPage = define({
   script: ({ useCallback, useStore }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
-    const todosStore = useStore('todosStore') as typeof TodosStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
+    const todosStore = requireTodosStore(useStore('todosStore'));
 
     const t = computed(() => i18nStore.translations.value?.examples?.todos);
 
@@ -35,8 +36,9 @@ export const TodosPage = define({
 
     watchEffect(() => {
       useHead({
-        title: `${t.value?.title as string} - Effuse Playground`,
-        description: t.value?.description as string,
+        title: `${t.value?.title ?? 'Todos'} - Effuse Playground`,
+        description:
+          t.value?.description ?? 'Reactive todo management with Effuse.',
       });
     });
 
@@ -53,7 +55,7 @@ export const TodosPage = define({
             operation: 'fetch',
           });
         }
-        return response.json() as Promise<Todo[]>;
+        return TodosResponseSchema.parse(await response.json());
       },
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) =>
@@ -74,7 +76,7 @@ export const TodosPage = define({
             operation: 'add',
           });
         }
-        return response.json() as Promise<Todo>;
+        return TodoResponseSchema.parse(await response.json());
       },
       onSuccess: (data) => {
         const newTodo: Todo = { ...data, id: todosStore.generateId() };
@@ -129,7 +131,10 @@ export const TodosPage = define({
     });
 
     const handleInputChange = useCallback((e: Event) => {
-      inputValue.value = (e.target as HTMLInputElement).value;
+      const input = e.currentTarget;
+      if (input instanceof HTMLInputElement) {
+        inputValue.value = input.value;
+      }
     });
 
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -265,11 +270,12 @@ const mutation = useMutation({
                   <input
                     type="text"
                     value={editInputValue}
-                    onInput={(e: Event) =>
-                      (editInputValue.value = (
-                        e.target as HTMLInputElement
-                      ).value)
-                    }
+                    onInput={(e: Event) => {
+                      const input = e.currentTarget;
+                      if (input instanceof HTMLInputElement) {
+                        editInputValue.value = input.value;
+                      }
+                    }}
                     onKeyDown={(e: KeyboardEvent) => {
                       if (e.key === 'Enter') saveEdit();
                       if (e.key === 'Escape') closeEditModal();
@@ -316,7 +322,7 @@ const mutation = useMutation({
             class="stat-label"
             style="margin-bottom: 1rem; cursor: pointer; outline: none;"
           >
-            {(t.value as any)?.howItWorks}
+            {t.value?.howItWorks}
           </summary>
           <div style="margin-top: 1rem;">
             <figure>

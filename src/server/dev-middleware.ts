@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { IncomingMessage } from 'node:http';
 import type { Plugin, ViteDevServer } from 'vite';
+import { toError } from '../utils/errors.js';
 
 /**
  * Runs the production request handler in development.
@@ -23,11 +24,31 @@ interface ServerEntry {
   createFetchHandler: (options: { template: string }) => FetchHandler;
 }
 
+const isServerEntry = (value: unknown): value is ServerEntry =>
+  typeof value === 'object' &&
+  value !== null &&
+  'createFetchHandler' in value &&
+  typeof value.createFetchHandler === 'function';
+
 const readBody = async (req: IncomingMessage): Promise<Buffer | undefined> => {
   if (req.method === 'GET' || req.method === 'HEAD') return undefined;
   const chunks: Buffer[] = [];
-  for await (const chunk of req) chunks.push(chunk as Buffer);
+  for await (const chunk of req) {
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  }
   return chunks.length ? Buffer.concat(chunks) : undefined;
+};
+
+const toWebHeaders = (req: IncomingMessage): Headers => {
+  const headers = new Headers();
+  for (const [name, value] of Object.entries(req.headers)) {
+    if (Array.isArray(value)) {
+      value.forEach((entry) => headers.append(name, entry));
+    } else if (value !== undefined) {
+      headers.set(name, value);
+    }
+  }
+  return headers;
 };
 
 const toWebRequest = (
@@ -37,7 +58,7 @@ const toWebRequest = (
 ): Request =>
   new Request(new URL(url, `http://${req.headers.host ?? 'localhost'}`), {
     method: req.method,
-    headers: req.headers as Record<string, string>,
+    headers: toWebHeaders(req),
     ...(body ? { body: new Uint8Array(body) } : {}),
   });
 
@@ -53,9 +74,12 @@ export const effuseDevApi = (): Plugin => ({
 
         void (async () => {
           try {
-            const entry = (await server.ssrLoadModule(
-              '/src/entry-server.ts'
-            )) as unknown as ServerEntry;
+            const entry = await server.ssrLoadModule('/src/entry-server.ts');
+            if (!isServerEntry(entry)) {
+              throw new TypeError(
+                'SSR entry must export a createFetchHandler function'
+              );
+            }
 
             // transformIndexHtml injects the HMR client and Vite's module
             // preamble, which the built template already carries.
@@ -75,7 +99,7 @@ export const effuseDevApi = (): Plugin => ({
             response.headers.forEach((value, key) => res.setHeader(key, value));
             res.end(Buffer.from(await response.arrayBuffer()));
           } catch (error) {
-            server.ssrFixStacktrace(error as Error);
+            server.ssrFixStacktrace(toError(error));
             next(error);
           }
         })();

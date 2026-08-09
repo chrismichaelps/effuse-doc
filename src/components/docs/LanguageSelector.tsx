@@ -9,7 +9,7 @@ import {
   For,
 } from '@effuse/core';
 import { useToggle, useTranslation } from '../../hooks/index.js';
-import type { Locale } from '../../store/appI18n.js';
+import { i18nStore, type Locale } from '../../store/appI18n.js';
 import { I18nLayer } from '../../layers/I18nLayer.js';
 
 interface LanguageSelectorProps {
@@ -35,7 +35,7 @@ interface LanguageSelectorExposed {
 export const LanguageSelector = define({
   props: defineProps<LanguageSelectorProps>(),
   layers: { i18n: I18nLayer } as const,
-  script: ({ props, layers: { i18n } }) => {
+  script: ({ props }) => {
     const { t } = useTranslation();
 
     const toggle = useToggle({ initial: false });
@@ -46,13 +46,13 @@ export const LanguageSelector = define({
       () => toggle.setOff()
     );
 
-    const currentLocale = i18n.props.locale as Signal<Locale>;
+    const currentLocale = i18nStore.locale;
 
     const availableLanguages = computed<LanguageOption[]>(() => [
-      { locale: 'en', label: t('language.english', ''), flag: '' },
-      { locale: 'ja', label: t('language.japanese', ''), flag: '' },
-      { locale: 'zh', label: t('language.mandarin', ''), flag: '' },
-      { locale: 'es', label: t('language.spanish', ''), flag: '' },
+      { locale: 'en', label: t('language.english', 'English'), flag: '' },
+      { locale: 'ja', label: t('language.japanese', '日本語'), flag: '' },
+      { locale: 'zh', label: t('language.mandarin', '简体中文'), flag: '' },
+      { locale: 'es', label: t('language.spanish', 'Español'), flag: '' },
     ]);
 
     const handleToggle = (e: MouseEvent) => {
@@ -62,7 +62,7 @@ export const LanguageSelector = define({
 
     const handleSelect = (e: MouseEvent, loc: Locale) => {
       e.stopPropagation();
-      i18n.services.i18n.setLocale(loc);
+      void i18nStore.setLocale(loc);
       toggle.setOff();
     };
 

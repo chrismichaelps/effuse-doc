@@ -1,6 +1,6 @@
 import { createDataCache } from '@effuse/core/server';
 import { parseSync } from '@effuse/ink';
-import type { BlockNode, DocumentNode, InlineNode } from '@effuse/ink';
+import type { DocumentNode, InlineNode } from '@effuse/ink';
 import { createHeadingSlugger } from './slug.js';
 import { DEFAULT_LOCALE, type Locale } from '../../content/docs/constants.js';
 import type { Doc, TocEntry } from '../../content/docs/types.js';
@@ -15,10 +15,10 @@ export type { Locale } from '../../content/docs/constants.js';
 export type { Doc, TocEntry } from '../../content/docs/types.js';
 
 /** Lazy: one chunk per document, so a request loads only what it serves. */
-const documents = import.meta.glob('../../content/docs/*/*.md', {
+const documents = import.meta.glob<string>('../../content/docs/*/*.md', {
   query: '?raw',
   import: 'default',
-}) as Record<string, () => Promise<string>>;
+});
 
 const keyOf = (locale: string, slug: string): string =>
   `../../content/docs/${locale}/${slug}.md`;
@@ -44,8 +44,8 @@ const headingText = (children: readonly InlineNode[]): string =>
       if (child._tag === 'Text' || child._tag === 'InlineCode') {
         return child.value;
       }
-      if ('children' in child) {
-        return headingText(child.children as readonly InlineNode[]);
+      if (child._tag === 'Emphasis' || child._tag === 'Link') {
+        return headingText(child.children);
       }
       return '';
     })
@@ -56,7 +56,7 @@ const buildToc = (ast: DocumentNode): readonly TocEntry[] => {
   const slugger = createHeadingSlugger();
   const entries: TocEntry[] = [];
 
-  for (const node of ast.children as readonly BlockNode[]) {
+  for (const node of ast.children) {
     if (node._tag !== 'Heading') continue;
     const title = headingText(node.children).trim();
     // Every heading consumes a slug, including levels the TOC omits, to stay
@@ -120,10 +120,8 @@ const readDoc = docCache.cached(
 );
 
 /** Resolves one document, or `null` when the locale has no such slug. */
-export const getDoc = (
-  locale: Locale,
-  slug: string
-): Promise<Doc | null> => readDoc(locale, slug);
+export const getDoc = (locale: Locale, slug: string): Promise<Doc | null> =>
+  readDoc(locale, slug);
 
 /** Drops memoised documents for a locale, or all of them. */
 export const invalidateDocs = (locale?: Locale): void => {

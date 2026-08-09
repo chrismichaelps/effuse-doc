@@ -5,6 +5,7 @@ import {
   useHead,
   watchEffect,
   type RefCallback,
+  type RefObject,
   type Signal,
   type ReadonlySignal,
   createRef,
@@ -12,6 +13,7 @@ import {
 import { Ink } from '@effuse/ink';
 import { DocsLayout } from '../../components/docs/DocsLayout';
 import type { i18nStore as I18nStoreType } from '../../store/appI18n';
+import { requireI18nStore } from '../../store/guards.js';
 import { triggerHaptic } from '../../components/Haptics';
 import '../../styles/examples.css';
 
@@ -99,7 +101,7 @@ interface RefsExposed {
   handleReset: () => void;
   handleToggleMount: () => void;
   isMounted: Signal<boolean>;
-  handleBoxRef: (el: unknown) => void;
+  boxRef: RefObject<HTMLDivElement>;
   handleInputCallback: (el: Element | null) => void;
 }
 
@@ -130,7 +132,7 @@ function updateDimensions(
 
 export const RefsPage = define<object, RefsExposed>({
   script: ({ useStore, useCallback, onMount }) => {
-    const i18nStore = useStore('i18n') as typeof I18nStoreType;
+    const i18nStore = requireI18nStore(useStore('i18n'));
 
     const translations = computed(() => getTranslations(i18nStore));
 
@@ -208,15 +210,10 @@ export const RefsPage = define<object, RefsExposed>({
       isMounted.value = !isMounted.value;
     });
 
-    const handleBoxRef = useCallback((el: unknown) => {
-      const internal = boxRef as unknown as {
-        _setCurrent: (el: HTMLDivElement | null) => void;
-      };
-      internal._setCurrent(el as HTMLDivElement | null);
-    });
-
     const handleInputCallback = useCallback((el: Element | null) => {
-      inputCallback(el as HTMLInputElement | null);
+      if (el === null || el instanceof HTMLInputElement) {
+        inputCallback(el);
+      }
     });
 
     return {
@@ -228,7 +225,7 @@ export const RefsPage = define<object, RefsExposed>({
       handleFocusInput,
       handleIncrementClick,
       handleReset,
-      handleBoxRef,
+      boxRef,
       handleInputCallback,
       isMounted,
       handleToggleMount,
@@ -243,7 +240,7 @@ export const RefsPage = define<object, RefsExposed>({
     handleFocusInput,
     handleIncrementClick,
     handleReset,
-    handleBoxRef,
+    boxRef,
     handleInputCallback,
     isMounted,
     handleToggleMount,
@@ -268,7 +265,7 @@ export const RefsPage = define<object, RefsExposed>({
 
           {isMounted.value && (
             <article
-              ref={handleBoxRef}
+              ref={boxRef}
               class="stat-card resizable-box animate-water-drop"
               style={{
                 minHeight: '120px',
