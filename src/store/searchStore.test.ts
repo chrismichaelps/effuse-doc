@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { i18nStore } from './appI18n.js';
 import { queryClient } from './queryClient.js';
 import { searchStore } from './searchStore.js';
+import { SEARCH_MAX_QUERY_LENGTH } from '../content/search/config.js';
 
 const emptyResponse = (): Response =>
   Response.json({ results: [] }, { status: 200 });
@@ -100,5 +101,25 @@ describe('search request scheduling', () => {
     ).toEqual(['/api/search?locale=ja&q=%E6%A4%9C%E7%B4%A2']);
 
     await i18nStore.setLocale('en');
+  });
+
+  it('rejects an oversized query locally without calling the API', async () => {
+    const fetchMock = vi.fn(
+      async (_input: RequestInfo | URL, _init?: RequestInit) => emptyResponse()
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    searchStore.search('x'.repeat(SEARCH_MAX_QUERY_LENGTH + 1));
+    await vi.runAllTimersAsync();
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(searchStore.searchStatus.value).toEqual({
+      _tag: 'Error',
+      error: {
+        _tag: 'Execution',
+        message: `Search queries are limited to ${SEARCH_MAX_QUERY_LENGTH} characters`,
+        query: 'x'.repeat(SEARCH_MAX_QUERY_LENGTH + 1),
+      },
+    });
   });
 });

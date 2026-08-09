@@ -7,12 +7,13 @@
   "author": "Chris M. P\u00e9rez",
   "license": "MIT",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && pnpm build:client && pnpm build:server",
+    "server:registry": "node scripts/generate-server-registry.mjs",
+    "dev": "pnpm server:registry && vite",
+    "build": "pnpm server:registry && tsc --noEmit && pnpm build:client && pnpm build:server",
     "preview": "node scripts/serve.mjs",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests",
-    "test:watch": "vitest",
+    "typecheck": "pnpm server:registry && tsc --noEmit",
+    "test": "pnpm server:registry && vitest run --passWithNoTests",
+    "test:watch": "pnpm server:registry && vitest",
     "docs:next-steps": "node scripts/docs-next-steps.mjs",
     "docs:next-steps:write": "node scripts/docs-next-steps.mjs --write",
     "format": "prettier --cache --write .",
@@ -35,6 +36,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@effuse/cli": "^1.0.3",
     "@effuse/compiler": "1.0.5",
     "@rolldown/binding-darwin-x64": "1.1.5",
     "@tailwindcss/vite": "^4.3.3",

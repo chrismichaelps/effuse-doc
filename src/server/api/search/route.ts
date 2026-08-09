@@ -1,10 +1,15 @@
 import { defineServerFileHandler, defineServerRequest } from '@effuse/core';
 import { searchLocale } from '../../search/search.js';
-import { SearchQuerySchema } from './schema.js';
+import {
+  SearchQuerySchema,
+  SearchResponseSchema,
+} from '../../contracts/search.js';
 
 export const request = defineServerRequest({
   query: SearchQuerySchema,
 });
+
+export const response = SearchResponseSchema;
 
 export const metadata = {
   cache: { revalidate: 300, tags: ['search', 'docs'] },
@@ -12,7 +17,7 @@ export const metadata = {
 
 export const GET = defineServerFileHandler(
   '/api/search',
-  request,
+  { request, response },
   async ({ input }) => ({
     results: await searchLocale(input.query.locale, input.query.q),
   })

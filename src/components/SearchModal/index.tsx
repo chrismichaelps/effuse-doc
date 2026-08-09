@@ -27,6 +27,8 @@ interface SearchModalExposed {
   isLoading: ReadonlySignal<boolean>;
   selectedIndex: Signal<number>;
   showLoading: ReadonlySignal<boolean>;
+  showError: ReadonlySignal<boolean>;
+  errorMessage: ReadonlySignal<string>;
   showNoResults: ReadonlySignal<boolean>;
   showEmptyState: ReadonlySignal<boolean>;
   showResults: ReadonlySignal<boolean>;
@@ -205,23 +207,30 @@ export const SearchModal = define({
     );
 
     const showLoading = computed(
-      () => (isLoading.value ?? false) && (store?.query.value.length ?? 0) > 0
+      () => store?.searchStatus.value?._tag === 'Loading'
     );
-    const showNoResults = computed(
-      () =>
-        !(isLoading.value ?? true) &&
-        (store?.query.value.length ?? 0) > 0 &&
-        (results.value.length ?? 0) === 0
+    const showError = computed(
+      () => store?.searchStatus.value?._tag === 'Error'
     );
+    const errorMessage = computed(() => {
+      const status = store?.searchStatus.value;
+      if (status?._tag !== 'Error') return '';
+
+      return status.error._tag === 'QueryTooShort'
+        ? `Enter at least ${status.error.minLength} characters`
+        : status.error.message;
+    });
+    const showNoResults = computed(() => {
+      const status = store?.searchStatus.value;
+      return status?._tag === 'Results' && status.results.length === 0;
+    });
     const showEmptyState = computed(
-      () => !(isLoading.value ?? true) && (store?.query.value.length ?? 0) === 0
+      () => store?.searchStatus.value?._tag === 'Idle'
     );
-    const showResults = computed(
-      () =>
-        !(isLoading.value ?? true) &&
-        (store?.query.value.length ?? 0) > 0 &&
-        (results.value.length ?? 0) > 0
-    );
+    const showResults = computed(() => {
+      const status = store?.searchStatus.value;
+      return status?._tag === 'Results' && status.results.length > 0;
+    });
 
     return {
       modalState: store?.modalState,
@@ -231,6 +240,8 @@ export const SearchModal = define({
       isLoading,
       selectedIndex: store?.selectedIndex,
       showLoading,
+      showError,
+      errorMessage,
       showNoResults,
       showEmptyState,
       showResults,
@@ -266,6 +277,8 @@ export const SearchModal = define({
     handleBackdropClick,
     handleResultClick,
     showLoading,
+    showError,
+    errorMessage,
     showNoResults,
     showEmptyState,
     showResults,
@@ -306,6 +319,18 @@ export const SearchModal = define({
             <div class={() => (showLoading.value ? '' : 'hidden')}>
               <div class="search-loading">
                 <div class="search-loading-spinner"></div>
+              </div>
+            </div>
+
+            <div class={() => (showError.value ? '' : 'hidden')} role="alert">
+              <div class="search-empty search-error">
+                <img
+                  src="/icons/search-empty.svg"
+                  alt=""
+                  class="search-empty-icon"
+                />
+                <div class="search-empty-title">Search unavailable</div>
+                <div class="search-empty-subtitle">{errorMessage}</div>
               </div>
             </div>
 

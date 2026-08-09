@@ -372,6 +372,18 @@ pre.search-result-text.code-match code {
   font-size: 0.8125rem;
 }
 
+.search-error .search-empty-icon {
+  opacity: 0.55;
+}
+
+.search-error .search-empty-title {
+  color: var(--text-primary);
+}
+
+.search-error .search-empty-subtitle {
+  color: var(--text-secondary);
+}
+
 .search-loading {
   padding: 2rem;
   text-align: center;

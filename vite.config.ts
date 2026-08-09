@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import { effuseServerRegistryPlugin } from '@effuse/cli';
 import { effuse } from '@effuse/compiler/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { effuseDevApi } from './src/server/dev-middleware';
@@ -10,7 +11,12 @@ import { effuseDevApi } from './src/server/dev-middleware';
  *   dist/server   entry-server.js, imported by api/ and scripts/serve.mjs
  */
 export default defineConfig(({ isSsrBuild }) => ({
-  plugins: [tailwindcss(), effuse({ debug: false }), effuseDevApi()],
+  plugins: [
+    effuseServerRegistryPlugin(),
+    tailwindcss(),
+    effuse({ debug: false }),
+    effuseDevApi(),
+  ],
   ssr: {
     noExternal: ['gsap', 'lenis'],
   },

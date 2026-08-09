@@ -1,16 +1,13 @@
-import { defineLayer, fromServerFiles } from '@effuse/core';
-import type { ServerActionFileModule, ServerApiFileModule } from '@effuse/core';
+import { defineLayer } from '@effuse/core';
+import { fromServerFiles } from '@effuse/core/server';
+import { loadServerFiles } from '../../.effuse/server-registry.ts';
 
 /**
- * Adapts the file-derived endpoints under `src/server/api` and
- * `src/server/actions` into the layer server model. A route's URL is its file
- * path; a declared path that disagrees is reported during discovery.
+ * Adapts the compiled file-derived endpoint registry into the layer model.
+ * Discovery validates filesystem paths and collisions before this server-only
+ * module is evaluated; the generated registry retains literal route imports.
  */
-const serverFiles = import.meta.glob<
-  ServerApiFileModule | ServerActionFileModule
->(['/src/server/api/**/route.ts', '/src/server/actions/**/*.ts'], {
-  eager: true,
-});
+const serverFiles = await loadServerFiles();
 
 export const AppServerLayer = defineLayer({
   name: 'app-server',
