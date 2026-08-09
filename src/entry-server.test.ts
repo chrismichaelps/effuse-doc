@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createFetchHandler } from './entry-server.js';
-import { SearchResponseSchema } from './server/contracts/search.js';
+import { SearchResponseSchema } from './domains/search/contracts/search.schema.js';
 
 const template = `<!doctype html>
 <html lang="en">

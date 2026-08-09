@@ -1,7 +1,7 @@
 import { createStore, connectDevTools } from '@effuse/store';
 import { taggedEnum, tryCatchAsync, matchEither } from '../utils/data/index.js';
 import { ReleasesError } from '../errors/index.js';
-import { GitHubReleasesResponseSchema } from '../schemas/external.js';
+import { decodeGitHubReleasesResponse } from '../integrations/github/githubClient.js';
 
 const STORE_NAME = 'release';
 const GITHUB_API_URL =
@@ -58,7 +58,7 @@ export const releaseStore = createStore<ReleaseState & ReleaseActions>(
               statusCode: response.status,
             });
           }
-          return GitHubReleasesResponseSchema.parse(await response.json());
+          return decodeGitHubReleasesResponse(await response.json());
         },
         (err) =>
           err instanceof ReleasesError

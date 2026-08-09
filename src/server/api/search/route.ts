@@ -3,7 +3,7 @@ import { searchLocale } from '../../search/search.js';
 import {
   SearchQuerySchema,
   SearchResponseSchema,
-} from '../../contracts/search.js';
+} from '../../../domains/search/contracts/search.schema.js';
 
 export const request = defineServerRequest({
   query: SearchQuerySchema,

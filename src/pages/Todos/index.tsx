@@ -16,9 +16,9 @@ import { requireI18nStore, requireTodosStore } from '../../store/guards.js';
 import { triggerHaptic } from '../../components/Haptics';
 import { TodoError } from '../../errors/index.js';
 import {
-  TodoResponseSchema,
-  TodosResponseSchema,
-} from '../../schemas/external.js';
+  decodeTodoResponse,
+  decodeTodosResponse,
+} from '../../integrations/jsonplaceholder/jsonPlaceholderClient.js';
 import '../../styles/examples.css';
 
 const API_BASE = 'https://jsonplaceholder.typicode.com';
@@ -55,7 +55,7 @@ export const TodosPage = define({
             operation: 'fetch',
           });
         }
-        return TodosResponseSchema.parse(await response.json());
+        return decodeTodosResponse(await response.json());
       },
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) =>
@@ -76,7 +76,7 @@ export const TodosPage = define({
             operation: 'add',
           });
         }
-        return TodoResponseSchema.parse(await response.json());
+        return decodeTodoResponse(await response.json());
       },
       onSuccess: (data) => {
         const newTodo: Todo = { ...data, id: todosStore.generateId() };

@@ -1,6 +1,6 @@
 import { createDataCache } from '@effuse/core/server';
 import { LOCALES, type Locale } from '../../content/docs/constants.js';
-import type { SearchResultItem } from '../../content/search/types.js';
+import type { SearchResultItem } from '../../domains/search/contracts/search.schema.js';
 import { normalizeSearchQuery } from '../../content/search/config.js';
 import { loadDocsIndex } from './docsIndexer.js';
 import { createSearchEngine, type SearchEngine } from './searchEngine.js';

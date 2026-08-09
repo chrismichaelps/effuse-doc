@@ -1,24 +1,41 @@
 import { describe, expect, it } from 'vitest';
 import { createInProcessRouteFetch } from '@effuse/core/server';
-import { SearchResponseSchema } from '../../contracts/search.js';
+import { SearchResponseSchema } from '../../../domains/search/contracts/search.schema.js';
 import { AppServerLayer } from '../../../layers/AppServerLayer.js';
 import { SEARCH_MAX_QUERY_LENGTH } from '../../../content/search/config.js';
 import { metadata } from './route.js';
 
 const EXPECTED_RANKINGS = {
-  signals: ['signals-title', 'props-code', 'state-code'],
+  signals: [
+    'signals-title',
+    'state-code',
+    'props-code',
+    'installation-content',
+    'utility-hooks-content',
+    'why-effuse-content',
+    'quick-start-content',
+    'effects-content',
+    'hooks-content',
+    'use-form-content',
+  ],
   server: [
     'server-title',
     'server-apis-title',
-    'cli-heading',
-    'migrating-layer-access-heading',
     'layers-heading',
-    'why-effuse-code',
-    'installation-code',
-    'refs-code',
-    'effects-code',
+    'migrating-layer-access-heading',
+    'cli-heading',
+    'state-content',
+    'routing-content',
+    'seo-content',
+    'i18n-content',
+    'ink-content',
   ],
-  useForm: ['use-form-title'],
+  useForm: [
+    'use-form-title',
+    'effects-content',
+    'layers-content',
+    'hooks-content',
+  ],
   layers: [
     'layers-title',
     'migrating-layer-access-heading',
@@ -26,15 +43,17 @@ const EXPECTED_RANKINGS = {
     'why-effuse-code',
     'getting-started-code',
     'ink-code',
-    'server-code',
     'server-apis-code',
+    'server-code',
+    'components-content',
+    'signals-content',
   ],
   router: [
     'installation-heading',
     'routing-heading',
     'getting-started-heading',
-    'layers-code',
     'quick-start-code',
+    'layers-code',
   ],
 } as const;
 

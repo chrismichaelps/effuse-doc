@@ -1,15 +1,12 @@
-import { computed, define, signal, useHead, watchEffect } from '@effuse/core';
+import { computed, define, useHead, watchEffect } from '@effuse/core';
 import type { ReadonlySignal } from '@effuse/core';
 import { Ink } from '@effuse/ink';
-import { ensureQueryData } from '@effuse/query';
 import { useRoute } from '@effuse/router';
 import { DocsLayout } from '../../components/docs/DocsLayout.js';
 import type { TocItem } from '../../components/docs/DocsHeader.js';
 import { i18nStore } from '../../store/appI18n.js';
-import { queryClient } from '../../store/queryClient.js';
 import { DEFAULT_SLUG } from '../../content/docs/constants.js';
-import type { Doc } from '../../content/docs/types.js';
-import { DocResponseSchema } from '../../server/contracts/docs.js';
+import { useDocument } from '../../domains/docs/hooks/useDocument.js';
 
 const SITE_URL = 'https://effuse-doc.vercel.app';
 
@@ -35,71 +32,11 @@ export const DocsPage = define<Record<string, never>, DocsPageExposed>({
     const slug = computed(() => toSlug(route.params.slug));
     const locale = computed(() => i18nStore.locale.value);
 
-    const doc = signal<Doc | undefined>(
-      queryClient.getQueryData<Doc>(['docs', locale.value, slug.value])
-    );
-
-    // The effect re-runs whenever locale or slug settles, which can happen more
-    // than once per navigation. Tracking the last requested key keeps that from
-    // issuing a second identical request before the first has populated the
-    // cache.
-    let requestedKey = '';
-
-    // ensureQueryData gives the shared cache and request de-duplication while
-    // leaving the key free to change with locale and slug, which useQuery's
-    // static queryKey cannot express.
-    watchEffect(() => {
-      const currentLocale = locale.value;
-      const currentSlug = slug.value;
-
-      const cached = queryClient.getQueryData<Doc>([
-        'docs',
-        currentLocale,
-        currentSlug,
-      ]);
-      if (cached && doc.value !== cached) {
-        doc.value = cached;
-        return;
-      }
-
-      if (typeof window === 'undefined') return;
-
-      const key = `${currentLocale}/${currentSlug}`;
-      if (key === requestedKey) return;
-      requestedKey = key;
-
-      void ensureQueryData<Doc>(
-        ['docs', currentLocale, currentSlug],
-        async () => {
-          const response = await fetch(
-            `/api/docs/${currentLocale}/${encodeURIComponent(currentSlug)}`
-          );
-          if (!response.ok) {
-            throw new Error(`Document not found: ${currentSlug}`);
-          }
-          return DocResponseSchema.parse(await response.json());
-        },
-        { client: queryClient, staleTime: Number.POSITIVE_INFINITY }
-      )
-        .then((data) => {
-          if (locale.value === currentLocale && slug.value === currentSlug) {
-            if (doc.value !== data) {
-              doc.value = data;
-            }
-          }
-        })
-        .catch(() => {
-          if (locale.value === currentLocale && slug.value === currentSlug) {
-            if (doc.value !== undefined) {
-              doc.value = undefined;
-            }
-          }
-        });
-    });
+    const { doc } = useDocument({ locale, slug });
     const content = computed(() => doc.value?.content ?? '');
     const pageTitle = computed(() => doc.value?.title ?? '');
-    // The table of contents comes from the same parse that renders the
-    // document, so an anchor cannot describe a heading the renderer skipped.
+    // TOC ids use Ink's heading grammar and slug contract, matching the ids
+    // assigned when the document is rendered.
     const tocItems = computed<TocItem[]>(() =>
       (doc.value?.toc ?? []).map((entry) => ({ ...entry }))
     );
@@ -135,7 +72,10 @@ export const DocsPage = define<Record<string, never>, DocsPageExposed>({
       pageTitle={pageTitle.value}
       tocItems={tocItems}
     >
-      <article class="prose prose-slate max-w-none">
+      <article
+        class="prose prose-slate max-w-none"
+        data-document-path={currentPath.value}
+      >
         <Ink content={content} />
       </article>
     </DocsLayout>

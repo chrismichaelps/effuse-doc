@@ -1,15 +1,15 @@
 import { z } from 'zod';
-import { LOCALES } from '../../content/docs/constants.js';
+import { LOCALES } from '../../../content/docs/constants.js';
 import {
   SEARCH_MAX_QUERY_LENGTH,
   SEARCH_MIN_QUERY_LENGTH,
   normalizeSearchQuery,
   searchQueryLength,
-} from '../../content/search/config.js';
+} from '../../../content/search/config.js';
 
 const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f]/u;
 
-const SearchTermSchema = z
+export const SearchTermSchema = z
   .string()
   .refine((value) => !CONTROL_CHARACTERS.test(value), {
     message: 'Query cannot contain control characters',
@@ -22,12 +22,13 @@ const SearchTermSchema = z
     message: `Query must contain at most ${SEARCH_MAX_QUERY_LENGTH} characters`,
   });
 
+/** Normalizes and validates query parameters before search index access. */
 export const SearchQuerySchema = z.strictObject({
   locale: z.enum(LOCALES),
   q: SearchTermSchema,
 });
 
-const SearchCodePreviewSchema = z.strictObject({
+export const SearchCodePreviewSchema = z.strictObject({
   language: z.string().optional(),
   section: z.string().optional(),
   lines: z.array(z.string()).readonly(),
@@ -37,7 +38,7 @@ const SearchCodePreviewSchema = z.strictObject({
   additionalMatches: z.number().int().nonnegative(),
 });
 
-const SearchResultSchema = z.strictObject({
+export const SearchResultSchema = z.strictObject({
   id: z.string(),
   documentId: z.string(),
   text: z.string(),
@@ -49,8 +50,12 @@ const SearchResultSchema = z.strictObject({
   code: SearchCodePreviewSchema.optional(),
 });
 
+/** Validates the serialized search response consumed by the client store. */
 export const SearchResponseSchema = z.strictObject({
   results: z.array(SearchResultSchema).readonly(),
 });
 
 export type SearchQuery = z.infer<typeof SearchQuerySchema>;
+export type SearchCodePreview = z.infer<typeof SearchCodePreviewSchema>;
+export type SearchResultItem = z.infer<typeof SearchResultSchema>;
+export type SearchResponse = z.infer<typeof SearchResponseSchema>;

@@ -2,14 +2,14 @@ import { createStore, connectDevTools } from '@effuse/store';
 import { ensureQueryData } from '@effuse/query';
 import { i18nStore } from './appI18n.js';
 import { queryClient } from './queryClient.js';
-import type { SearchResultItem } from '../content/search/types.js';
+import type { SearchResultItem } from '../domains/search/contracts/search.schema.js';
 import {
   SEARCH_MAX_QUERY_LENGTH,
   SEARCH_MIN_QUERY_LENGTH,
   normalizeSearchQuery,
   searchQueryLength,
 } from '../content/search/config.js';
-import { SearchResponseSchema } from '../server/contracts/search.js';
+import { SearchResponseSchema } from '../domains/search/contracts/search.schema.js';
 import {
   Option,
   some,
@@ -23,6 +23,9 @@ const DEBOUNCE_MS = 50;
 
 let debounceHandle: ReturnType<typeof setTimeout> | undefined;
 let latestRequest = 0;
+// The store is process-scoped, so the global shortcut remains singleton
+// across layer remounts and development hot reloads.
+let removeShortcutListener: (() => void) | undefined;
 
 interface PendingSearch {
   readonly controller: AbortController;
@@ -92,7 +95,7 @@ interface SearchActions {
   selectNext: () => void;
   selectPrevious: () => void;
   getSelected: () => SearchResultItem | null;
-  init: () => void;
+  init: () => () => void;
 }
 
 const fetchSearchResults = async (
@@ -348,36 +351,28 @@ export const searchStore = createStore<SearchState & SearchActions>(
     },
 
     init() {
-      if (typeof window !== 'undefined') {
-        const handleKeyDown = (e: KeyboardEvent) => {
-          if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-            e.preventDefault();
-            this.toggle();
-          }
+      if (removeShortcutListener) return removeShortcutListener;
+      if (typeof window === 'undefined') return () => {};
 
-          let isOpen = false;
-          ModalState.$match(this.modalState.value, {
-            Closed: () => {
-              isOpen = false;
-            },
-            Opening: () => {
-              isOpen = true;
-            },
-            Open: () => {
-              isOpen = true;
-            },
-            Closing: () => {
-              isOpen = true;
-            },
-          });
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+          event.preventDefault();
+          this.toggle();
+        }
 
-          if (e.key === 'Escape' && isOpen) {
-            e.preventDefault();
-            this.close();
-          }
-        };
-        window.addEventListener('keydown', handleKeyDown);
-      }
+        const isOpen = !ModalState.$is('Closed')(this.modalState.value);
+        if (event.key === 'Escape' && isOpen) {
+          event.preventDefault();
+          this.close();
+        }
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+      removeShortcutListener = () => {
+        window.removeEventListener('keydown', handleKeyDown);
+        removeShortcutListener = undefined;
+      };
+      return removeShortcutListener;
     },
   },
   { devtools: true }

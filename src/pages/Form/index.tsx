@@ -17,7 +17,7 @@ import { requireI18nStore } from '../../store/guards.js';
 import { triggerHaptic } from '../../components/Haptics';
 import { FormSubmissionError } from '../../errors/index.js';
 import { taggedEnum, matchTag } from '../../utils/data/index.js';
-import { PostResponseSchema } from '../../schemas/external.js';
+import { decodePostResponse } from '../../integrations/jsonplaceholder/jsonPlaceholderClient.js';
 import '../../styles/examples.css';
 
 interface Post {
@@ -94,7 +94,7 @@ export const FormDemoPage = define({
             formId: 'create-post',
           });
         }
-        return PostResponseSchema.parse(await response.json());
+        return decodePostResponse(await response.json());
       },
       onSuccess: (newPost: Post) => {
         const postWithUniqueId = { ...newPost, id: nextPostId++ };

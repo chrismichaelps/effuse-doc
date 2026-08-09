@@ -1,9 +1,11 @@
 import { createDataCache } from '@effuse/core/server';
-import { parseSync } from '@effuse/ink';
-import type { DocumentNode, InlineNode } from '@effuse/ink';
-import { createHeadingSlugger } from './slug.js';
 import { DEFAULT_LOCALE, type Locale } from '../../content/docs/constants.js';
-import type { Doc, TocEntry } from '../../content/docs/types.js';
+import type { Doc } from '../../domains/docs/contracts/document.schema.js';
+import {
+  compileDocumentSource,
+  type CompiledDocumentSource,
+} from './documentCompiler.js';
+import type { DocEntry } from '../search/document.types.js';
 
 export {
   DEFAULT_LOCALE,
@@ -12,7 +14,10 @@ export {
   isLocale,
 } from '../../content/docs/constants.js';
 export type { Locale } from '../../content/docs/constants.js';
-export type { Doc, TocEntry } from '../../content/docs/types.js';
+export type {
+  Doc,
+  TocEntry,
+} from '../../domains/docs/contracts/document.schema.js';
 
 /** Lazy: one chunk per document, so a request loads only what it serves. */
 const documents = import.meta.glob<string>('../../content/docs/*/*.md', {
@@ -22,67 +27,6 @@ const documents = import.meta.glob<string>('../../content/docs/*/*.md', {
 
 const keyOf = (locale: string, slug: string): string =>
   `../../content/docs/${locale}/${slug}.md`;
-
-const FRONTMATTER = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?/;
-const TITLE_FIELD = /^title:\s*(.+)$/m;
-
-type Parsed = {
-  readonly frontmatter: string | null;
-  readonly body: string;
-};
-
-const splitFrontmatter = (markdown: string): Parsed => {
-  const match = FRONTMATTER.exec(markdown);
-  if (!match) return { frontmatter: null, body: markdown };
-  return { frontmatter: match[1], body: markdown.slice(match[0].length) };
-};
-
-/** Flattens a heading's inline nodes to its rendered text. */
-const headingText = (children: readonly InlineNode[]): string =>
-  children
-    .map((child) => {
-      if (child._tag === 'Text' || child._tag === 'InlineCode') {
-        return child.value;
-      }
-      if (child._tag === 'Emphasis' || child._tag === 'Link') {
-        return headingText(child.children);
-      }
-      return '';
-    })
-    .join('');
-
-/** Builds the table of contents from the document AST. */
-const buildToc = (ast: DocumentNode): readonly TocEntry[] => {
-  const slugger = createHeadingSlugger();
-  const entries: TocEntry[] = [];
-
-  for (const node of ast.children) {
-    if (node._tag !== 'Heading') continue;
-    const title = headingText(node.children).trim();
-    // Every heading consumes a slug, including levels the TOC omits, to stay
-    // aligned with the ids assigned during rendering.
-    const id = slugger.next(title);
-    if (node.level > 3) continue;
-    entries.push({ id, title, level: node.level });
-  }
-
-  return entries;
-};
-
-/** Frontmatter `title`, else the first H1, else a humanised slug. */
-const resolveTitle = (parsed: Parsed, slug: string): string => {
-  if (parsed.frontmatter) {
-    const field = TITLE_FIELD.exec(parsed.frontmatter);
-    if (field) return field[1].trim();
-  }
-
-  const h1 = /^#\s+(.+)$/m.exec(parsed.body);
-  if (h1) return h1[1].trim();
-
-  return slug
-    .replace(/[-_]/g, ' ')
-    .replace(/\b\w/g, (character) => character.toUpperCase());
-};
 
 const load = async (locale: Locale, slug: string): Promise<string | null> => {
   const loader = documents[keyOf(locale, slug)];
@@ -97,21 +41,15 @@ const load = async (locale: Locale, slug: string): Promise<string | null> => {
  */
 const docCache = createDataCache({ maxEntries: 256 });
 
-const readDoc = docCache.cached(
-  async (locale: Locale, slug: string): Promise<Doc | null> => {
+const readCompiledDocument = docCache.cached(
+  async (
+    locale: Locale,
+    slug: string
+  ): Promise<CompiledDocumentSource | null> => {
     const raw = await load(locale, slug);
     if (raw === null) return null;
 
-    const parsed = splitFrontmatter(raw);
-    const content = parsed.body.trim();
-
-    return {
-      slug,
-      locale,
-      title: resolveTitle(parsed, slug),
-      content,
-      toc: buildToc(parseSync(content)),
-    };
+    return compileDocumentSource(raw, { slug, locale });
   },
   {
     life: { stale: 3600, expire: 86_400 },
@@ -120,8 +58,28 @@ const readDoc = docCache.cached(
 );
 
 /** Resolves one document, or `null` when the locale has no such slug. */
-export const getDoc = (locale: Locale, slug: string): Promise<Doc | null> =>
-  readDoc(locale, slug);
+export const getDoc = async (
+  locale: Locale,
+  slug: string
+): Promise<Doc | null> => {
+  const compiled = await readCompiledDocument(locale, slug);
+  if (!compiled) return null;
+
+  return {
+    slug,
+    locale,
+    title: compiled.title,
+    content: compiled.content,
+    toc: compiled.toc,
+  };
+};
+
+/** Returns the search projection of the cached document compilation. */
+export const getDocSearchEntry = async (
+  locale: Locale,
+  slug: string
+): Promise<DocEntry | null> =>
+  (await readCompiledDocument(locale, slug))?.searchEntry ?? null;
 
 /** Drops memoised documents for a locale, or all of them. */
 export const invalidateDocs = (locale?: Locale): void => {

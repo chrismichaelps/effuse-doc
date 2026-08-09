@@ -10,7 +10,7 @@ import { isSome } from '../../utils/data/index.js';
 import type {
   SearchCodePreview,
   SearchResultItem,
-} from '../../content/search/types.js';
+} from '../../domains/search/contracts/search.schema.js';
 import {
   SEARCH_MAX_QUERY_LENGTH,
   SEARCH_MAX_RESULTS,
@@ -19,7 +19,7 @@ import {
   searchQueryLength,
 } from '../../content/search/config.js';
 
-export type { SearchResultItem } from '../../content/search/types.js';
+export type { SearchResultItem } from '../../domains/search/contracts/search.schema.js';
 
 interface SearchEngineConfig {
   maxResults: number;

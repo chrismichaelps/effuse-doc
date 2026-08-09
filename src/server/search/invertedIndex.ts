@@ -181,7 +181,7 @@ const checkTitleMatch = (title: string, query: string): number => {
 };
 
 const checkHeadingMatch = (
-  headings: { text: string }[],
+  headings: readonly { readonly text: string }[],
   query: string
 ): number => {
   const lowerQuery = normalize(query).trim();

@@ -7,8 +7,10 @@ import { createAppRouter } from './router';
 import { serverLayers } from './server/layers';
 import { queryClient } from './store/queryClient';
 import { i18nStore } from './store/appI18n';
-import type { Doc } from './content/docs/types';
-import { DocResponseSchema } from './server/contracts/docs.js';
+import {
+  DocResponseSchema,
+  type Doc,
+} from './domains/docs/contracts/document.schema.js';
 
 /** Matches DocsPage: `[[...slug]]` yields an array, a string, or nothing. */
 const toDocSlug = (value: unknown): string => {

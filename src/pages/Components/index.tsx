@@ -15,7 +15,7 @@ import { triggerHaptic } from '../../components/Haptics';
 import { NetworkError } from '../../errors/index.js';
 import { requireI18nStore } from '../../store/guards.js';
 import '../../styles/examples.css';
-import { UserResponseSchema } from '../../schemas/external.js';
+import { decodeUserResponse } from '../../integrations/jsonplaceholder/jsonPlaceholderClient.js';
 
 const ShowDemo = define({
   script: ({ useStore }) => {
@@ -448,7 +448,7 @@ const AwaitDemo = define({
               status: res.status,
             });
           }
-          return UserResponseSchema.parse(await res.json());
+          return decodeUserResponse(await res.json());
         }
       );
 

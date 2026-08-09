@@ -1,35 +1,15 @@
-import { parseMarkdownContent, type DocEntry } from './markdownParser.js';
-import { isSome } from '../../utils/data/index.js';
+import { getDocSearchEntry, listSlugs } from '../docs/content.js';
+import { isLocale } from '../../content/docs/constants.js';
+import type { DocEntry } from './document.types.js';
 
-const allMarkdownModules = import.meta.glob<string>(
-  '../../content/docs/*/*.md',
-  {
-    query: '?raw',
-    import: 'default',
-    eager: false,
-  }
-);
-
+/** Builds a locale index from the document compiler's cached projections. */
 export const loadDocsIndex = async (lang: string): Promise<DocEntry[]> => {
-  const entries: DocEntry[] = [];
+  if (!isLocale(lang)) return [];
 
-  const langModules = Object.entries(allMarkdownModules).filter(([path]) =>
-    path.includes(`/docs/${lang}/`)
+  const entries = await Promise.all(
+    listSlugs(lang).map((slug) => getDocSearchEntry(lang, slug))
   );
-
-  for (const [filePath, loadModule] of langModules) {
-    try {
-      const content = await loadModule();
-      const entry = parseMarkdownContent(filePath, content, lang);
-      if (isSome(entry)) {
-        entries.push(entry.value);
-      }
-    } catch {
-      /* */
-    }
-  }
-
-  return entries;
+  return entries.filter((entry): entry is DocEntry => entry !== null);
 };
 
 export type { DocEntry };
