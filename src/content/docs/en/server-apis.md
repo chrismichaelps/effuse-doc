@@ -49,17 +49,14 @@ Plain objects are serialized as JSON; `Response` values pass through.
 Validators may be functions or schema objects with `parse` or `safeParse`.
 
 ```ts
-const parseLogin = (value: unknown): { email: string; password: string } => {
-  const input = value as Record<string, unknown>;
-  if (
-    !input ||
-    typeof input.email !== 'string' ||
-    typeof input.password !== 'string'
-  ) {
-    throw new Error('email and password are required');
-  }
-  return { email: input.email, password: input.password };
-};
+import { z } from 'zod';
+
+const LoginSchema = z.object({
+  email: z.email(),
+  password: z.string().min(1),
+});
+
+const parseLogin = (value: unknown) => LoginSchema.parse(value);
 
 export const AuthLayer = defineLayer({
   name: 'auth',

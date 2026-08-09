@@ -150,7 +150,8 @@ export const useClickOutside = defineHook<
       if (!initialized.value) return undefined;
 
       const handleClick = (e: Event) => {
-        const target = e.target as HTMLElement;
+        const target = e.target;
+        if (!(target instanceof Element)) return;
         if (!target.closest(config.selector)) {
           callback?.();
         }

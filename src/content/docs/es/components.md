@@ -90,7 +90,9 @@ const Form = define({
 
     // Referencia estable para manejador de eventos
     const handleInputChange = useCallback((e: Event) => {
-      inputValue.value = (e.target as HTMLInputElement).value;
+      const input = e.currentTarget;
+      if (!(input instanceof HTMLInputElement)) return;
+      inputValue.value = input.value;
     });
 
     const handleSubmit = useCallback(() => {

@@ -94,7 +94,9 @@ const Form = define({
     const value = signal('');
 
     const handleChange = useCallback((e: Event) => {
-      value.value = (e.target as HTMLInputElement).value;
+      const input = e.currentTarget;
+      if (!(input instanceof HTMLInputElement)) return;
+      value.value = input.value;
     });
 
     const handleSubmit = useCallback(() => {
