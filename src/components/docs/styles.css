@@ -1126,8 +1126,10 @@
   color: var(--accent-lilac) !important;
 }
 
-/* Treat the closing documentation links as navigation, not inline prose. */
-.prose #next-steps ~ .ink-ul {
+/* Treat localized closing documentation links as navigation, not inline prose. */
+.prose
+  :is(#next-steps, #próximos-pasos, #次のステップ, #下一步, #后续步骤)
+  ~ .ink-ul {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
   gap: 0.75rem;
@@ -1136,13 +1138,23 @@
   list-style: none;
 }
 
-.prose #next-steps ~ .ink-ul > .ink-list-item,
-.prose #next-steps ~ .ink-ul > .ink-list-item > .ink-p {
+.prose
+  :is(#next-steps, #próximos-pasos, #次のステップ, #下一步, #后续步骤)
+  ~ .ink-ul
+  > .ink-list-item,
+.prose
+  :is(#next-steps, #próximos-pasos, #次のステップ, #下一步, #后续步骤)
+  ~ .ink-ul
+  > .ink-list-item
+  > .ink-p {
   margin: 0;
   padding: 0;
 }
 
-.prose #next-steps ~ .ink-ul .ink-link {
+.prose
+  :is(#next-steps, #próximos-pasos, #次のステップ, #下一步, #后续步骤)
+  ~ .ink-ul
+  .ink-link {
   display: flex;
   min-height: 3.5rem;
   align-items: center;
@@ -1163,7 +1175,10 @@
     transform 0.15s ease;
 }
 
-.prose #next-steps ~ .ink-ul .ink-link::after {
+.prose
+  :is(#next-steps, #próximos-pasos, #次のステップ, #下一步, #后续步骤)
+  ~ .ink-ul
+  .ink-link::after {
   content: '\2192';
   flex: 0 0 auto;
   color: var(--accent-lilac);
@@ -1172,7 +1187,10 @@
   transition: transform 0.15s ease;
 }
 
-.prose #next-steps ~ .ink-ul .ink-link:hover {
+.prose
+  :is(#next-steps, #próximos-pasos, #次のステップ, #下一步, #后续步骤)
+  ~ .ink-ul
+  .ink-link:hover {
   color: var(--text-primary) !important;
   background: var(--surface-interactive-hover);
   border-color: var(--accent-lilac);
@@ -1180,11 +1198,17 @@
   transform: translateY(-1px);
 }
 
-.prose #next-steps ~ .ink-ul .ink-link:hover::after {
+.prose
+  :is(#next-steps, #próximos-pasos, #次のステップ, #下一步, #后续步骤)
+  ~ .ink-ul
+  .ink-link:hover::after {
   transform: translateX(0.2rem);
 }
 
-.prose #next-steps ~ .ink-ul .ink-link:focus-visible {
+.prose
+  :is(#next-steps, #próximos-pasos, #次のステップ, #下一步, #后续步骤)
+  ~ .ink-ul
+  .ink-link:focus-visible {
   outline: 2px solid var(--accent-lilac);
   outline-offset: 3px;
 }

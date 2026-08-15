@@ -137,14 +137,6 @@ export { installRouter };
 | `useService`      | `(key) => Service`           | 访问由层注入的服务。               |
 | `layers`          | `Record<alias, LayerEntry>`  | 访问层属性。                       |
 
-## 下一步
-
-准备好深入了解了吗？接下来：
-
-- **[安装](/docs/installation)** — 在项目中设置 Effuse
-- **[快速开始](/docs/quick-start)** — 构建你的第一个应用
-- **[信号](/docs/signals)** — 掌握响应式系统
-
 ## 后续步骤
 
 - [安装指南](/docs/installation)

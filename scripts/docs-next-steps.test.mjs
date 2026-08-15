@@ -51,4 +51,29 @@ describe('documentation Next Steps generator', () => {
     );
     expect(withNextSteps(updated, section)).toBe(updated);
   });
+
+  it('removes legacy localized sections before adding the canonical section', () => {
+    const section = '## Próximos pasos\n\n- [Nuevo](/docs/new)';
+
+    for (const legacyHeading of ['Próximos Pasos', '下一步']) {
+      const source = [
+        '# Guide',
+        '',
+        'Content',
+        '',
+        `## ${legacyHeading}`,
+        '',
+        '- [Old](/docs/old)',
+        '',
+        '## 后续步骤',
+        '',
+        '- [Duplicate](/docs/duplicate)',
+        '',
+      ].join('\n');
+
+      expect(withNextSteps(source, section)).toBe(
+        '# Guide\n\nContent\n\n## Próximos pasos\n\n- [Nuevo](/docs/new)\n'
+      );
+    }
+  });
 });

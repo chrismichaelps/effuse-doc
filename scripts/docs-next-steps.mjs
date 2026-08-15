@@ -14,7 +14,7 @@ export const LOCALE_HEADINGS = {
 };
 
 const GENERATED_HEADING_PATTERN =
-  /\n+## (?:Next Steps|Próximos pasos|次のステップ|后续步骤)\s*\n[\s\S]*$/u;
+  /\n+## (?:Next Steps|Próximos [Pp]asos|次のステップ|下一步|后续步骤)\s*\n[\s\S]*$/u;
 
 const cleanTitle = (title) =>
   title

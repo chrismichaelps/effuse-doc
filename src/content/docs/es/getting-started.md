@@ -137,14 +137,6 @@ La función `script` recibe un objeto `ScriptContext` con utilidades:
 | `useService`      | `(key) => Service`           | Acceso a servicios inyectados por capas.                          |
 | `layers`          | `Record<alias, LayerEntry>`  | Acceder a props de una capa.                                      |
 
-## Próximos Pasos
-
-¿Listo para profundizar? Aquí tienes los siguientes pasos:
-
-- **[Instalación](/docs/installation)** — Configura Effuse en tu proyecto
-- **[Inicio Rápido](/docs/quick-start)** — Construye tu primera app
-- **[Señales](/docs/signals)** — Domina el sistema de reactividad
-
 ## Próximos pasos
 
 - [Instalación](/docs/installation)
