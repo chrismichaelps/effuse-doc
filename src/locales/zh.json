@@ -47,7 +47,8 @@
 		"ink": "Ink"
 	},
 	"toc": {
-		"onThisPage": "本页目录"
+		"onThisPage": "本页目录",
+		"backToTop": "返回顶部"
 	},
 	"footer": {
 		"builtWith": "基于 Effuse 构建"

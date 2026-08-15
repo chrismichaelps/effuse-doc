@@ -14,6 +14,7 @@ import {
   type TocNavigateHandler,
 } from './DocsHeader.js';
 import { SidebarToggle } from './SidebarToggle.js';
+import { BackToTop } from './BackToTop.js';
 import {
   useScrollSpy,
   useTranslation,
@@ -198,6 +199,7 @@ export const DocsLayout = define({
           </aside>
         </div>
       </main>
+      <BackToTop />
     </div>
   ),
 });

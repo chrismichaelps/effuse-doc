@@ -47,7 +47,8 @@
 		"ink": "Ink"
 	},
 	"toc": {
-		"onThisPage": "On this page"
+		"onThisPage": "On this page",
+		"backToTop": "Back to top"
 	},
 	"footer": {
 		"builtWith": "Built with Effuse"

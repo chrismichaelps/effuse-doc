@@ -47,7 +47,8 @@
 		"ink": "Ink"
 	},
 	"toc": {
-		"onThisPage": "このページの内容"
+		"onThisPage": "このページの内容",
+		"backToTop": "ページ上部へ"
 	},
 	"footer": {
 		"builtWith": "Effuse で構築"
