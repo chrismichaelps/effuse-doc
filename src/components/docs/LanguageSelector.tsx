@@ -29,7 +29,7 @@ interface LanguageSelectorExposed {
   handleSelect: (e: MouseEvent, loc: Locale) => void;
   availableLanguages: ReadonlySignal<LanguageOption[]>;
   dropdownClass: () => string;
-  rootRef: Signal<Element | null>;
+  rootRef: Signal<HTMLDivElement | null>;
 }
 
 export const LanguageSelector = define({
@@ -39,7 +39,7 @@ export const LanguageSelector = define({
     const { t } = useTranslation();
 
     const toggle = useToggle({ initial: false });
-    const rootRef = signal<Element | null>(null);
+    const rootRef = signal<HTMLDivElement | null>(null);
 
     useOnClickOutside(
       () => rootRef.value,
@@ -89,7 +89,7 @@ export const LanguageSelector = define({
   }) => (
     <div
       class="lang-selector relative"
-      ref={(el: Element) => {
+      ref={(el: HTMLDivElement | null) => {
         rootRef.value = el;
       }}
     >

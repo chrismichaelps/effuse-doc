@@ -4,7 +4,7 @@ const deps = pkg.dependencies;
 const devDeps = pkg.devDependencies;
 
 export const versions = {
-  cli: '1.0.3',
+  cli: devDeps['@effuse/cli'],
   compiler: devDeps['@effuse/compiler'],
   core: deps['@effuse/core'],
   router: deps['@effuse/router'],
