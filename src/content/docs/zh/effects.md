@@ -56,10 +56,10 @@ watchEffect(
 );
 ```
 
-| 选项       | 类型                                                                         | 描述                            |
-| :--------- | :--------------------------------------------------------------------------- | :------------------------------ |
-| `debounce` | `{ wait: number, leading?: boolean, trailing?: boolean }`                    | 防抖配置                        |
-| `timeout`  | `number`                                                                     | 允许执行的最大时间              |
+| 选项       | 类型                                                                             | 描述                            |
+| :--------- | :------------------------------------------------------------------------------- | :------------------------------ |
+| `debounce` | `{ wait: number, leading?: boolean, trailing?: boolean }`                        | 防抖配置                        |
+| `timeout`  | `number`                                                                         | 允许执行的最大时间              |
 | `retry`    | `{ times?: number, delay?: number, strategy?: 'constant' &#124; 'exponential' }` | 重试配置                        |
 | `flush`    | `'sync' &#124; 'post'`                                                           | 是同步运行还是在 DOM 更新后运行 |
 

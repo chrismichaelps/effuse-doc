@@ -134,11 +134,11 @@ effect(
 );
 ```
 
-| Opción     | Tipo                        | Descripción                                       |
-| :--------- | :-------------------------- | :------------------------------------------------ |
-| `debounce` | `number`                    | Deferir ejecución hasta después de un retraso     |
-| `timeout`  | `number`                    | Tiempo máximo permitido para ejecución            |
-| `retry`    | `number &#124; RetryOptions`    | Estrategia para reintentar efectos fallidos       |
+| Opción     | Tipo                                | Descripción                                       |
+| :--------- | :---------------------------------- | :------------------------------------------------ |
+| `debounce` | `number`                            | Deferir ejecución hasta después de un retraso     |
+| `timeout`  | `number`                            | Tiempo máximo permitido para ejecución            |
+| `retry`    | `number &#124; RetryOptions`        | Estrategia para reintentar efectos fallidos       |
 | `flush`    | `'pre' &#124; 'post' &#124; 'sync'` | Cuándo ejecutar el efecto relativo al renderizado |
 
 ### Observando Múltiples Señales

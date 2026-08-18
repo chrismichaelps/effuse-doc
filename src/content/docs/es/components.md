@@ -441,11 +441,11 @@ const App = define({
 
 ### Props de ErrorBoundary
 
-| Prop       | Tipo                                                              | Descripción                                  |
-| ---------- | ----------------------------------------------------------------- | -------------------------------------------- |
+| Prop       | Tipo                                                                  | Descripción                                  |
+| ---------- | --------------------------------------------------------------------- | -------------------------------------------- |
 | `fallback` | `EffuseChild &#124; ((err: Error, reset: () => void) => EffuseChild)` | Función de renderizado que recibe el error   |
-| `children` | `EffuseChild`                                                     | El contenido a monitorear por errores        |
-| `onError`  | `(err: Error) => void`                                            | Callback opcional cuando se captura un error |
+| `children` | `EffuseChild`                                                         | El contenido a monitorear por errores        |
+| `onError`  | `(err: Error) => void`                                                | Callback opcional cuando se captura un error |
 
 ## Próximos pasos
 

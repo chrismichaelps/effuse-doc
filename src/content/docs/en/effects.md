@@ -56,10 +56,10 @@ watchEffect(
 );
 ```
 
-| Option     | Type                                                                         | Description                                       |
-| :--------- | :--------------------------------------------------------------------------- | :------------------------------------------------ |
-| `debounce` | `{ wait: number, leading?: boolean, trailing?: boolean }`                    | Debounce configuration                            |
-| `timeout`  | `number`                                                                     | Maximum time allowed for execution                |
+| Option     | Type                                                                             | Description                                       |
+| :--------- | :------------------------------------------------------------------------------- | :------------------------------------------------ |
+| `debounce` | `{ wait: number, leading?: boolean, trailing?: boolean }`                        | Debounce configuration                            |
+| `timeout`  | `number`                                                                         | Maximum time allowed for execution                |
 | `retry`    | `{ times?: number, delay?: number, strategy?: 'constant' &#124; 'exponential' }` | Retry configuration                               |
 | `flush`    | `'sync' &#124; 'post'`                                                           | Whether to run synchronously or after DOM updates |
 

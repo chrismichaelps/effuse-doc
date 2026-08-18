@@ -492,11 +492,11 @@ const App = define({
 
 ### ErrorBoundary Props
 
-| Prop       | Type                                                              | Description                               |
-| ---------- | ----------------------------------------------------------------- | ----------------------------------------- |
+| Prop       | Type                                                                  | Description                               |
+| ---------- | --------------------------------------------------------------------- | ----------------------------------------- |
 | `fallback` | `EffuseChild &#124; ((err: Error, reset: () => void) => EffuseChild)` | Render function that receives the error   |
-| `children` | `EffuseChild`                                                     | The content to monitor for errors         |
-| `onError`  | `(err: Error) => void`                                            | Optional callback when an error is caught |
+| `children` | `EffuseChild`                                                         | The content to monitor for errors         |
+| `onError`  | `(err: Error) => void`                                                | Optional callback when an error is caught |
 
 ## Next Steps
 

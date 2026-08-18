@@ -63,13 +63,13 @@ const { mutate, isPending } = useMutation({
 
 ## Query Options
 
-| Option      | Type                | Description                                |
-| :---------- | :------------------ | :----------------------------------------- |
-| `queryKey`  | `any[]`             | Unique key for the query                   |
-| `queryFn`   | `() => Promise<T>`  | Function that fetches the data             |
-| `staleTime` | `number`            | Time in ms before data is considered stale |
-| `cacheTime` | `number`            | Time in ms to keep unused data in cache    |
-| `enabled`   | `Signal<boolean>`   | Whether the query should run automatically |
+| Option      | Type                    | Description                                |
+| :---------- | :---------------------- | :----------------------------------------- |
+| `queryKey`  | `any[]`                 | Unique key for the query                   |
+| `queryFn`   | `() => Promise<T>`      | Function that fetches the data             |
+| `staleTime` | `number`                | Time in ms before data is considered stale |
+| `cacheTime` | `number`                | Time in ms to keep unused data in cache    |
+| `enabled`   | `Signal<boolean>`       | Whether the query should run automatically |
 | `retry`     | `number &#124; boolean` | Retry behavior on failure                  |
 
 ## useInfiniteQuery
